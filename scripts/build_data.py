@@ -21,8 +21,9 @@ Regras, portadas das medidas do modelo Power BI (as quatro tabelas do relatório
       Categoria sem tarifa ("Outros") vale R$ 0, como no modelo.
 
   Resultado do mês = soma dos valores das quatro tabelas.
-  Água + esgoto: o valor é multiplicado por 2 nas localidades de DOUBLE_CITIES (cruzamento com a
-  base de clientes). O Power BI atual não faz esse cruzamento: sem --clientes o resultado é o dele.
+  Água + esgoto: o valor é multiplicado por 2 nas ligações cujo TIPO_FATURAMENTO da base de clientes é
+  "AGUA E ESGOTO" (cruzamento por matrícula). Se a base não tiver essa coluna, vale a regra por município
+  (DOUBLE_CITIES). O Power BI atual não faz esse cruzamento: sem --clientes o resultado é o dele.
 """
 
 import argparse
@@ -31,7 +32,7 @@ import json
 import re
 import sys
 import unicodedata
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, namedtuple
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
@@ -54,6 +55,9 @@ OTHER = "Outros"  # categoria não reconhecida: sem tarifa, vale R$ 0 (igual ao 
 # Localidades que hoje cobram água + esgoto (tarifa dobra). Sem acento, maiúsculas.
 DOUBLE_CITIES = ("CORDEIRO", "MIRACEMA", "APERIBE")
 UNKNOWN_CITY = "Não identificada"
+
+# double: True/False = tipo de faturamento da ligação; None = a base não informa (vale a regra por município)
+Client = namedtuple("Client", "city double")
 
 
 def tariff(category):
@@ -270,33 +274,53 @@ def digits(value):
     return re.sub(r"\D", "", str(value or "")).lstrip("0")
 
 
-def load_localities(path, col_ligacao=None, col_localidade=None):
+def month_key(value):
+    """'09/2026', '2026-09-01' ou data -> '2026-09' (vazio se não der para ler)."""
+    if isinstance(value, (datetime, date)):
+        return value.strftime("%Y-%m")
+    text = str(value or "").strip()
+    m = re.fullmatch(r"(\d{1,2})/(\d{4})", text)
+    if m:
+        return f"{m.group(2)}-{int(m.group(1)):02d}"
+    m = re.match(r"(\d{4})-(\d{2})", text)
+    return f"{m.group(1)}-{m.group(2)}" if m else ""
+
+
+def load_clients(path, col_ligacao=None, col_localidade=None, col_faturamento=None):
+    """Base de clientes -> {matrícula: Client(cidade, faz água e esgoto?)}, pela linha do mês mais recente."""
     names, rows = read_table(path)
     keys = {header_key(n): n for n in names if n}
 
-    def pick(wanted, candidates, label):
+    def pick(wanted, candidates, label, required=True):
         if wanted:
             if header_key(wanted) not in keys:
                 sys.exit(f"Coluna '{wanted}' não existe na base de clientes. Colunas: {', '.join(names)}")
             return header_key(wanted)
-        for k in keys:
-            if any(c in k for c in candidates):
-                return k
-        sys.exit(f"Não achei a coluna de {label} na base de clientes. Use a opção correspondente. "
-                 f"Colunas: {', '.join(names)}")
+        for c in candidates:
+            for k in keys:
+                if c in k and not k.startswith("TIPO"):
+                    return k
+        if required:
+            sys.exit(f"Não achei a coluna de {label} na base de clientes. Use a opção correspondente. "
+                     f"Colunas: {', '.join(names)}")
+        return None
 
-    k_id = pick(col_ligacao, ("LIGACAO", "MATRICULA"), "ligação/matrícula")
-    k_city = pick(col_localidade, ("LOCALIDADE", "MUNICIPIO", "CIDADE"), "localidade")
-    places = {}
+    k_id = pick(col_ligacao, ("NUMLIGACAO", "LIGACAO", "MATRICULA"), "ligação/matrícula")
+    k_city = pick(col_localidade, ("CIDADE", "LOCALIDADE", "MUNICIPIO"), "localidade")
+    k_bill = (pick(col_faturamento, (), "tipo de faturamento") if col_faturamento
+              else next((k for k in keys if "FATURAMENTO" in k), None))
+    k_month = next((k for k in keys if "MESANO" in k), None)
+
+    latest = {}
     for rec in rows:
         ident, city = digits(rec.get(k_id)), str(rec.get(k_city) or "").strip()
-        if not ident or not city:
+        if not ident or not city:  # rodapés e linhas em branco
             continue
-        if ident in places and plain(places[ident]) != plain(city):
-            places[ident] = None  # matrícula em duas localidades: não dá para afirmar
-        else:
-            places[ident] = city
-    return places
+        month = month_key(rec.get(k_month)) if k_month else ""
+        if ident not in latest or month >= latest[ident][0]:
+            double = ("ESGOTO" in plain(rec.get(k_bill))) if k_bill else None
+            latest[ident] = (month, Client(city, double))
+    return {ident: client for ident, (_, client) in latest.items()}
 
 
 # ---------------------------------------------------------------- agregação
@@ -304,6 +328,7 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
     agg = defaultdict(Counter)
     pending = Counter()
     notes = Counter()
+    coverage = Counter()
     dates, top = [], []
     for number, rec in enumerate(rows, start=2):
         if only_front and plain(rec.get("FRENTEDESERVICO")).strip() != plain(only_front).strip():
@@ -318,15 +343,25 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
         if (since and month < since) or (until and month > until):
             continue
         dates.append(when)
-        city = UNKNOWN_CITY
-        if places is not None:
-            city = places.get(digits(rec.get("MATRICULASDIGITO"))) or UNKNOWN_CITY
+        client = places.get(digits(rec.get("MATRICULASDIGITO"))) if places is not None else None
+        if isinstance(client, str):  # só a cidade (testes e bases antigas)
+            client = Client(client, None)
+        city = client.city if client else UNKNOWN_CITY
         if reason:
             pending[(month, city, reason)] += 1
             continue
         if note:
             notes[note] += 1
-        factor = 2 if plain(city).strip() in DOUBLE_CITIES else 1
+        if client is None:
+            factor = 1  # sem localidade: só água
+        elif client.double is not None:
+            factor = 2 if client.double else 1
+        else:
+            factor = 2 if plain(client.city).strip() in DOUBLE_CITIES else 1
+        if effects and places is not None:
+            coverage["total"] += 1
+            coverage["found"] += client is not None
+            coverage["double"] += factor == 2
         row_value = 0
         for kind, old, new, qty, value in effects:
             direction = "inc" if (qty > 0 if kind == "economia" else value > 0) else "dec"
@@ -350,6 +385,9 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
             "firstDate": min(dates).date().isoformat() if dates else None,
             "lastDate": max(dates).date().isoformat() if dates else None,
             "clientsLinked": places is not None,
+            "billing": ("ligacao" if any(getattr(c, "double", None) is not None for c in places.values())
+                        else "municipio") if places else None,
+            "coverage": dict(found=coverage["found"], total=coverage["total"]) if places is not None else None,
             "rules": "powerbi" if powerbi else "corrigida",
         },
         "tariffsCents": TARIFFS_CENTS,
@@ -358,6 +396,7 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
         "lines": lines,
         "pending": out_pending,
     }
+    notes.update({f"cobertura_{k}": v for k, v in coverage.items()})
     return feed, sorted(top, reverse=True), notes
 
 
@@ -384,6 +423,10 @@ def report(feed, top, notes):
         pend[p["reason"]] += p["count"]
     if pend:
         print("\nPendências (fora dos valores):", dict(pend))
+    if notes["cobertura_total"]:
+        found, total = notes["cobertura_found"], notes["cobertura_total"]
+        print(f"Base de clientes: {found} de {total} tratativas com valor encontradas ({100 * found / total:.1f}%); "
+              f"{notes['cobertura_double']} com água e esgoto (2×). As não encontradas foram calculadas só com água.")
     if notes["outros"]:
         print(f"Categorias não reconhecidas, tratadas como 'Outros' (R$ 0): {notes['outros']} movimentos")
     if notes["troca_sem_variacao"]:
@@ -404,6 +447,7 @@ def main():
     p.add_argument("--clientes", type=Path, help="Base de clientes para obter a localidade (cruzamento por matrícula)")
     p.add_argument("--col-ligacao", help="Coluna da ligação/matrícula na base de clientes")
     p.add_argument("--col-localidade", help="Coluna da localidade na base de clientes")
+    p.add_argument("--col-faturamento", help="Coluna do tipo de faturamento (AGUA / AGUA E ESGOTO) na base de clientes")
     p.add_argument("--frente", help="Considerar só esta FRENTE DE SERVIÇO (ex.: CADASTRO)")
     p.add_argument("--de", dest="since", help="Primeiro mês, AAAA-MM")
     p.add_argument("--ate", dest="until", help="Último mês, AAAA-MM")
@@ -423,7 +467,8 @@ def main():
     if args.clientes and "MATRICULASDIGITO" not in keys:
         sys.exit(f"Coluna 'MATRICULA S/ DIGITO' não encontrada. Colunas: {', '.join(names)}")
 
-    places = load_localities(args.clientes, args.col_ligacao, args.col_localidade) if args.clientes else None
+    places = (load_clients(args.clientes, args.col_ligacao, args.col_localidade, args.col_faturamento)
+              if args.clientes else None)
     feed, top, notes = build(rows, places, args.frente, args.since, args.until, args.como_powerbi)
     feed["sample"] = args.exemplo
     args.saida.parent.mkdir(parents=True, exist_ok=True)

@@ -49,6 +49,16 @@ function cell(text, label, className) {
   return td;
 }
 
+/** Frase do rodapé sobre água + esgoto, conforme o cruzamento com a base de clientes. */
+function billingNote({ clientsLinked, billing, coverage }) {
+  if (!clientsLinked) return 'Água + esgoto (2×) não aplicado: falta o cruzamento com a base de clientes.';
+  if (billing !== 'ligacao') return 'Água + esgoto (valor 2×) em Cordeiro, Miracema e Aperibé.';
+  const note = 'Água + esgoto (valor 2×) nas ligações que faturam água e esgoto.';
+  if (!coverage || !coverage.total || coverage.found >= coverage.total) return note;
+  const pct = Math.floor((100 * coverage.found) / coverage.total);
+  return `${note} Ligação encontrada na base de clientes em ${pct}% das tratativas; as demais foram calculadas só com água.`;
+}
+
 function render(feed) {
   const rows = summarize(feed);
   const sum = (key) => rows.reduce((total, row) => total + row[key], 0);
@@ -85,9 +95,7 @@ function render(feed) {
     'Valor por mês = ganhos − perdas. Na troca de categoria desconta-se a tarifa da categoria anterior.',
     'A primeira fatura cheia é a do mês seguinte à tratativa.',
     'Trocas de categoria: só as que aumentam a tarifa.',
-    feed.source.clientsLinked
-      ? 'Água + esgoto (valor 2×) em Cordeiro, Miracema e Aperibé.'
-      : 'Água + esgoto (2×) não aplicado: falta o cruzamento com a base de clientes.',
+    billingNote(feed.source),
   ];
   $('#rules').textContent = rules.join(' ');
 }

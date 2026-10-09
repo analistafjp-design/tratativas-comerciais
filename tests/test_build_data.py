@@ -4,8 +4,8 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from build_data import (TARIFFS_CENTS as T, build, category_of, load_localities, parse_date,
-                        parse_side, read_table, row_effects)
+from build_data import (TARIFFS_CENTS as T, build, category_of, load_clients, parse_date,
+                        parse_side, read_table, row_effects, Client)
 
 RES, COM, SOC, PC = T["Residencial"], T["Comercial"], T["Social"], T["Pequeno comércio"]
 
@@ -175,6 +175,49 @@ class BuildTest(unittest.TestCase):
         self.assertEqual(build(rows, since="2026-08")[0]["months"], ["2026-08"])
 
 
+class ClientBaseTest(unittest.TestCase):
+    ROWS = [
+        rec(horadeconclusao="2026-07-10 10:00:00", matriculasdigito="100", de="1 RES", para="2 RES"),
+        rec(horadeconclusao="2026-07-11 10:00:00", matriculasdigito="101", de="1 RES", para="2 RES"),
+        rec(horadeconclusao="2026-07-12 10:00:00", matriculasdigito="999", de="1 RES", para="2 RES"),  # fora da base
+    ]
+
+    def test_billing_type_of_the_connection_decides_the_double_not_the_city(self):
+        places = {"100": Client("Cordeiro", False), "101": Client("Rio Bonito", True)}
+        items = lines(self.ROWS, places)
+        by = {i["city"]: i for i in items}
+        self.assertEqual(by["Cordeiro"]["factor"], 1)   # Cordeiro, mas só água
+        self.assertEqual(by["Rio Bonito"]["factor"], 2)  # outra cidade, mas água e esgoto
+        self.assertEqual(by["Não identificada"]["factor"], 1)
+
+    def test_coverage_counts_how_many_valued_rows_were_found(self):
+        places = {"100": Client("Cordeiro", False), "101": Client("Rio Bonito", True)}
+        feed, _, notes = build(self.ROWS, places)
+        self.assertEqual(feed["source"]["coverage"], {"found": 2, "total": 3})
+        self.assertEqual(feed["source"]["billing"], "ligacao")
+        self.assertEqual(notes["cobertura_double"], 1)
+
+    def test_city_rule_is_the_fallback_when_the_base_has_no_billing_column(self):
+        feed, _, _ = build(self.ROWS[:2], {"100": Client("Cordeiro", None), "101": Client("Rio Bonito", None)})
+        self.assertEqual({i["city"]: i["factor"] for i in feed["lines"]}, {"Cordeiro": 2, "Rio Bonito": 1})
+        self.assertEqual(feed["source"]["billing"], "municipio")
+
+    def test_export_with_monthly_rows_footer_and_type_columns(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "base.csv"
+            path.write_text(
+                "NUM_LIGACAO,CIDADE,TIPO_LIGACAO,TIPO_FATURAMENTO,Mês/Ano\n"
+                "100,CORDEIRO,HIDROMETRADO,AGUA,08/2026\n"
+                "100,CORDEIRO,HIDROMETRADO,AGUA E ESGOTO,09/2026\n"   # mês mais recente vale
+                "101,RIO BONITO,CONSUMO FIXO,AGUA,10/2026\n"
+                "101,RIO BONITO,CONSUMO FIXO,AGUA E ESGOTO,02/2026\n"
+                ',,,,\n"Filtros aplicados: Mês/Ano é 02/2026",,,,\n', encoding="utf-8")
+            clients = load_clients(path)
+            self.assertEqual(clients["100"], Client("CORDEIRO", True))
+            self.assertEqual(clients["101"], Client("RIO BONITO", False))
+            self.assertEqual(len(clients), 2)
+
+
 class FilesTest(unittest.TestCase):
     def test_csv_with_semicolons_and_client_base(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -186,7 +229,7 @@ class FilesTest(unittest.TestCase):
             (tmp / "c.csv").write_text("N° da Ligação,Localidade\n100,Cordeiro\n101,Rio Bonito\n", encoding="utf-8")
             _, rows = read_table(tmp / "t.csv")
             self.assertEqual(rows[0]["DE"], "1 RES")
-            items = lines(rows, load_localities(tmp / "c.csv"))
+            items = lines(rows, load_clients(tmp / "c.csv"))
             self.assertEqual(total(items, city="Cordeiro"), 2 * RES)            # água + esgoto
             self.assertEqual(total(items, city="Rio Bonito"), 2 * (COM - RES))  # só água
 
