@@ -1,0 +1,9 @@
+upload/
+*.xlsx
+*.xls
+*.csv
+!exemplo/*.csv
+*.pbix
+*.png
+__pycache__/
+.DS_Store
