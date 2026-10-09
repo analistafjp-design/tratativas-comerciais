@@ -4,7 +4,7 @@ Painel simples para mostrar o que as tratativas do cadastro trazem de valor. Par
 
 Endereço depois de publicado: `https://analistafjp-design.github.io/tratativas-comerciais/`
 
-> **Os dados que vêm neste repositório são de exemplo (fictícios)** e aparecem com uma faixa de aviso no topo. Gere o painel com a sua exportação antes de compartilhar o endereço (passo 2).
+> **Dados publicados:** tabela `Resultados - 2026.xlsx` (frente Cadastro, até 08/10/2026), com o cálculo **corrigido** (tarifas reais) e **sem o 2× de água + esgoto**, porque ainda falta o cruzamento com a base de clientes (passo 2). Dados fictícios de teste ficam só em `exemplo/`.
 
 ## 1. Publicar no GitHub Pages (uma vez)
 
@@ -20,16 +20,16 @@ Endereço depois de publicado: `https://analistafjp-design.github.io/tratativas-
 3. Rode no seu computador (precisa de Python 3 e `pip install openpyxl`):
 
 ```bash
-python scripts/build_data.py "TRATATIVAS.xlsx" --clientes "Consulta Cliente.xlsx"
+python scripts/build_data.py "Resultados - 2026.xlsx" --frente Cadastro --clientes "Consulta Cliente.xlsx"
 ```
 
-O script mostra no terminal o resultado de cada mês. Depois envie `site/data/summary.json` para a `main`. **Não envie as planilhas**: `.xlsx`, `.xls`, `.csv` e `.pbix` estão no `.gitignore`.
+A planilha tem duas frentes de serviço (Cadastro e Bairro Legal – VCG): use `--frente Cadastro` para o time do cadastro. O script mostra no terminal o resultado de cada mês. Depois envie `site/data/summary.json` para a `main`. **Não envie as planilhas**: `.xlsx`, `.xls`, `.csv` e `.pbix` estão no `.gitignore`.
 
-**Como conferir com o Power BI:** o relatório atual não aplica água + esgoto (2×). A coluna **`líquido s/2×`** do terminal é o resultado sem o 2× e deve bater com o rodapé do relatório (Julho, Agosto, Setembro…), salvo as diferenças listadas abaixo. A coluna **`líquido`** é o valor do painel, já com o 2×.
+**Como conferir com o Power BI:** rode com `--como-powerbi`, que reproduz as particularidades do relatório (veja abaixo). Com os dados de 2026, SET/2026 bate ao centavo: R$ 6.263,06. Sobre a coluna `líquido s/2×`: o relatório atual não aplica água + esgoto (2×). A coluna **`líquido s/2×`** do terminal é o resultado sem o 2× e deve bater com o rodapé do relatório (Julho, Agosto, Setembro…), salvo as diferenças listadas abaixo. A coluna **`líquido`** é o valor do painel, já com o 2×.
 
 Opções úteis: `--de 2026-03 --ate 2026-09` (período), `--frente CADASTRO` (só uma FRENTE DE SERVIÇO), `--col-ligacao` e `--col-localidade` (se o script não reconhecer as colunas da base de clientes). `python scripts/build_data.py --help` lista tudo.
 
-Para ver o formato esperado e testar o painel: `python scripts/gerar_exemplo.py` cria dados fictícios em `exemplo/`. Pré-visualização local: `python -m http.server 8000 -d site`.
+Para ver o formato esperado e testar o painel: `python scripts/gerar_exemplo.py` cria dados fictícios em `exemplo/` (use `--exemplo` ao gerar o painel com eles, para exibir a faixa de aviso). Pré-visualização local: `python -m http.server 8000 -d site`.
 
 ## Como o valor é calculado
 
@@ -52,10 +52,12 @@ Igual às medidas do modelo. O resultado do mês é a **soma das quatro tabelas*
 ### Onde o painel difere do Power BI
 
 - **Água + esgoto (2×)** não existe no relatório atual: é o cruzamento novo com a base de clientes.
-- **"Publica" sem acento**: no relatório, uma categoria escrita assim não encontra a tarifa (a tabela tem "PÚBLICA") e vale R$ 0. No painel vale R$ 129,16. Em SET/2026 isso muda 1 linha (P. comércio → Publica): o relatório mostra −R$ 221,78 e o painel −R$ 92,62, uma diferença de R$ 129,16.
-- **Reconhecimento de categoria**: o painel entende `P. COMERCIO` como pequeno comércio e `popular` como comércio popular (R$ 60,24). No modelo, esses textos caem em Comercial por conterem "COM".
+- **Comércio popular** vira Comercial no relatório (o texto contém "COM" e a tabela de tarifas não tem a categoria). Uma troca P. comércio → Comércio popular entra como ganho de R$ 221,79 no relatório; no painel é uma perda de R$ 161,54 (R$ 60,24 − R$ 221,78).
+- **Pública** nas trocas de categoria vale R$ 0 no relatório ("Publica" sem acento não acha a tarifa "PÚBLICA"). No painel vale R$ 129,16.
+- **Incremento de economia** só entra no relatório se o Forms marcar "Incremento" em `QUAL FOI A ALTERAÇÃO DE ECONOMIA?`. Um aumento marcado como "Decremento" não aparece em nenhuma tabela. O painel calcula pela diferença de quantidade.
+- Com `--como-powerbi` o script reproduz esses três comportamentos para conferência.
 - **Linha com duas categorias no mesmo campo** (ex.: `1 RES E 1 COM` em `DE:`) fica fora dos valores e aparece como pendência no painel.
-- **Troca sem `QUANTIDADE`** fica fora dos valores (no modelo valeria 0) e aparece como pendência.
+- **`QUANTIDADE` escrita como texto** (ex.: `DE 1 RES. SOCIAL P/ 2 RES. NORMAIS`) fica fora dos valores, como no relatório, e aparece como pendência. É preciso corrigir o preenchimento no Forms para essas linhas entrarem.
 - **Ganhos / Perdas / Saldo Real** no modelo são números digitados (`2.94542`, `-2.37509`, `570.33`), não cálculo. O painel calcula esses valores a partir das linhas.
 
 O script também avisa quando há categorias não reconhecidas (tratadas como "Outros", R$ 0) e as maiores tratativas individuais, para você conferir erros de digitação.

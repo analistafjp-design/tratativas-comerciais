@@ -78,8 +78,7 @@ class EffectsTest(unittest.TestCase):
         self.assertEqual(self.one(anterior="Residencial", atual="RES.", quantidade=1), [])
 
     def test_same_count_different_category_is_reported_not_valued(self):
-        effects, reason, same_count = row_effects(rec(de="1 RES", para="1 COM"))
-        self.assertEqual((effects, reason, same_count), ([], None, True))
+        self.assertEqual(row_effects(rec(de="1 RES", para="1 COM")), ([], None, "troca_sem_variacao"))
 
     def test_pending_reasons(self):
         self.assertEqual(row_effects(rec(de="2 RES"))[1], "incompleto")
@@ -88,46 +87,48 @@ class EffectsTest(unittest.TestCase):
         self.assertEqual(row_effects(rec(anterior="Social", atual="Residencial", quantidade=1.5))[1], "quantidade_invalida")
 
     def test_row_without_value_fields_is_ignored(self):
-        self.assertEqual(row_effects(rec(tipo_de_alteracao="Encerrado sem tratativa")), ([], None, False))
+        self.assertEqual(row_effects(rec(tipo_de_alteracao="Encerrado sem tratativa")), ([], None, None))
 
 
 class PowerBiReproductionTest(unittest.TestCase):
-    """Reproduz os quatro quadros de SET/2026 do relatório Power BI (print enviado)."""
+    """Reproduz os quatro quadros de SET/2026 do relatório Power BI, com os textos reais da planilha."""
 
     @staticmethod
-    def september(publica_text):
-        done = "2026-09-15 10:00:00"
-        economy = [  # (de, para)
-            ("1 COMERCIAL", "3 COMERCIAL"), ("1 RESIDENCIAL", "75 RESIDENCIAL"),            # incremento
-            ("3 COMERCIAL", "1 COMERCIAL"), ("2 RESIDENCIAL", "1 COMERCIAL"), ("14 RESIDENCIAL", "1 RESIDENCIAL"),  # decremento
+    def september(**kw):
+        done, inc, dec = "2026-09-15 10:00:00", "Incremento", "Decremento"
+        economy = [  # (de, para, marcação no Forms)
+            ("1 Comercial", "3 Comerciais", inc), ("1 Residência", "75 Residências", inc),
+            ("3 Comerciais", "1 Comercial", dec), ("3 Residências", "2 Comércios", dec),
+            ("14 Residências", "1 Residência", dec),
+            ("1 Comercial", "2 Residências", dec),  # aumento marcado como "Decremento": fora do relatório
         ]
         category = [  # (anterior, atual, total)
-            ("P. comercio", "Comercial", 17), ("Residencial", "Comercial", 4), ("Residencial", "P. comercio", 2),
-            ("Social", "P. comercio", 1), ("Social", "Residencial", 54),                     # incremento
-            ("Comercial", "Outros", 1), ("Comercial", "P. comercio", 10), ("Comercial", "Residencial", 5),
-            ("P. comercio", publica_text, 1), ("P. comercio", "Residencial", 3), ("Residencial", "Social", 52),  # decremento
+            ("P. Comercio", "Comercial", 11), ("P. Comercio", "COMÉRCIO POPULAR", 6), ("Residencial", "Comercial", 4),
+            ("Residencial", "P. Comercio", 2), ("Social", "P. Comercio", 1), ("Social", "Residencial", 54),
+            ("Comercial", "ENT.S/FIM LUCRATIVO", 1), ("Comercial", "P. Comercio", 10), ("Comercial", "Residencial", 5),
+            ("Comercial", "comércio popular", 1), ("P. Comercio", "Publica", 1), ("P. Comercio", "Residencial", 3),
+            ("Residencial", "Social", 52),
         ]
-        rows = [rec(horadeconclusao=done, de=d, para=p) for d, p in economy]
+        rows = [rec(horadeconclusao=done, de=d, para=p, qualfoiaalteracaodeeconomia=f) for d, p, f in economy]
         rows += [rec(horadeconclusao=done, anterior=a, atual=b, quantidade=q) for a, b, q in category]
-        return lines(rows)
+        return lines(rows, **kw)
 
     def test_four_tables_match_the_report(self):
-        items = self.september("Outros")  # no relatório, "Publica" (sem acento) não acha tarifa e vale R$ 0
-        self.assertEqual(total(items, kind="economia", dir="inc"), 720748)   # R$ 7.207,48
-        self.assertEqual(total(items, kind="categoria", dir="inc"), 865313)  # R$ 8.653,13
-        self.assertEqual(total(items, kind="economia", dir="dec"), -163931)  # -R$ 1.639,31
+        items = self.september(powerbi=True)
+        self.assertEqual(total(items, kind="economia", dir="inc"), 720748)    # R$ 7.207,48
+        self.assertEqual(total(items, kind="categoria", dir="inc"), 865313)   # R$ 8.653,13
+        self.assertEqual(total(items, kind="economia", dir="dec"), -163931)   # -R$ 1.639,31
         self.assertEqual(total(items, kind="categoria", dir="dec"), -795824)  # -R$ 7.958,24
-        self.assertEqual(total(items), 626306)                               # R$ 6.263,06 (rodapé do print)
-        incs = sum(i["qty"] for i in items if i["kind"] == "economia" and i["dir"] == "inc")
-        self.assertEqual(incs, 76)
+        self.assertEqual(total(items), 626306)                                # R$ 6.263,06 (rodapé do print)
+        self.assertEqual(sum(i["qty"] for i in items if i["kind"] == "economia" and i["dir"] == "inc"), 76)
         self.assertEqual(sum(i["qty"] for i in items if i["kind"] == "categoria" and i["dir"] == "inc"), 78)
         self.assertEqual(sum(i["qty"] for i in items if i["kind"] == "categoria" and i["dir"] == "dec"), 72)
 
-    def test_publica_is_valued_with_its_real_tariff(self):
-        # Única diferença para o relatório: aqui "Publica" vale a tarifa de Pública (R$ 129,16),
-        # no relatório o acento faltando zera a tarifa e a perda sai R$ 129,16 maior.
-        items = self.september("Publica")
-        self.assertEqual(total(items), 626306 + T["Pública"])
+    def test_corrected_rules_value_the_same_rows_with_the_real_tariffs(self):
+        # Mesmas linhas, sem as particularidades do relatório: comércio popular a R$ 60,24 (não Comercial),
+        # Pública a R$ 129,16 (não R$ 0) e o aumento "1 Comercial -> 2 Residências" também entra.
+        items = self.september()
+        self.assertEqual(total(items), 335075)  # R$ 3.350,75, o mesmo da planilha real em SET/2026
 
 
 class BuildTest(unittest.TestCase):
