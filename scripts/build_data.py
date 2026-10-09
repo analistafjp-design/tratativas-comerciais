@@ -1,0 +1,417 @@
+#!/usr/bin/env python3
+"""Gera site/data/summary.json (somente valores agregados) a partir da tabela
+TRATATIVAS exportada do Power BI / Forms.
+
+Uso:
+    python scripts/build_data.py TRATATIVAS.xlsx --clientes "Consulta Cliente.xlsx"
+
+Aceita .xlsx ou .csv. Nada que identifique cliente ou matrícula é gravado.
+
+Regras, portadas das medidas do modelo Power BI (as quatro tabelas do relatório):
+
+  Economia  (colunas DE: e PARA:, ex.: "2 RESIDENCIAL" -> "3 RESIDENCIAL")
+      diferença = economias PARA - economias DE
+      Incremento de economia  (diferença > 0)  -> medida Valor_Incremento
+      Decremento de economia  (diferença < 0)  -> medida Valor Decremento
+      mesma categoria : diferença x tarifa
+      categoria muda  : incremento -> diferença x (tarifa PARA - tarifa DE)
+                        decremento -> diferença x (tarifa DE - tarifa PARA)
+  Categoria (colunas ANTERIOR, ATUAL, QUANTIDADE) -> medida Valor_Incremento_Cat
+      QUANTIDADE x (tarifa ATUAL - tarifa ANTERIOR); positivo = incremento, negativo = decremento.
+      Categoria sem tarifa ("Outros") vale R$ 0, como no modelo.
+
+  Resultado do mês = soma dos valores das quatro tabelas.
+  Água + esgoto: o valor é multiplicado por 2 nas localidades de DOUBLE_CITIES (cruzamento com a
+  base de clientes). O Power BI atual não faz esse cruzamento: sem --clientes o resultado é o dele.
+"""
+
+import argparse
+import csv
+import json
+import re
+import sys
+import unicodedata
+from collections import Counter, defaultdict
+from datetime import date, datetime, timedelta
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+OUTPUT = ROOT / "site" / "data" / "summary.json"
+
+# Tarifa mensal por economia, em centavos. Comercial, Industrial e Pública seguem a tabela
+# "Tarifas" do modelo Power BI (443,57 / 613,17 / 129,16), para reproduzir o relatório ao centavo.
+TARIFFS_CENTS = {
+    "Residencial": 8541,
+    "Comercial": 44357,
+    "Industrial": 61317,
+    "Pública": 12916,
+    "Pequeno comércio": 22178,
+    "Social": 3012,
+    "Comércio popular": 6024,
+}
+OTHER = "Outros"  # categoria não reconhecida: sem tarifa, vale R$ 0 (igual ao modelo)
+
+# Localidades que hoje cobram água + esgoto (tarifa dobra). Sem acento, maiúsculas.
+DOUBLE_CITIES = ("CORDEIRO", "MIRACEMA", "APERIBE")
+UNKNOWN_CITY = "Não identificada"
+
+
+def tariff(category):
+    return TARIFFS_CENTS.get(category, 0)
+
+
+# ---------------------------------------------------------------- texto
+def plain(value):
+    text = unicodedata.normalize("NFKD", "" if value is None else str(value))
+    return "".join(c for c in text if not unicodedata.combining(c)).upper().replace("\xa0", " ")
+
+
+def header_key(name):
+    return re.sub(r"[^A-Z0-9]", "", plain(name))
+
+
+def clean(value):
+    return re.sub(r"\s+", " ", plain(value).replace(".", " ").replace(";", " ")).strip()
+
+
+def category_of(text):
+    """Texto livre -> categoria de tarifa, ou 'Outros' quando não reconhecido."""
+    s = clean(text)
+    if "POPULAR" in s:
+        return "Comércio popular"
+    if "PEQUENO" in s or re.search(r"\bP ?COM", s):
+        return "Pequeno comércio"
+    if re.search(r"\bSOC", s):
+        return "Social"
+    if re.search(r"\bIND", s):
+        return "Industrial"
+    if re.search(r"\bPUB", s):
+        return "Pública"
+    if re.search(r"\bCOM", s):
+        return "Comercial"
+    if re.search(r"\bRES", s):
+        return "Residencial"
+    return OTHER
+
+
+FILLER = re.compile(r"\b(ECONOMIAS?|UNIDADES?|UND|DE|E)\b")
+
+
+def parse_side(text, fallback=None):
+    """'2 RESIDENCIAL' -> (2, 'Residencial'). '0' -> (0, None).
+
+    Retorna None quando não há número ou quando o campo mistura categorias ('1 RES E 1 COM'),
+    porque as medidas do modelo só valorizam uma categoria por lado."""
+    s = clean(text)
+    numbers = list(re.finditer(r"\d+", s))
+    if not numbers:
+        return None
+    units = Counter()
+    for i, m in enumerate(numbers):
+        end = numbers[i + 1].start() if i + 1 < len(numbers) else len(s)
+        label = FILLER.sub(" ", s[m.end():end]).strip()
+        if label:
+            units[category_of(label)] += int(m.group())
+        elif fallback:
+            units[fallback] += int(m.group())
+        else:
+            units[None] += int(m.group())
+    units = Counter({k: v for k, v in units.items() if v})
+    if len(units) > 1:
+        return None
+    if not units:
+        return 0, None
+    (category, n), = units.items()
+    return n, category
+
+
+def to_number(value):
+    if value is None or str(value).strip() == "":
+        return None
+    if isinstance(value, (int, float)):
+        return float(value)
+    text = str(value).strip()
+    if "," in text:  # formato brasileiro: 1.234,5
+        text = text.replace(".", "").replace(",", ".")
+    try:
+        return float(text)
+    except ValueError:
+        return None
+
+
+def parse_date(value):
+    if isinstance(value, datetime):
+        return value
+    if isinstance(value, date):
+        return datetime(value.year, value.month, value.day)
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return datetime(1899, 12, 30) + timedelta(days=float(value))
+    s = str(value or "").strip()
+    if not s:
+        return None
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%d",
+                "%d/%m/%Y %H:%M:%S", "%d/%m/%Y %H:%M", "%d/%m/%Y"):
+        try:
+            return datetime.strptime(s, fmt)
+        except ValueError:
+            pass
+    return None
+
+
+# ---------------------------------------------------------------- efeitos
+def economy_effect(rec):
+    """DE:/PARA: -> ('economia', de, para, diferença, valor em centavos) | None | ('erro', motivo)."""
+    de, para = str(rec.get("DE") or "").strip(), str(rec.get("PARA") or "").strip()
+    if not (de or para):
+        return None
+    if not (de and para):
+        return "erro", "incompleto"
+    fallback = category_of(rec.get("TIPODEECONOMIA")) if str(rec.get("TIPODEECONOMIA") or "").strip() else None
+    before, after = parse_side(de, fallback), parse_side(para, fallback)
+    if before is None or after is None:
+        return "erro", "nao_reconhecido"
+    (n, a), (m, b) = before, after
+    a, b = a or b or OTHER, b or a or OTHER
+    diff = m - n
+    if diff == 0:
+        return "mesma_quantidade", a, b  # o modelo valoriza em R$ 0 e não lista
+    if a == b:
+        value = diff * tariff(b)
+    elif diff > 0:
+        value = diff * (tariff(b) - tariff(a))
+    else:
+        value = diff * (tariff(a) - tariff(b))
+    return "economia", a, b, diff, value
+
+
+def category_effect(rec):
+    """ANTERIOR/ATUAL x QUANTIDADE -> ('categoria', anterior, atual, quantidade, valor) | None | ('erro', motivo)."""
+    ant, atu = str(rec.get("ANTERIOR") or "").strip(), str(rec.get("ATUAL") or "").strip()
+    if not (ant or atu):
+        return None
+    if not (ant and atu):
+        return "erro", "incompleto"
+    qty = to_number(rec.get("QUANTIDADE"))
+    if qty is None or qty <= 0 or qty != int(qty):
+        return "erro", "quantidade_invalida"
+    a, b = category_of(ant), category_of(atu)
+    if a == b:
+        return None
+    return "categoria", a, b, int(qty), int(qty) * (tariff(b) - tariff(a))
+
+
+def row_effects(rec):
+    """Linha -> (lista de efeitos, motivo de pendência, houve troca de categoria sem variação de quantidade)."""
+    effects, same_count = [], False
+    for found in (economy_effect(rec), category_effect(rec)):
+        if found is None:
+            continue
+        if found[0] == "erro":
+            return [], found[1], False
+        if found[0] == "mesma_quantidade":
+            same_count = found[1] != found[2]
+            continue
+        effects.append(found)
+    return effects, None, same_count
+
+
+# ---------------------------------------------------------------- leitura
+def read_table(path, sheet=None):
+    """Retorna (colunas_originais, [dict com chaves normalizadas])."""
+    path = Path(path)
+    if path.suffix.lower() in (".xlsx", ".xlsm"):
+        try:
+            from openpyxl import load_workbook
+        except ImportError:
+            sys.exit("Instale o leitor de Excel: python -m pip install openpyxl")
+        wb = load_workbook(path, read_only=True, data_only=True)
+        ws = wb[sheet] if sheet else wb.worksheets[0]
+        grid = [list(r) for r in ws.iter_rows(values_only=True)]
+    else:
+        raw = path.read_bytes()
+        try:
+            text = raw.decode("utf-8-sig")
+        except UnicodeDecodeError:
+            text = raw.decode("cp1252")
+        first = text.splitlines()[0] if text else ""
+        delimiter = max(",;\t", key=first.count)
+        grid = list(csv.reader(text.splitlines(), delimiter=delimiter))
+
+    for start, row in enumerate(grid[:10]):
+        if any(header_key(c) in ("HORADECONCLUSAO", "NDALIGACAO", "LIGACAO") for c in row if c):
+            break
+    else:
+        start = 0
+    names = [str(c).strip() if c is not None else "" for c in grid[start]]
+    keys = [header_key(n) for n in names]
+    rows = []
+    for line in grid[start + 1:]:
+        if not any(c not in (None, "") for c in line):
+            continue
+        rows.append({k: v for k, v in zip(keys, line) if k})
+    return names, rows
+
+
+def digits(value):
+    if isinstance(value, float) and value.is_integer():
+        value = int(value)
+    return re.sub(r"\D", "", str(value or "")).lstrip("0")
+
+
+def load_localities(path, col_ligacao=None, col_localidade=None):
+    names, rows = read_table(path)
+    keys = {header_key(n): n for n in names if n}
+
+    def pick(wanted, candidates, label):
+        if wanted:
+            if header_key(wanted) not in keys:
+                sys.exit(f"Coluna '{wanted}' não existe na base de clientes. Colunas: {', '.join(names)}")
+            return header_key(wanted)
+        for k in keys:
+            if any(c in k for c in candidates):
+                return k
+        sys.exit(f"Não achei a coluna de {label} na base de clientes. Use a opção correspondente. "
+                 f"Colunas: {', '.join(names)}")
+
+    k_id = pick(col_ligacao, ("LIGACAO", "MATRICULA"), "ligação/matrícula")
+    k_city = pick(col_localidade, ("LOCALIDADE", "MUNICIPIO", "CIDADE"), "localidade")
+    places = {}
+    for rec in rows:
+        ident, city = digits(rec.get(k_id)), str(rec.get(k_city) or "").strip()
+        if not ident or not city:
+            continue
+        if ident in places and plain(places[ident]) != plain(city):
+            places[ident] = None  # matrícula em duas localidades: não dá para afirmar
+        else:
+            places[ident] = city
+    return places
+
+
+# ---------------------------------------------------------------- agregação
+def build(rows, places=None, only_front=None, since=None, until=None):
+    agg = defaultdict(Counter)
+    pending = Counter()
+    notes = Counter()
+    dates, top = [], []
+    for number, rec in enumerate(rows, start=2):
+        if only_front and plain(rec.get("FRENTEDESERVICO")).strip() != plain(only_front).strip():
+            continue
+        when = parse_date(rec.get("HORADECONCLUSAO"))
+        effects, reason, same_count = row_effects(rec)
+        if when is None:
+            if effects or reason:
+                pending[("", UNKNOWN_CITY, "sem_data")] += 1
+            continue
+        month = when.strftime("%Y-%m")
+        if (since and month < since) or (until and month > until):
+            continue
+        dates.append(when)
+        city = UNKNOWN_CITY
+        if places is not None:
+            city = places.get(digits(rec.get("MATRICULASDIGITO"))) or UNKNOWN_CITY
+        if reason:
+            pending[(month, city, reason)] += 1
+            continue
+        notes["economia_troca_sem_variacao"] += same_count
+        factor = 2 if plain(city).strip() in DOUBLE_CITIES else 1
+        row_value = 0
+        for kind, old, new, qty, value in effects:
+            direction = "inc" if (qty > 0 if kind == "economia" else value > 0) else "dec"
+            a = agg[(month, city, factor, kind, direction, old, new)]
+            a["qty"] += qty
+            a["cents"] += value
+            a["rows"] += 1
+            row_value += value
+            notes["outros"] += OTHER in (old, new)
+        if effects:
+            top.append((abs(row_value * factor), number, month, city, row_value * factor))
+
+    lines = [dict(month=m, city=c, factor=f, kind=k, dir=d, **{"from": o}, to=n,
+                  qty=int(a["qty"]), cents=int(a["cents"]), rows=int(a["rows"]))
+             for (m, c, f, k, d, o, n), a in sorted(agg.items())]
+    out_pending = [dict(month=m, city=c, reason=r, count=n) for (m, c, r), n in sorted(pending.items())]
+    feed = {
+        "sample": False,
+        "source": {
+            "tratativas": len(rows),
+            "firstDate": min(dates).date().isoformat() if dates else None,
+            "lastDate": max(dates).date().isoformat() if dates else None,
+            "clientsLinked": places is not None,
+        },
+        "tariffsCents": TARIFFS_CENTS,
+        "doubleCities": sorted(DOUBLE_CITIES),
+        "months": sorted({ln["month"] for ln in lines}),
+        "lines": lines,
+        "pending": out_pending,
+    }
+    return feed, sorted(top, reverse=True), notes
+
+
+def report(feed, top, notes):
+    print(f"\n{'mês':8} {'novas':>6} {'retir.':>6} {'trocas↑':>8} {'trocas↓':>8} {'incremento':>12} {'decremento':>12} "
+          f"{'líquido s/2×':>13} {'líquido':>12}")
+    for month in feed["months"]:
+        t = Counter()
+        for ln in feed["lines"]:
+            if ln["month"] != month:
+                continue
+            up = ln["dir"] == "inc"
+            if ln["kind"] == "economia":
+                t["novas" if up else "retir"] += abs(ln["qty"])
+            else:
+                t["up" if up else "down"] += ln["qty"]
+            t["inc" if up else "dec"] += ln["cents"] * ln["factor"]
+            t["base"] += ln["cents"]
+        print(f"{month:8} {t['novas']:6} {t['retir']:6} {t['up']:8} {t['down']:8} {t['inc'] / 100:12,.2f} "
+              f"{t['dec'] / 100:12,.2f} {t['base'] / 100:13,.2f} {(t['inc'] + t['dec']) / 100:12,.2f}")
+    print("\n'líquido s/2×' é o resultado sem a cobrança de água + esgoto: deve bater com o Power BI atual.")
+    pend = Counter()
+    for p in feed["pending"]:
+        pend[p["reason"]] += p["count"]
+    if pend:
+        print("\nPendências (fora dos valores):", dict(pend))
+    if notes["outros"]:
+        print(f"Categorias não reconhecidas, tratadas como 'Outros' (R$ 0): {notes['outros']} movimentos")
+    if notes["economia_troca_sem_variacao"]:
+        print(f"Linhas DE:/PARA: com categoria diferente e mesma quantidade (o modelo valoriza em R$ 0): "
+              f"{notes['economia_troca_sem_variacao']}")
+    if top:
+        print("\nMaiores impactos individuais (linha da planilha, valor/mês) — confira se não são erro de digitação:")
+        for _, number, month, city, signed in top[:5]:
+            print(f"  linha {number}: {month} {city}: R$ {signed / 100:,.2f}")
+
+
+def main():
+    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument("tratativas", type=Path, help="Exportação da tabela TRATATIVAS (.xlsx ou .csv)")
+    p.add_argument("--aba", help="Nome da aba do Excel (padrão: primeira)")
+    p.add_argument("--clientes", type=Path, help="Base de clientes para obter a localidade (cruzamento por matrícula)")
+    p.add_argument("--col-ligacao", help="Coluna da ligação/matrícula na base de clientes")
+    p.add_argument("--col-localidade", help="Coluna da localidade na base de clientes")
+    p.add_argument("--frente", help="Considerar só esta FRENTE DE SERVIÇO (ex.: CADASTRO)")
+    p.add_argument("--de", dest="since", help="Primeiro mês, AAAA-MM")
+    p.add_argument("--ate", dest="until", help="Último mês, AAAA-MM")
+    p.add_argument("--exemplo", action="store_true", help="Marca o resultado como dados de exemplo")
+    p.add_argument("--saida", type=Path, default=OUTPUT)
+    args = p.parse_args()
+
+    names, rows = read_table(args.tratativas, args.aba)
+    keys = {header_key(n) for n in names}
+    if "HORADECONCLUSAO" not in keys:
+        sys.exit(f"Coluna 'Hora de conclusão' não encontrada. Colunas: {', '.join(names)}")
+    if not ({"DE", "PARA"} <= keys or {"ANTERIOR", "ATUAL"} <= keys):
+        sys.exit("A tabela precisa ter DE: e PARA: (economias) e/ou ANTERIOR e ATUAL (categoria).")
+    if args.clientes and "MATRICULASDIGITO" not in keys:
+        sys.exit(f"Coluna 'MATRICULA S/ DIGITO' não encontrada. Colunas: {', '.join(names)}")
+
+    places = load_localities(args.clientes, args.col_ligacao, args.col_localidade) if args.clientes else None
+    feed, top, notes = build(rows, places, args.frente, args.since, args.until)
+    feed["sample"] = args.exemplo
+    args.saida.parent.mkdir(parents=True, exist_ok=True)
+    args.saida.write_text(json.dumps(feed, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    report(feed, top, notes)
+    print(f"\n{args.saida}: {len(feed['lines'])} linhas agregadas de {len(rows)} tratativas.")
+
+
+if __name__ == "__main__":
+    main()

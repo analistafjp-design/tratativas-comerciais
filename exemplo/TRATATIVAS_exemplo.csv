@@ -1,0 +1,751 @@
+Id,Hora de início,Hora de conclusão,Colaborador,MATRICULA S/ DIGITO,FRENTE DE SERVIÇO,TIPO DE ALTERAÇÃO,TIPO DE ECONOMIA,DE:,PARA:,ANTERIOR,ATUAL,QUANTIDADE
+1,2026-03-07 11:57:00,2026-03-07 12:07:00,Assistente 4,5001029,CADASTRO,Alteração de categoria,Social,,,Social,Pública,1
+2,2026-03-23 08:55:00,2026-03-23 08:59:00,Assistente 3,5006230,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,4 RESIDENCIAL,,,
+3,2026-03-01 08:12:00,2026-03-01 08:20:00,Assistente 1,5004564,CADASTRO,Alteração de economias,Comercial,3 COMERCIAL,5 COMERCIAL,,,
+4,2026-03-22 13:25:00,2026-03-22 13:34:00,Assistente 1,5005124,CADASTRO,Encerrado sem tratativa,,,,,,
+5,2026-03-19 15:42:00,2026-03-19 15:59:00,Assistente 4,5000889,CADASTRO,Alteração de categoria,Social,,,Social,Pública,1
+6,2026-03-18 12:17:00,2026-03-18 12:35:00,Assistente 3,5005768,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pública,2
+7,2026-03-15 08:38:00,2026-03-15 08:41:00,Assistente 4,5002086,CADASTRO,Encerrado sem tratativa,,,,,,
+8,2026-03-16 13:54:00,2026-03-16 14:07:00,Assistente 1,5003787,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+9,2026-03-09 11:27:00,2026-03-09 11:29:00,Assistente 1,5000546,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pequeno comércio,1
+10,2026-03-06 14:51:00,2026-03-06 14:57:00,Assistente 2,5004319,CADASTRO,Alteração de economias,Social,2 SOCIAL,4 SOCIAL,,,
+11,2026-03-27 14:20:00,2026-03-27 14:35:00,Assistente 2,5001281,CADASTRO,Alteração de economias,Pequeno comércio,2 P. COMERCIO,1 P. COMERCIO,,,
+12,2026-03-20 16:27:00,2026-03-20 16:47:00,Assistente 4,5003752,CADASTRO,Alteração de categoria,Pública,,,Pública,Comercial,1
+13,2026-03-18 09:46:00,2026-03-18 09:54:00,Assistente 3,5002674,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+14,2026-03-10 17:10:00,2026-03-10 17:26:00,Assistente 4,5000609,CADASTRO,Encerrado sem tratativa,,,,,,
+15,2026-03-24 12:40:00,2026-03-24 12:44:00,Assistente 1,5003955,CADASTRO,Encerrado sem tratativa,,,,,,
+16,2026-03-25 15:17:00,2026-03-25 15:21:00,Assistente 4,5007525,CADASTRO,Alteração de categoria,Pública,,,Pública,Social,2
+17,2026-03-03 09:34:00,2026-03-03 09:44:00,Assistente 1,5000784,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pública,1
+18,2026-03-26 17:46:00,2026-03-26 17:58:00,Assistente 2,5003801,CADASTRO,Alteração de categoria,Social,,,Social,Residencial,1
+19,2026-03-06 17:49:00,2026-03-06 17:59:00,Assistente 4,5003990,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Residencial,1
+20,2026-03-09 12:23:00,2026-03-09 12:25:00,Assistente 2,5005600,CADASTRO,Encerrado sem tratativa,,,,,,
+21,2026-03-20 13:06:00,2026-03-20 13:25:00,Assistente 1,5008015,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+22,2026-03-21 13:34:00,2026-03-21 13:40:00,Assistente 1,5000301,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Industrial,1
+23,2026-03-15 08:06:00,2026-03-15 08:12:00,Assistente 4,5002877,CADASTRO,Encerrado sem tratativa,,,,,,
+24,2026-03-02 13:25:00,2026-03-02 13:28:00,Assistente 2,5000518,CADASTRO,Alteração de economias,Pública,3 PUBLICA,2 PUBLICA,,,
+25,2026-03-15 16:39:00,2026-03-15 16:44:00,Assistente 4,5005726,CADASTRO,Encerrado sem tratativa,,,,,,
+26,2026-03-04 12:16:00,2026-03-04 12:25:00,Assistente 3,5001197,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,4 RESIDENCIAL,,,
+27,2026-03-08 07:52:00,2026-03-08 08:03:00,Assistente 1,5002954,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,3 RESIDENCIAL,,,
+28,2026-03-07 14:50:00,2026-03-07 15:05:00,Assistente 4,5001407,CADASTRO,Alteração de economias,Residencial,4 RESIDENCIAL,3 RESIDENCIAL,,,
+29,2026-03-08 07:59:00,2026-03-08 08:05:00,Assistente 4,5006307,CADASTRO,Alteração de economias,Social,1 SOCIAL,4 SOCIAL,,,
+30,2026-03-26 15:28:00,2026-03-26 15:30:00,Assistente 3,5007147,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Industrial,1
+31,2026-03-07 17:36:00,2026-03-07 17:54:00,Assistente 1,5002723,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,3 RESIDENCIAL,,,
+32,2026-03-22 09:17:00,2026-03-22 09:32:00,Assistente 1,5005271,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Comercial,1
+33,2026-03-10 15:57:00,2026-03-10 15:59:00,Assistente 4,5006748,CADASTRO,Encerrado sem tratativa,,,,,,
+34,2026-03-11 12:22:00,2026-03-11 12:34:00,Assistente 1,5006062,CADASTRO,Alteração de economias,Pública,3 PUBLICA,2 PUBLICA,,,
+35,2026-03-04 14:16:00,2026-03-04 14:31:00,Assistente 5,5002100,CADASTRO,Encerrado sem tratativa,,,,,,
+36,2026-03-27 13:21:00,2026-03-27 13:37:00,Assistente 2,5003647,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Comercial,1
+37,2026-03-04 15:50:00,2026-03-04 15:57:00,Assistente 4,5003801,CADASTRO,Alteração de economias,Pública,2 PUBLICA,4 PUBLICA,,,
+38,2026-03-26 10:26:00,2026-03-26 10:33:00,Assistente 5,5000350,CADASTRO,Encerrado sem tratativa,,,,,,
+39,2026-03-20 09:42:00,2026-03-20 10:00:00,Assistente 2,5004445,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+40,2026-03-05 13:52:00,2026-03-05 14:10:00,Assistente 2,5006692,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Industrial,1
+41,2026-03-02 13:58:00,2026-03-02 14:03:00,Assistente 5,5007462,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pequeno comércio,1
+42,2026-03-10 09:15:00,2026-03-10 09:20:00,Assistente 4,5007679,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+43,2026-03-11 10:04:00,2026-03-11 10:24:00,Assistente 3,5006265,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pequeno comércio,1
+44,2026-03-15 14:41:00,2026-03-15 14:44:00,Assistente 5,5001911,CADASTRO,Alteração de economias,Pequeno comércio,2 P. COMERCIO,3 P. COMERCIO,,,
+45,2026-03-06 08:54:00,2026-03-06 09:12:00,Assistente 3,5005754,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+46,2026-03-07 16:05:00,2026-03-07 16:25:00,Assistente 4,5004788,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+47,2026-03-25 14:43:00,2026-03-25 14:55:00,Assistente 3,5000483,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,4 P. COMERCIO,,,
+48,2026-03-04 08:43:00,2026-03-04 08:46:00,Assistente 4,5002772,CADASTRO,Encerrado sem tratativa,,,,,,
+49,2026-03-24 14:47:00,2026-03-24 15:04:00,Assistente 1,5001771,CADASTRO,Alteração de economias,Pequeno comércio,2 P. COMERCIO,3 P. COMERCIO,,,
+50,2026-03-08 12:49:00,2026-03-08 13:04:00,Assistente 3,5007938,CADASTRO,Alteração de economias,Social,4 SOCIAL,3 SOCIAL,,,
+51,2026-03-21 14:32:00,2026-03-21 14:34:00,Assistente 1,5004655,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+52,2026-03-07 08:02:00,2026-03-07 08:09:00,Assistente 3,5000021,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+53,2026-03-12 08:55:00,2026-03-12 09:05:00,Assistente 5,5001960,CADASTRO,Alteração de categoria,Social,,,Social,Residencial,1
+54,2026-03-10 09:34:00,2026-03-10 09:36:00,Assistente 5,5001904,CADASTRO,Encerrado sem tratativa,,,,,,
+55,2026-03-17 14:43:00,2026-03-17 14:47:00,Assistente 2,5005369,CADASTRO,Alteração de categoria,Pública,,,Pública,Residencial,1
+56,2026-03-06 09:55:00,2026-03-06 10:13:00,Assistente 4,5002933,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pequeno comércio,2
+57,2026-03-13 08:16:00,2026-03-13 08:18:00,Assistente 3,5004368,CADASTRO,Encerrado sem tratativa,,,,,,
+58,2026-03-10 14:21:00,2026-03-10 14:33:00,Assistente 3,5002177,CADASTRO,Alteração de economias,Social,2 SOCIAL,3 SOCIAL,,,
+59,2026-03-27 09:33:00,2026-03-27 09:40:00,Assistente 5,5007021,CADASTRO,Alteração de economias,Social,3 SOCIAL,2 SOCIAL,,,
+60,2026-03-13 13:52:00,2026-03-13 14:02:00,Assistente 4,5001260,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+61,2026-03-22 13:19:00,2026-03-22 13:21:00,Assistente 3,5008232,CADASTRO,Alteração de economias,Industrial,2 INDUSTRIAL,1 INDUSTRIAL,,,
+62,2026-03-19 13:51:00,2026-03-19 14:03:00,Assistente 4,5003794,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pública,2
+63,2026-03-26 16:56:00,2026-03-26 17:10:00,Assistente 5,5006937,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Industrial,2
+64,2026-03-10 12:04:00,2026-03-10 12:18:00,Assistente 5,5004368,CADASTRO,Encerrado sem tratativa,,,,,,
+65,2026-03-02 11:22:00,2026-03-02 11:29:00,Assistente 1,5004487,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pública,2
+66,2026-03-13 08:18:00,2026-03-13 08:30:00,Assistente 4,5007217,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Social,1
+67,2026-03-14 12:31:00,2026-03-14 12:34:00,Assistente 4,5008057,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Comercial,2
+68,2026-03-06 09:42:00,2026-03-06 10:02:00,Assistente 5,5006328,CADASTRO,Alteração de categoria,Social,,,Social,Comercial,2
+69,2026-03-03 08:58:00,2026-03-03 09:00:00,Assistente 5,5007420,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Pública,1
+70,2026-03-01 10:30:00,2026-03-01 10:48:00,Assistente 2,5002394,CADASTRO,Encerrado sem tratativa,,,,,,
+71,2026-03-16 07:50:00,2026-03-16 08:05:00,Assistente 5,5002072,CADASTRO,Encerrado sem tratativa,,,,,,
+72,2026-03-17 12:12:00,2026-03-17 12:19:00,Assistente 4,5007399,CADASTRO,Alteração de economias,Social,3 SOCIAL,4 SOCIAL,,,
+73,2026-03-09 12:09:00,2026-03-09 12:13:00,Assistente 4,5006293,CADASTRO,Alteração de economias,Industrial,2 INDUSTRIAL,3 INDUSTRIAL,,,
+74,2026-03-07 10:32:00,2026-03-07 10:40:00,Assistente 1,5006188,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Pública,1
+75,2026-03-03 11:52:00,2026-03-03 12:05:00,Assistente 2,5004151,CADASTRO,Alteração de economias,Social,3 SOCIAL,5 SOCIAL,,,
+76,2026-03-15 10:28:00,2026-03-15 10:41:00,Assistente 2,5000903,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pública,1
+77,2026-03-26 11:06:00,2026-03-26 11:13:00,Assistente 1,5001820,CADASTRO,Alteração de categoria,Pública,,,Pública,Pequeno comércio,2
+78,2026-03-19 10:49:00,2026-03-19 10:56:00,Assistente 4,5001281,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+79,2026-03-19 12:30:00,2026-03-19 12:47:00,Assistente 1,5005320,CADASTRO,Alteração de categoria,Pública,,,Pública,Comercial,1
+80,2026-03-05 17:08:00,2026-03-05 17:11:00,Assistente 4,5004214,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,4 RESIDENCIAL,,,
+81,2026-03-19 15:55:00,2026-03-19 16:12:00,Assistente 1,5006986,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Social,1
+82,2026-03-05 14:52:00,2026-03-05 14:55:00,Assistente 4,5003703,CADASTRO,Alteração de economias,Pública,2 PUBLICA,1 PUBLICA,,,
+83,2026-03-03 12:12:00,2026-03-03 12:23:00,Assistente 4,5000462,CADASTRO,Encerrado sem tratativa,,,,,,
+84,2026-03-19 14:04:00,2026-03-19 14:23:00,Assistente 3,5004718,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pública,2
+85,2026-03-21 12:27:00,2026-03-21 12:45:00,Assistente 3,5001652,CADASTRO,Encerrado sem tratativa,,,,,,
+86,2026-03-18 08:55:00,2026-03-18 09:00:00,Assistente 2,5003409,CADASTRO,Alteração de economias,Pequeno comércio,2 P. COMERCIO,3 P. COMERCIO,,,
+87,2026-03-09 08:27:00,2026-03-09 08:35:00,Assistente 4,5007329,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Industrial,1
+88,2026-03-27 17:22:00,2026-03-27 17:26:00,Assistente 1,5001008,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,3 COMERCIAL,,,
+89,2026-03-09 12:20:00,2026-03-09 12:24:00,Assistente 3,5001456,CADASTRO,Encerrado sem tratativa,,,,,,
+90,2026-03-16 13:38:00,2026-03-16 13:47:00,Assistente 5,5001918,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Comercial,1
+91,2026-04-10 17:51:00,2026-04-10 17:54:00,Assistente 5,5002352,CADASTRO,Encerrado sem tratativa,,,,,,
+92,2026-04-27 09:17:00,2026-04-27 09:35:00,Assistente 5,5000847,CADASTRO,Alteração de economias,Social,1 SOCIAL,2 SOCIAL,,,
+93,2026-04-26 12:02:00,2026-04-26 12:11:00,Assistente 4,5003297,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,5 RESIDENCIAL,,,
+94,2026-04-19 13:49:00,2026-04-19 13:54:00,Assistente 4,5007518,CADASTRO,Alteração de economias,Industrial,2 INDUSTRIAL,1 INDUSTRIAL,,,
+95,2026-04-09 15:09:00,2026-04-09 15:19:00,Assistente 5,5000161,CADASTRO,Alteração de economias,Residencial,4 RESIDENCIAL,3 RESIDENCIAL,,,
+96,2026-04-17 08:32:00,2026-04-17 08:46:00,Assistente 3,5005236,CADASTRO,Alteração de categoria,Social,,,Social,Pequeno comércio,1
+97,2026-04-25 12:52:00,2026-04-25 13:11:00,Assistente 3,5004627,CADASTRO,Encerrado sem tratativa,,,,,,
+98,2026-04-14 09:18:00,2026-04-14 09:33:00,Assistente 2,5003745,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+99,2026-04-12 15:37:00,2026-04-12 15:50:00,Assistente 1,5005880,CADASTRO,Alteração de categoria,Social,,,Social,Comercial,2
+100,2026-04-21 14:22:00,2026-04-21 14:41:00,Assistente 1,5004396,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Residencial,2
+101,2026-04-20 09:49:00,2026-04-20 09:59:00,Assistente 2,5000399,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Pública,2
+102,2026-04-13 11:24:00,2026-04-13 11:43:00,Assistente 5,5005789,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Industrial,1
+103,2026-04-10 11:46:00,2026-04-10 12:04:00,Assistente 4,5000966,CADASTRO,Encerrado sem tratativa,,,,,,
+104,2026-04-08 11:47:00,2026-04-08 12:02:00,Assistente 5,5004501,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Residencial,1
+105,2026-04-07 17:30:00,2026-04-07 17:43:00,Assistente 3,5005775,CADASTRO,Encerrado sem tratativa,,,,,,
+106,2026-04-04 15:47:00,2026-04-04 16:03:00,Assistente 3,5005474,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pequeno comércio,1
+107,2026-04-23 12:30:00,2026-04-23 12:44:00,Assistente 4,5004242,CADASTRO,Alteração de economias,Pequeno comércio,1 P. COMERCIO,2 P. COMERCIO,,,
+108,2026-04-17 12:23:00,2026-04-17 12:35:00,Assistente 2,5004760,CADASTRO,Encerrado sem tratativa,,,,,,
+109,2026-04-01 10:30:00,2026-04-01 10:43:00,Assistente 4,5006363,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Pública,2
+110,2026-04-17 12:16:00,2026-04-17 12:36:00,Assistente 5,5005768,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pequeno comércio,2
+111,2026-04-18 13:03:00,2026-04-18 13:20:00,Assistente 3,5005894,CADASTRO,Alteração de categoria,Pública,,,Pública,Social,1
+112,2026-04-25 12:23:00,2026-04-25 12:41:00,Assistente 2,5005887,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pública,2
+113,2026-04-17 13:08:00,2026-04-17 13:12:00,Assistente 4,5002681,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,5 RESIDENCIAL,,,
+114,2026-04-03 15:18:00,2026-04-03 15:28:00,Assistente 5,5002856,CADASTRO,Alteração de categoria,Social,,,Social,Residencial,1
+115,2026-04-05 07:44:00,2026-04-05 08:04:00,Assistente 1,5006349,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+116,2026-04-25 13:17:00,2026-04-25 13:29:00,Assistente 1,5004480,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Pública,2
+117,2026-04-17 13:33:00,2026-04-17 13:44:00,Assistente 3,5006804,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pública,2
+118,2026-04-19 17:03:00,2026-04-19 17:11:00,Assistente 5,5002737,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+119,2026-04-11 09:36:00,2026-04-11 09:46:00,Assistente 2,5004578,CADASTRO,Encerrado sem tratativa,,,,,,
+120,2026-04-04 13:28:00,2026-04-04 13:36:00,Assistente 4,5007371,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Pública,2
+121,2026-04-25 12:26:00,2026-04-25 12:30:00,Assistente 3,5006699,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+122,2026-04-12 10:30:00,2026-04-12 10:49:00,Assistente 4,5006860,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+123,2026-04-09 08:09:00,2026-04-09 08:18:00,Assistente 1,5008190,CADASTRO,Alteração de categoria,Social,,,Social,Comercial,1
+124,2026-04-10 11:48:00,2026-04-10 11:53:00,Assistente 3,5003031,CADASTRO,Alteração de economias,Comercial,3 COMERCIAL,4 COMERCIAL,,,
+125,2026-04-17 09:29:00,2026-04-17 09:40:00,Assistente 5,5004781,CADASTRO,Alteração de categoria,Social,,,Social,Pública,1
+126,2026-04-26 13:20:00,2026-04-26 13:34:00,Assistente 4,5002422,CADASTRO,Encerrado sem tratativa,,,,,,
+127,2026-04-16 08:55:00,2026-04-16 09:08:00,Assistente 2,5000336,CADASTRO,Encerrado sem tratativa,,,,,,
+128,2026-04-23 12:34:00,2026-04-23 12:40:00,Assistente 4,5005285,CADASTRO,Encerrado sem tratativa,,,,,,
+129,2026-04-03 13:57:00,2026-04-03 14:11:00,Assistente 5,5004858,CADASTRO,Alteração de categoria,Social,,,Social,Industrial,1
+130,2026-04-06 15:47:00,2026-04-06 15:51:00,Assistente 1,5005173,CADASTRO,Alteração de economias,Pequeno comércio,2 P. COMERCIO,3 P. COMERCIO,,,
+131,2026-04-24 17:04:00,2026-04-24 17:19:00,Assistente 1,5004634,CADASTRO,Alteração de economias,Pública,4 PUBLICA,3 PUBLICA,,,
+132,2026-04-17 11:01:00,2026-04-17 11:03:00,Assistente 1,5006489,CADASTRO,Alteração de economias,Pequeno comércio,2 P. COMERCIO,3 P. COMERCIO,,,
+133,2026-04-11 15:42:00,2026-04-11 15:49:00,Assistente 2,5002940,CADASTRO,Encerrado sem tratativa,,,,,,
+134,2026-04-17 16:24:00,2026-04-17 16:33:00,Assistente 1,5002436,CADASTRO,Alteração de economias,Social,2 SOCIAL,5 SOCIAL,,,
+135,2026-04-26 08:13:00,2026-04-26 08:33:00,Assistente 5,5002450,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,3 COMERCIAL,,,
+136,2026-04-01 13:34:00,2026-04-01 13:54:00,Assistente 1,5006083,CADASTRO,Alteração de economias,Social,1 SOCIAL,3 SOCIAL,,,
+137,2026-04-12 13:02:00,2026-04-12 13:14:00,Assistente 3,5008015,CADASTRO,Encerrado sem tratativa,,,,,,
+138,2026-04-26 12:01:00,2026-04-26 12:18:00,Assistente 3,5004417,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Industrial,1
+139,2026-04-26 13:31:00,2026-04-26 13:39:00,Assistente 5,5002373,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Residencial,2
+140,2026-04-02 11:30:00,2026-04-02 11:45:00,Assistente 1,5002730,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Comercial,1
+141,2026-04-21 11:15:00,2026-04-21 11:28:00,Assistente 2,5005922,CADASTRO,Alteração de categoria,Social,,,Social,Pequeno comércio,2
+142,2026-04-02 13:41:00,2026-04-02 13:46:00,Assistente 5,5003115,CADASTRO,Alteração de categoria,Pública,,,Pública,Pequeno comércio,2
+143,2026-04-04 10:12:00,2026-04-04 10:21:00,Assistente 5,5007987,CADASTRO,Encerrado sem tratativa,,,,,,
+144,2026-04-23 10:39:00,2026-04-23 10:51:00,Assistente 4,5004669,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Residencial,2
+145,2026-04-07 08:30:00,2026-04-07 08:32:00,Assistente 5,5000686,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pequeno comércio,2
+146,2026-04-08 10:16:00,2026-04-08 10:26:00,Assistente 3,5004690,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,3 RESIDENCIAL,,,
+147,2026-04-21 16:47:00,2026-04-21 16:49:00,Assistente 3,5002947,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+148,2026-04-16 10:21:00,2026-04-16 10:25:00,Assistente 3,5001946,CADASTRO,Alteração de economias,Industrial,1 INDUSTRIAL,2 INDUSTRIAL,,,
+149,2026-04-05 09:13:00,2026-04-05 09:25:00,Assistente 4,5005712,CADASTRO,Alteração de categoria,Social,,,Social,Comercial,2
+150,2026-04-01 13:31:00,2026-04-01 13:35:00,Assistente 5,5007287,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pública,1
+151,2026-04-17 11:45:00,2026-04-17 11:52:00,Assistente 5,5000413,CADASTRO,Encerrado sem tratativa,,,,,,
+152,2026-04-15 14:57:00,2026-04-15 15:02:00,Assistente 2,5001232,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Residencial,2
+153,2026-04-02 09:11:00,2026-04-02 09:25:00,Assistente 4,5005516,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,2 RESIDENCIAL,,,
+154,2026-04-20 15:23:00,2026-04-20 15:32:00,Assistente 4,5006174,CADASTRO,Alteração de categoria,Pública,,,Pública,Residencial,2
+155,2026-04-24 15:30:00,2026-04-24 15:45:00,Assistente 1,5002709,CADASTRO,Encerrado sem tratativa,,,,,,
+156,2026-04-05 11:12:00,2026-04-05 11:24:00,Assistente 5,5005992,CADASTRO,Encerrado sem tratativa,,,,,,
+157,2026-04-13 07:56:00,2026-04-13 08:11:00,Assistente 5,5003542,CADASTRO,Encerrado sem tratativa,,,,,,
+158,2026-04-11 12:31:00,2026-04-11 12:47:00,Assistente 3,5001449,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,2 RESIDENCIAL,,,
+159,2026-04-22 11:05:00,2026-04-22 11:13:00,Assistente 4,5004053,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pequeno comércio,2
+160,2026-04-22 10:49:00,2026-04-22 11:00:00,Assistente 3,5005649,CADASTRO,Alteração de economias,Industrial,1 INDUSTRIAL,4 INDUSTRIAL,,,
+161,2026-04-27 11:08:00,2026-04-27 11:13:00,Assistente 4,5007672,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+162,2026-04-22 12:31:00,2026-04-22 12:36:00,Assistente 3,5003108,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,5 RESIDENCIAL,,,
+163,2026-04-01 15:21:00,2026-04-01 15:32:00,Assistente 3,5002870,CADASTRO,Encerrado sem tratativa,,,,,,
+164,2026-04-21 09:20:00,2026-04-21 09:29:00,Assistente 4,5006881,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,2 P. COMERCIO,,,
+165,2026-04-22 10:10:00,2026-04-22 10:23:00,Assistente 3,5006146,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,2 RESIDENCIAL,,,
+166,2026-04-05 14:50:00,2026-04-05 14:53:00,Assistente 1,5001218,CADASTRO,Alteração de economias,Social,1 SOCIAL,3 SOCIAL,,,
+167,2026-04-13 10:12:00,2026-04-13 10:28:00,Assistente 2,5005999,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Pública,2
+168,2026-04-20 14:50:00,2026-04-20 15:04:00,Assistente 5,5006930,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pequeno comércio,1
+169,2026-04-18 17:45:00,2026-04-18 17:50:00,Assistente 5,5007336,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Industrial,1
+170,2026-04-26 15:20:00,2026-04-26 15:36:00,Assistente 3,5005376,CADASTRO,Encerrado sem tratativa,,,,,,
+171,2026-04-05 12:20:00,2026-04-05 12:22:00,Assistente 1,5003633,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Social,1
+172,2026-04-16 15:55:00,2026-04-16 16:10:00,Assistente 5,5004949,CADASTRO,Encerrado sem tratativa,,,,,,
+173,2026-04-02 11:56:00,2026-04-02 12:13:00,Assistente 3,5004256,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+174,2026-04-19 13:45:00,2026-04-19 14:02:00,Assistente 4,5003507,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Social,1
+175,2026-04-12 09:41:00,2026-04-12 09:44:00,Assistente 3,5006748,CADASTRO,Alteração de economias,Pequeno comércio,2 P. COMERCIO,4 P. COMERCIO,,,
+176,2026-04-27 09:37:00,2026-04-27 09:46:00,Assistente 4,5004830,CADASTRO,Alteração de economias,Pública,3 PUBLICA,6 PUBLICA,,,
+177,2026-04-16 16:52:00,2026-04-16 17:06:00,Assistente 2,5001925,CADASTRO,Encerrado sem tratativa,,,,,,
+178,2026-04-23 09:58:00,2026-04-23 10:18:00,Assistente 2,5001645,CADASTRO,Alteração de categoria,Pública,,,Pública,Residencial,2
+179,2026-04-18 16:29:00,2026-04-18 16:46:00,Assistente 3,5004844,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Comercial,1
+180,2026-04-23 13:02:00,2026-04-23 13:08:00,Assistente 2,5004907,CADASTRO,Encerrado sem tratativa,,,,,,
+181,2026-04-21 12:02:00,2026-04-21 12:14:00,Assistente 1,5008267,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Social,1
+182,2026-04-10 11:31:00,2026-04-10 11:35:00,Assistente 4,5002233,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Industrial,1
+183,2026-04-20 17:38:00,2026-04-20 17:50:00,Assistente 4,5007378,CADASTRO,Encerrado sem tratativa,,,,,,
+184,2026-04-04 14:07:00,2026-04-04 14:11:00,Assistente 1,5003745,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Comercial,1
+185,2026-04-27 10:01:00,2026-04-27 10:18:00,Assistente 5,5006454,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,2 RESIDENCIAL,,,
+186,2026-04-02 10:38:00,2026-04-02 10:55:00,Assistente 4,5005327,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pública,2
+187,2026-04-18 08:58:00,2026-04-18 09:02:00,Assistente 1,5007231,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+188,2026-04-02 17:38:00,2026-04-02 17:46:00,Assistente 1,5006167,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,2 RESIDENCIAL,,,
+189,2026-04-16 08:59:00,2026-04-16 09:08:00,Assistente 4,5006139,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,5 P. COMERCIO,,,
+190,2026-04-27 09:52:00,2026-04-27 10:02:00,Assistente 3,5003556,CADASTRO,Alteração de economias,Industrial,2 INDUSTRIAL,3 INDUSTRIAL,,,
+191,2026-04-17 15:56:00,2026-04-17 16:06:00,Assistente 3,5002842,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+192,2026-04-03 09:58:00,2026-04-03 10:05:00,Assistente 1,5005432,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,1 RESIDENCIAL,,,
+193,2026-04-27 08:29:00,2026-04-27 08:41:00,Assistente 3,5008092,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pública,1
+194,2026-04-11 08:28:00,2026-04-11 08:31:00,Assistente 1,5003598,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Pública,1
+195,2026-04-05 14:16:00,2026-04-05 14:22:00,Assistente 3,5008218,CADASTRO,Alteração de economias,Social,3 SOCIAL,4 SOCIAL,,,
+196,2026-04-04 12:31:00,2026-04-04 12:45:00,Assistente 2,5000630,CADASTRO,Alteração de economias,Pequeno comércio,2 P. COMERCIO,5 P. COMERCIO,,,
+197,2026-04-25 16:09:00,2026-04-25 16:15:00,Assistente 4,5001400,CADASTRO,Alteração de economias,Pequeno comércio,2 P. COMERCIO,1 P. COMERCIO,,,
+198,2026-04-07 16:49:00,2026-04-07 17:08:00,Assistente 3,5001554,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+199,2026-04-24 17:00:00,2026-04-24 17:11:00,Assistente 3,5002289,CADASTRO,Encerrado sem tratativa,,,,,,
+200,2026-04-09 10:58:00,2026-04-09 11:07:00,Assistente 3,5006769,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Residencial,1
+201,2026-05-26 16:43:00,2026-05-26 16:52:00,Assistente 3,5006454,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pública,2
+202,2026-05-04 17:42:00,2026-05-04 17:54:00,Assistente 2,5000756,CADASTRO,Alteração de categoria,Social,,,Social,Pública,1
+203,2026-05-04 09:45:00,2026-05-04 09:49:00,Assistente 1,5005887,CADASTRO,Alteração de categoria,Pública,,,Pública,Comercial,1
+204,2026-05-09 07:54:00,2026-05-09 08:06:00,Assistente 4,5006608,CADASTRO,Alteração de economias,Pequeno comércio,1 P. COMERCIO,2 P. COMERCIO,,,
+205,2026-05-06 09:45:00,2026-05-06 09:50:00,Assistente 4,5007889,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+206,2026-05-21 09:27:00,2026-05-21 09:39:00,Assistente 4,5000770,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Social,1
+207,2026-05-20 15:54:00,2026-05-20 16:14:00,Assistente 3,5003157,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Social,1
+208,2026-05-21 09:35:00,2026-05-21 09:37:00,Assistente 4,5000350,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+209,2026-05-19 17:35:00,2026-05-19 17:41:00,Assistente 1,5004193,CADASTRO,Encerrado sem tratativa,,,,,,
+210,2026-05-25 12:26:00,2026-05-25 12:46:00,Assistente 1,5007504,CADASTRO,Alteração de economias,Social,1 SOCIAL,2 SOCIAL,,,
+211,2026-05-24 07:44:00,2026-05-24 08:04:00,Assistente 1,5008386,CADASTRO,Alteração de categoria,Social,,,Social,Comercial,1
+212,2026-05-02 11:30:00,2026-05-02 11:41:00,Assistente 4,5007553,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+213,2026-05-02 15:13:00,2026-05-02 15:24:00,Assistente 1,5005215,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,3 COMERCIAL,,,
+214,2026-05-11 11:00:00,2026-05-11 11:14:00,Assistente 3,5005418,CADASTRO,Alteração de economias,Social,3 SOCIAL,4 SOCIAL,,,
+215,2026-05-02 09:04:00,2026-05-02 09:06:00,Assistente 5,5006335,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,2 RESIDENCIAL,,,
+216,2026-05-01 08:40:00,2026-05-01 08:45:00,Assistente 3,5003087,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pública,1
+217,2026-05-15 10:40:00,2026-05-15 10:57:00,Assistente 1,5006706,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,5 RESIDENCIAL,,,
+218,2026-05-26 16:58:00,2026-05-26 17:18:00,Assistente 1,5003976,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,1 COMERCIAL,,,
+219,2026-05-21 09:42:00,2026-05-21 09:50:00,Assistente 1,5002807,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pública,1
+220,2026-05-14 12:36:00,2026-05-14 12:46:00,Assistente 1,5008050,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+221,2026-05-13 08:44:00,2026-05-13 08:58:00,Assistente 4,5001680,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,5 P. COMERCIO,,,
+222,2026-05-21 13:42:00,2026-05-21 13:57:00,Assistente 4,5008218,CADASTRO,Alteração de categoria,Pública,,,Pública,Residencial,2
+223,2026-05-19 12:16:00,2026-05-19 12:27:00,Assistente 2,5001827,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+224,2026-05-23 13:35:00,2026-05-23 13:52:00,Assistente 3,5005236,CADASTRO,Encerrado sem tratativa,,,,,,
+225,2026-05-02 17:00:00,2026-05-02 17:03:00,Assistente 5,5003549,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+226,2026-05-19 11:15:00,2026-05-19 11:21:00,Assistente 5,5006405,CADASTRO,Encerrado sem tratativa,,,,,,
+227,2026-05-02 15:13:00,2026-05-02 15:29:00,Assistente 2,5003878,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+228,2026-05-24 11:27:00,2026-05-24 11:32:00,Assistente 3,5008281,CADASTRO,Alteração de categoria,Pública,,,Pública,Residencial,1
+229,2026-05-07 12:43:00,2026-05-07 12:46:00,Assistente 4,5004802,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+230,2026-05-17 13:40:00,2026-05-17 13:55:00,Assistente 5,5000875,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+231,2026-05-27 13:03:00,2026-05-27 13:18:00,Assistente 2,5005901,CADASTRO,Alteração de categoria,Social,,,Social,Pequeno comércio,1
+232,2026-05-04 10:50:00,2026-05-04 11:03:00,Assistente 1,5006139,CADASTRO,Alteração de categoria,Pública,,,Pública,Residencial,2
+233,2026-05-15 14:40:00,2026-05-15 14:52:00,Assistente 1,5004837,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Social,1
+234,2026-05-24 14:54:00,2026-05-24 15:03:00,Assistente 2,5006111,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pequeno comércio,1
+235,2026-05-07 16:14:00,2026-05-07 16:25:00,Assistente 5,5001932,CADASTRO,Alteração de economias,Industrial,3 INDUSTRIAL,4 INDUSTRIAL,,,
+236,2026-05-27 16:39:00,2026-05-27 16:47:00,Assistente 3,5001904,CADASTRO,Encerrado sem tratativa,,,,,,
+237,2026-05-11 13:22:00,2026-05-11 13:25:00,Assistente 2,5003633,CADASTRO,Alteração de categoria,Pública,,,Pública,Residencial,1
+238,2026-05-07 15:50:00,2026-05-07 15:56:00,Assistente 5,5005502,CADASTRO,Encerrado sem tratativa,,,,,,
+239,2026-05-03 10:49:00,2026-05-03 11:06:00,Assistente 5,5004487,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pública,1
+240,2026-05-06 12:34:00,2026-05-06 12:39:00,Assistente 5,5007357,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,3 COMERCIAL,,,
+241,2026-05-26 10:31:00,2026-05-26 10:49:00,Assistente 3,5002688,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pública,1
+242,2026-05-23 09:54:00,2026-05-23 10:08:00,Assistente 5,5003073,CADASTRO,Alteração de economias,Social,1 SOCIAL,2 SOCIAL,,,
+243,2026-05-15 16:54:00,2026-05-15 17:00:00,Assistente 4,5006958,CADASTRO,Encerrado sem tratativa,,,,,,
+244,2026-05-05 09:43:00,2026-05-05 09:58:00,Assistente 2,5001288,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+245,2026-05-08 12:45:00,2026-05-08 12:53:00,Assistente 5,5008323,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Social,2
+246,2026-05-11 12:34:00,2026-05-11 12:49:00,Assistente 2,5000455,CADASTRO,Alteração de economias,Pequeno comércio,4 P. COMERCIO,3 P. COMERCIO,,,
+247,2026-05-19 13:36:00,2026-05-19 13:54:00,Assistente 4,5003822,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pública,2
+248,2026-05-04 14:36:00,2026-05-04 14:43:00,Assistente 3,5007504,CADASTRO,Alteração de categoria,Pública,,,Pública,Pequeno comércio,1
+249,2026-05-24 17:33:00,2026-05-24 17:45:00,Assistente 1,5006538,CADASTRO,Encerrado sem tratativa,,,,,,
+250,2026-05-25 09:00:00,2026-05-25 09:13:00,Assistente 2,5004424,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pequeno comércio,2
+251,2026-05-08 14:31:00,2026-05-08 14:47:00,Assistente 5,5000693,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+252,2026-05-21 13:21:00,2026-05-21 13:36:00,Assistente 3,5007329,CADASTRO,Alteração de economias,Residencial,4 RESIDENCIAL,3 RESIDENCIAL,,,
+253,2026-05-17 09:25:00,2026-05-17 09:43:00,Assistente 5,5001190,CADASTRO,Alteração de economias,Industrial,3 INDUSTRIAL,4 INDUSTRIAL,,,
+254,2026-05-03 17:26:00,2026-05-03 17:30:00,Assistente 1,5000364,CADASTRO,Alteração de economias,Social,2 SOCIAL,5 SOCIAL,,,
+255,2026-05-01 08:17:00,2026-05-01 08:29:00,Assistente 1,5003745,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Industrial,1
+256,2026-05-01 17:00:00,2026-05-01 17:11:00,Assistente 1,5000161,CADASTRO,Alteração de categoria,Social,,,Social,Residencial,1
+257,2026-05-16 12:07:00,2026-05-16 12:18:00,Assistente 5,5005537,CADASTRO,Alteração de economias,Industrial,1 INDUSTRIAL,4 INDUSTRIAL,,,
+258,2026-05-13 12:09:00,2026-05-13 12:25:00,Assistente 5,5003241,CADASTRO,Alteração de economias,Pequeno comércio,2 P. COMERCIO,3 P. COMERCIO,,,
+259,2026-05-24 09:05:00,2026-05-24 09:17:00,Assistente 2,5000105,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+260,2026-05-03 09:19:00,2026-05-03 09:30:00,Assistente 1,5005292,CADASTRO,Alteração de economias,Residencial,4 RESIDENCIAL,3 RESIDENCIAL,,,
+261,2026-05-05 08:11:00,2026-05-05 08:18:00,Assistente 1,5003878,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Industrial,1
+262,2026-05-03 08:56:00,2026-05-03 09:08:00,Assistente 1,5004865,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pública,2
+263,2026-05-21 17:33:00,2026-05-21 17:43:00,Assistente 5,5005383,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Comercial,2
+264,2026-05-16 09:20:00,2026-05-16 09:35:00,Assistente 5,5003710,CADASTRO,Encerrado sem tratativa,,,,,,
+265,2026-05-21 14:38:00,2026-05-21 14:56:00,Assistente 3,5006153,CADASTRO,Alteração de categoria,Pública,,,Pública,Residencial,1
+266,2026-05-02 14:59:00,2026-05-02 15:17:00,Assistente 5,5001218,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Social,1
+267,2026-05-02 08:33:00,2026-05-02 08:46:00,Assistente 3,5005901,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,2 P. COMERCIO,,,
+268,2026-05-11 16:05:00,2026-05-11 16:19:00,Assistente 1,5008085,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,2 RESIDENCIAL,,,
+269,2026-05-17 09:06:00,2026-05-17 09:12:00,Assistente 4,5007483,CADASTRO,Encerrado sem tratativa,,,,,,
+270,2026-05-07 16:00:00,2026-05-07 16:07:00,Assistente 5,5005810,CADASTRO,Encerrado sem tratativa,,,,,,
+271,2026-05-09 15:06:00,2026-05-09 15:25:00,Assistente 4,5000287,CADASTRO,Alteração de economias,Social,1 SOCIAL,2 SOCIAL,,,
+272,2026-05-17 14:43:00,2026-05-17 14:47:00,Assistente 2,5003913,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Social,2
+273,2026-05-09 11:33:00,2026-05-09 11:51:00,Assistente 5,5000448,CADASTRO,Alteração de economias,Pequeno comércio,2 P. COMERCIO,3 P. COMERCIO,,,
+274,2026-05-14 17:23:00,2026-05-14 17:32:00,Assistente 3,5001624,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pública,2
+275,2026-05-03 16:52:00,2026-05-03 17:09:00,Assistente 2,5003738,CADASTRO,Alteração de categoria,Pública,,,Pública,Comercial,2
+276,2026-05-27 16:09:00,2026-05-27 16:26:00,Assistente 1,5003367,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Social,1
+277,2026-05-24 14:49:00,2026-05-24 15:02:00,Assistente 4,5004515,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,1 RESIDENCIAL,,,
+278,2026-05-20 13:57:00,2026-05-20 13:59:00,Assistente 4,5003276,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Industrial,1
+279,2026-05-08 17:02:00,2026-05-08 17:07:00,Assistente 2,5001008,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Industrial,1
+280,2026-05-24 13:21:00,2026-05-24 13:31:00,Assistente 4,5001484,CADASTRO,Alteração de categoria,Pública,,,Pública,Pequeno comércio,1
+281,2026-05-04 12:18:00,2026-05-04 12:37:00,Assistente 3,5000049,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Social,1
+282,2026-05-07 08:16:00,2026-05-07 08:18:00,Assistente 3,5004333,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+283,2026-05-12 16:51:00,2026-05-12 17:10:00,Assistente 3,5006041,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,3 RESIDENCIAL,,,
+284,2026-05-22 15:30:00,2026-05-22 15:37:00,Assistente 4,5002506,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pública,2
+285,2026-05-16 12:01:00,2026-05-16 12:16:00,Assistente 3,5001456,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+286,2026-05-24 15:36:00,2026-05-24 15:39:00,Assistente 5,5001218,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Comercial,1
+287,2026-05-17 12:48:00,2026-05-17 12:53:00,Assistente 3,5004620,CADASTRO,Alteração de economias,Social,2 SOCIAL,3 SOCIAL,,,
+288,2026-05-24 15:55:00,2026-05-24 16:01:00,Assistente 2,5002310,CADASTRO,Alteração de economias,Industrial,2 INDUSTRIAL,3 INDUSTRIAL,,,
+289,2026-05-14 12:48:00,2026-05-14 13:00:00,Assistente 3,5003157,CADASTRO,Alteração de categoria,Social,,,Social,Comercial,1
+290,2026-05-08 09:41:00,2026-05-08 09:48:00,Assistente 1,5001638,CADASTRO,Encerrado sem tratativa,,,,,,
+291,2026-05-23 12:36:00,2026-05-23 12:41:00,Assistente 2,5008393,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+292,2026-05-09 13:36:00,2026-05-09 13:50:00,Assistente 3,5002765,CADASTRO,Encerrado sem tratativa,,,,,,
+293,2026-05-07 16:53:00,2026-05-07 16:59:00,Assistente 2,5002310,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pequeno comércio,2
+294,2026-05-10 16:20:00,2026-05-10 16:23:00,Assistente 1,5002499,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,4 RESIDENCIAL,,,
+295,2026-05-10 17:32:00,2026-05-10 17:35:00,Assistente 4,5003024,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,4 P. COMERCIO,,,
+296,2026-06-06 11:34:00,2026-06-06 11:37:00,Assistente 2,5004907,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Social,1
+297,2026-06-22 12:08:00,2026-06-22 12:28:00,Assistente 1,5007819,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,1 RESIDENCIAL,,,
+298,2026-06-18 11:18:00,2026-06-18 11:38:00,Assistente 1,5007280,CADASTRO,Encerrado sem tratativa,,,,,,
+299,2026-06-04 14:08:00,2026-06-04 14:19:00,Assistente 1,5003059,CADASTRO,Encerrado sem tratativa,,,,,,
+300,2026-06-01 15:14:00,2026-06-01 15:27:00,Assistente 2,5005565,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,6 RESIDENCIAL,,,
+301,2026-06-19 14:52:00,2026-06-19 14:56:00,Assistente 4,5007924,CADASTRO,Alteração de economias,Pequeno comércio,2 P. COMERCIO,3 P. COMERCIO,,,
+302,2026-06-20 12:21:00,2026-06-20 12:24:00,Assistente 4,5005292,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,3 RESIDENCIAL,,,
+303,2026-06-07 13:10:00,2026-06-07 13:15:00,Assistente 4,5001358,CADASTRO,Alteração de categoria,Social,,,Social,Industrial,1
+304,2026-06-04 12:48:00,2026-06-04 13:03:00,Assistente 1,5002415,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+305,2026-06-04 12:12:00,2026-06-04 12:22:00,Assistente 5,5004361,CADASTRO,Alteração de categoria,Pública,,,Pública,Industrial,2
+306,2026-06-04 15:49:00,2026-06-04 16:04:00,Assistente 3,5006384,CADASTRO,Encerrado sem tratativa,,,,,,
+307,2026-06-08 08:32:00,2026-06-08 08:51:00,Assistente 4,5003626,CADASTRO,Alteração de economias,Social,3 SOCIAL,4 SOCIAL,,,
+308,2026-06-09 12:12:00,2026-06-09 12:24:00,Assistente 2,5006951,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+309,2026-06-01 08:53:00,2026-06-01 09:13:00,Assistente 1,5004445,CADASTRO,Alteração de economias,Pequeno comércio,1 P. COMERCIO,2 P. COMERCIO,,,
+310,2026-06-02 09:30:00,2026-06-02 09:47:00,Assistente 5,5003409,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Comercial,1
+311,2026-06-23 14:19:00,2026-06-23 14:35:00,Assistente 4,5004452,CADASTRO,Encerrado sem tratativa,,,,,,
+312,2026-06-25 08:16:00,2026-06-25 08:30:00,Assistente 1,5003535,CADASTRO,Encerrado sem tratativa,,,,,,
+313,2026-06-06 08:15:00,2026-06-06 08:31:00,Assistente 5,5003759,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,4 RESIDENCIAL,,,
+314,2026-06-05 16:12:00,2026-06-05 16:22:00,Assistente 4,5005635,CADASTRO,Encerrado sem tratativa,,,,,,
+315,2026-06-14 15:14:00,2026-06-14 15:28:00,Assistente 2,5003990,CADASTRO,Encerrado sem tratativa,,,,,,
+316,2026-06-09 16:30:00,2026-06-09 16:35:00,Assistente 1,5002429,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Comercial,1
+317,2026-06-25 09:22:00,2026-06-25 09:41:00,Assistente 4,5003325,CADASTRO,Alteração de categoria,Social,,,Social,Pública,2
+318,2026-06-09 12:46:00,2026-06-09 12:54:00,Assistente 2,5002492,CADASTRO,Alteração de categoria,Pública,,,Pública,Comercial,1
+319,2026-06-08 07:56:00,2026-06-08 08:16:00,Assistente 3,5001722,CADASTRO,Encerrado sem tratativa,,,,,,
+320,2026-06-16 11:40:00,2026-06-16 11:53:00,Assistente 4,5002289,CADASTRO,Alteração de economias,Comercial,1 COMERCIAL,2 COMERCIAL,,,
+321,2026-06-21 11:17:00,2026-06-21 11:24:00,Assistente 4,5000021,CADASTRO,Encerrado sem tratativa,,,,,,
+322,2026-06-25 08:33:00,2026-06-25 08:44:00,Assistente 4,5001043,CADASTRO,Alteração de categoria,Pública,,,Pública,Industrial,2
+323,2026-06-14 17:15:00,2026-06-14 17:19:00,Assistente 3,5005005,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pequeno comércio,1
+324,2026-06-11 12:30:00,2026-06-11 12:37:00,Assistente 4,5004270,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,3 COMERCIAL,,,
+325,2026-06-04 13:39:00,2026-06-04 13:50:00,Assistente 4,5006804,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pequeno comércio,1
+326,2026-06-13 10:04:00,2026-06-13 10:09:00,Assistente 1,5002282,CADASTRO,Encerrado sem tratativa,,,,,,
+327,2026-06-25 17:31:00,2026-06-25 17:49:00,Assistente 3,5007707,CADASTRO,Encerrado sem tratativa,,,,,,
+328,2026-06-17 17:42:00,2026-06-17 17:55:00,Assistente 1,5000336,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Industrial,1
+329,2026-06-05 13:30:00,2026-06-05 13:50:00,Assistente 3,5007791,CADASTRO,Alteração de categoria,Pública,,,Pública,Social,1
+330,2026-06-19 09:04:00,2026-06-19 09:19:00,Assistente 3,5002121,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,1 COMERCIAL,,,
+331,2026-06-09 11:37:00,2026-06-09 11:52:00,Assistente 2,5001001,CADASTRO,Alteração de categoria,Social,,,Social,Pequeno comércio,2
+332,2026-06-21 16:09:00,2026-06-21 16:16:00,Assistente 3,5000938,CADASTRO,Alteração de economias,Comercial,4 COMERCIAL,3 COMERCIAL,,,
+333,2026-06-23 09:27:00,2026-06-23 09:46:00,Assistente 1,5000077,CADASTRO,Encerrado sem tratativa,,,,,,
+334,2026-06-13 11:26:00,2026-06-13 11:43:00,Assistente 4,5001666,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+335,2026-06-05 13:14:00,2026-06-05 13:24:00,Assistente 5,5003220,CADASTRO,Alteração de economias,Pública,2 PUBLICA,3 PUBLICA,,,
+336,2026-06-21 14:09:00,2026-06-21 14:11:00,Assistente 4,5002926,CADASTRO,Encerrado sem tratativa,,,,,,
+337,2026-06-07 15:04:00,2026-06-07 15:16:00,Assistente 5,5001946,CADASTRO,Encerrado sem tratativa,,,,,,
+338,2026-06-02 10:30:00,2026-06-02 10:39:00,Assistente 2,5004858,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Social,1
+339,2026-06-11 10:57:00,2026-06-11 11:16:00,Assistente 2,5007343,CADASTRO,Alteração de categoria,Pública,,,Pública,Pequeno comércio,1
+340,2026-06-26 10:39:00,2026-06-26 10:58:00,Assistente 5,5004445,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,5 P. COMERCIO,,,
+341,2026-06-08 11:27:00,2026-06-08 11:35:00,Assistente 4,5006062,CADASTRO,Alteração de economias,Social,1 SOCIAL,2 SOCIAL,,,
+342,2026-06-05 17:07:00,2026-06-05 17:10:00,Assistente 1,5002205,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Industrial,1
+343,2026-06-11 12:12:00,2026-06-11 12:30:00,Assistente 3,5000777,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Residencial,1
+344,2026-06-27 11:13:00,2026-06-27 11:29:00,Assistente 5,5005208,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Comercial,1
+345,2026-06-24 15:02:00,2026-06-24 15:04:00,Assistente 1,5001575,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Social,1
+346,2026-06-22 14:25:00,2026-06-22 14:33:00,Assistente 3,5000651,CADASTRO,Alteração de economias,Social,2 SOCIAL,1 SOCIAL,,,
+347,2026-06-17 14:56:00,2026-06-17 15:09:00,Assistente 2,5003703,CADASTRO,Alteração de economias,Social,2 SOCIAL,3 SOCIAL,,,
+348,2026-06-24 07:57:00,2026-06-24 08:14:00,Assistente 3,5007833,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+349,2026-06-12 17:28:00,2026-06-12 17:32:00,Assistente 2,5004109,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+350,2026-06-14 10:09:00,2026-06-14 10:18:00,Assistente 2,5006972,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Comercial,1
+351,2026-06-18 13:14:00,2026-06-18 13:28:00,Assistente 2,5002779,CADASTRO,Encerrado sem tratativa,,,,,,
+352,2026-06-12 13:36:00,2026-06-12 13:53:00,Assistente 5,5008288,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Industrial,1
+353,2026-06-21 10:13:00,2026-06-21 10:17:00,Assistente 2,5002142,CADASTRO,Alteração de categoria,Social,,,Social,Industrial,1
+354,2026-06-27 11:47:00,2026-06-27 12:03:00,Assistente 5,5002695,CADASTRO,Alteração de economias,Pequeno comércio,2 P. COMERCIO,3 P. COMERCIO,,,
+355,2026-06-12 12:09:00,2026-06-12 12:27:00,Assistente 2,5006328,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Social,1
+356,2026-06-10 08:14:00,2026-06-10 08:23:00,Assistente 4,5002940,CADASTRO,Alteração de categoria,Social,,,Social,Residencial,1
+357,2026-06-05 11:51:00,2026-06-05 12:02:00,Assistente 3,5000798,CADASTRO,Alteração de categoria,Pública,,,Pública,Pequeno comércio,1
+358,2026-06-04 08:52:00,2026-06-04 09:12:00,Assistente 4,5004095,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,4 P. COMERCIO,,,
+359,2026-06-01 09:27:00,2026-06-01 09:31:00,Assistente 3,5001442,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Social,1
+360,2026-06-27 09:06:00,2026-06-27 09:16:00,Assistente 5,5004347,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,5 RESIDENCIAL,,,
+361,2026-06-20 11:52:00,2026-06-20 12:07:00,Assistente 5,5003080,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Industrial,1
+362,2026-06-19 14:00:00,2026-06-19 14:19:00,Assistente 5,5002044,CADASTRO,Alteração de categoria,Pública,,,Pública,Pequeno comércio,1
+363,2026-06-21 17:24:00,2026-06-21 17:37:00,Assistente 5,5004214,CADASTRO,Encerrado sem tratativa,,,,,,
+364,2026-06-26 15:40:00,2026-06-26 15:43:00,Assistente 2,5006237,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,1 RESIDENCIAL,,,
+365,2026-06-09 13:36:00,2026-06-09 13:41:00,Assistente 3,5005236,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Residencial,1
+366,2026-06-24 17:14:00,2026-06-24 17:24:00,Assistente 2,5007000,CADASTRO,Encerrado sem tratativa,,,,,,
+367,2026-06-23 12:54:00,2026-06-23 13:07:00,Assistente 1,5008190,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Social,2
+368,2026-06-06 15:11:00,2026-06-06 15:29:00,Assistente 3,5008148,CADASTRO,Encerrado sem tratativa,,,,,,
+369,2026-06-08 09:54:00,2026-06-08 10:09:00,Assistente 5,5005005,CADASTRO,Alteração de economias,Social,1 SOCIAL,2 SOCIAL,,,
+370,2026-06-01 16:02:00,2026-06-01 16:19:00,Assistente 2,5003136,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pública,1
+371,2026-06-12 11:11:00,2026-06-12 11:19:00,Assistente 1,5001827,CADASTRO,Alteração de categoria,Social,,,Social,Pública,1
+372,2026-06-06 09:48:00,2026-06-06 10:08:00,Assistente 4,5007140,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Industrial,2
+373,2026-06-13 13:12:00,2026-06-13 13:25:00,Assistente 3,5004214,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pública,1
+374,2026-06-14 15:04:00,2026-06-14 15:08:00,Assistente 5,5006377,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Residencial,1
+375,2026-06-05 13:47:00,2026-06-05 13:50:00,Assistente 2,5008372,CADASTRO,Alteração de categoria,Pública,,,Pública,Comercial,1
+376,2026-06-04 15:16:00,2026-06-04 15:30:00,Assistente 5,5006391,CADASTRO,Alteração de economias,Social,2 SOCIAL,3 SOCIAL,,,
+377,2026-06-27 07:59:00,2026-06-27 08:03:00,Assistente 5,5004998,CADASTRO,Alteração de economias,Comercial,3 COMERCIAL,6 COMERCIAL,,,
+378,2026-06-18 09:41:00,2026-06-18 09:46:00,Assistente 5,5001204,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Comercial,2
+379,2026-06-20 17:09:00,2026-06-20 17:13:00,Assistente 3,5003374,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+380,2026-06-27 14:49:00,2026-06-27 15:06:00,Assistente 5,5005936,CADASTRO,Alteração de economias,Social,3 SOCIAL,2 SOCIAL,,,
+381,2026-06-04 07:49:00,2026-06-04 08:03:00,Assistente 4,5002646,CADASTRO,Encerrado sem tratativa,,,,,,
+382,2026-06-07 11:42:00,2026-06-07 11:53:00,Assistente 3,5004865,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+383,2026-06-02 10:55:00,2026-06-02 11:01:00,Assistente 2,5001953,CADASTRO,Alteração de economias,Comercial,4 COMERCIAL,3 COMERCIAL,,,
+384,2026-06-15 11:44:00,2026-06-15 12:01:00,Assistente 3,5000224,CADASTRO,Alteração de categoria,Pública,,,Pública,Pequeno comércio,1
+385,2026-06-17 10:36:00,2026-06-17 10:55:00,Assistente 3,5006482,CADASTRO,Alteração de economias,Comercial,1 COMERCIAL,2 COMERCIAL,,,
+386,2026-06-03 09:50:00,2026-06-03 10:04:00,Assistente 1,5001092,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,4 RESIDENCIAL,,,
+387,2026-06-13 13:09:00,2026-06-13 13:27:00,Assistente 5,5005222,CADASTRO,Alteração de economias,Comercial,3 COMERCIAL,5 COMERCIAL,,,
+388,2026-06-16 15:30:00,2026-06-16 15:32:00,Assistente 3,5006559,CADASTRO,Alteração de categoria,Social,,,Social,Residencial,1
+389,2026-06-02 10:59:00,2026-06-02 11:19:00,Assistente 4,5006167,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Social,2
+390,2026-06-21 16:54:00,2026-06-21 17:07:00,Assistente 1,5006755,CADASTRO,Encerrado sem tratativa,,,,,,
+391,2026-06-01 15:04:00,2026-06-01 15:20:00,Assistente 2,5001757,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,2 RESIDENCIAL,,,
+392,2026-06-07 14:45:00,2026-06-07 14:59:00,Assistente 4,5003619,CADASTRO,Alteração de economias,Comercial,4 COMERCIAL,3 COMERCIAL,,,
+393,2026-06-18 14:23:00,2026-06-18 14:30:00,Assistente 5,5001883,CADASTRO,Alteração de economias,Comercial,3 COMERCIAL,4 COMERCIAL,,,
+394,2026-06-15 15:24:00,2026-06-15 15:26:00,Assistente 2,5008281,CADASTRO,Encerrado sem tratativa,,,,,,
+395,2026-06-20 14:59:00,2026-06-20 15:09:00,Assistente 4,5002807,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Pública,1
+396,2026-06-15 16:28:00,2026-06-15 16:40:00,Assistente 2,5000287,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+397,2026-06-02 17:33:00,2026-06-02 17:40:00,Assistente 2,5006090,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pública,1
+398,2026-06-22 12:48:00,2026-06-22 13:05:00,Assistente 1,5004403,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+399,2026-06-17 09:42:00,2026-06-17 10:01:00,Assistente 1,5001029,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Comercial,1
+400,2026-06-02 08:14:00,2026-06-02 08:27:00,Assistente 2,5000385,CADASTRO,Encerrado sem tratativa,,,,,,
+401,2026-06-05 15:42:00,2026-06-05 16:00:00,Assistente 5,5005558,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+402,2026-06-13 11:39:00,2026-06-13 11:51:00,Assistente 2,5003451,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,5 COMERCIAL,,,
+403,2026-06-18 11:46:00,2026-06-18 12:03:00,Assistente 2,5007126,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,3 RESIDENCIAL,,,
+404,2026-06-14 14:16:00,2026-06-14 14:29:00,Assistente 2,5005278,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Residencial,2
+405,2026-06-22 14:13:00,2026-06-22 14:17:00,Assistente 1,5004676,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Comercial,1
+406,2026-06-04 13:17:00,2026-06-04 13:22:00,Assistente 2,5005411,CADASTRO,Alteração de economias,Social,2 SOCIAL,4 SOCIAL,,,
+407,2026-06-11 10:55:00,2026-06-11 11:14:00,Assistente 4,5004928,CADASTRO,Alteração de economias,Comercial,1 COMERCIAL,3 COMERCIAL,,,
+408,2026-06-15 15:30:00,2026-06-15 15:47:00,Assistente 2,5007973,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Residencial,2
+409,2026-06-06 08:12:00,2026-06-06 08:21:00,Assistente 3,5004837,CADASTRO,Encerrado sem tratativa,,,,,,
+410,2026-06-15 09:39:00,2026-06-15 09:43:00,Assistente 1,5001050,CADASTRO,Alteração de economias,Social,1 SOCIAL,3 SOCIAL,,,
+411,2026-06-01 15:36:00,2026-06-01 15:44:00,Assistente 3,5004298,CADASTRO,Encerrado sem tratativa,,,,,,
+412,2026-06-03 09:42:00,2026-06-03 10:00:00,Assistente 1,5007903,CADASTRO,Alteração de economias,Social,1 SOCIAL,2 SOCIAL,,,
+413,2026-06-03 17:35:00,2026-06-03 17:49:00,Assistente 4,5000518,CADASTRO,Alteração de categoria,Social,,,Social,Pública,1
+414,2026-06-04 16:11:00,2026-06-04 16:30:00,Assistente 3,5007105,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,6 RESIDENCIAL,,,
+415,2026-06-22 12:01:00,2026-06-22 12:03:00,Assistente 5,5004095,CADASTRO,Encerrado sem tratativa,,,,,,
+416,2026-07-25 17:02:00,2026-07-25 17:11:00,Assistente 5,5007294,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Pública,2
+417,2026-07-08 11:48:00,2026-07-08 12:03:00,Assistente 1,5000987,CADASTRO,Alteração de economias,Comercial,3 COMERCIAL,2 COMERCIAL,,,
+418,2026-07-22 10:16:00,2026-07-22 10:33:00,Assistente 5,5000280,CADASTRO,Alteração de economias,Social,2 SOCIAL,4 SOCIAL,,,
+419,2026-07-11 14:43:00,2026-07-11 15:01:00,Assistente 3,5002233,CADASTRO,Alteração de categoria,Pública,,,Pública,Social,1
+420,2026-07-23 12:57:00,2026-07-23 13:13:00,Assistente 3,5000959,CADASTRO,Encerrado sem tratativa,,,,,,
+421,2026-07-22 11:26:00,2026-07-22 11:30:00,Assistente 1,5002590,CADASTRO,Alteração de economias,Social,1 SOCIAL,2 SOCIAL,,,
+422,2026-07-16 09:47:00,2026-07-16 09:52:00,Assistente 4,5005614,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,3 RESIDENCIAL,,,
+423,2026-07-14 08:01:00,2026-07-14 08:12:00,Assistente 1,5005446,CADASTRO,Alteração de economias,Industrial,2 INDUSTRIAL,3 INDUSTRIAL,,,
+424,2026-07-21 17:08:00,2026-07-21 17:14:00,Assistente 3,5007490,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,4 P. COMERCIO,,,
+425,2026-07-25 12:12:00,2026-07-25 12:30:00,Assistente 2,5004228,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,5 RESIDENCIAL,,,
+426,2026-07-15 15:04:00,2026-07-15 15:24:00,Assistente 3,5003045,CADASTRO,Alteração de categoria,Pública,,,Pública,Social,1
+427,2026-07-24 11:18:00,2026-07-24 11:22:00,Assistente 4,5001498,CADASTRO,Alteração de categoria,Pública,,,Pública,Industrial,1
+428,2026-07-22 16:13:00,2026-07-22 16:31:00,Assistente 1,5001477,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,2 RESIDENCIAL,,,
+429,2026-07-02 13:05:00,2026-07-02 13:11:00,Assistente 3,5001939,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Social,1
+430,2026-07-05 14:33:00,2026-07-05 14:43:00,Assistente 3,5004732,CADASTRO,Alteração de economias,Social,3 SOCIAL,2 SOCIAL,,,
+431,2026-07-23 17:20:00,2026-07-23 17:22:00,Assistente 3,5003654,CADASTRO,Encerrado sem tratativa,,,,,,
+432,2026-07-07 08:07:00,2026-07-07 08:15:00,Assistente 1,5002793,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Industrial,1
+433,2026-07-06 14:32:00,2026-07-06 14:46:00,Assistente 5,5006419,CADASTRO,Encerrado sem tratativa,,,,,,
+434,2026-07-15 17:22:00,2026-07-15 17:31:00,Assistente 4,5001596,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+435,2026-07-04 14:47:00,2026-07-04 15:02:00,Assistente 3,5005509,CADASTRO,Alteração de categoria,Social,,,Social,Industrial,1
+436,2026-07-19 09:03:00,2026-07-19 09:21:00,Assistente 4,5001092,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,1 COMERCIAL,,,
+437,2026-07-16 13:11:00,2026-07-16 13:27:00,Assistente 5,5002499,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Social,2
+438,2026-07-09 08:25:00,2026-07-09 08:30:00,Assistente 5,5000602,CADASTRO,Encerrado sem tratativa,,,,,,
+439,2026-07-04 09:44:00,2026-07-04 10:03:00,Assistente 2,5001764,CADASTRO,Alteração de economias,Social,1 SOCIAL,2 SOCIAL,,,
+440,2026-07-22 10:00:00,2026-07-22 10:15:00,Assistente 1,5005621,CADASTRO,Alteração de categoria,Social,,,Social,Pequeno comércio,1
+441,2026-07-11 11:02:00,2026-07-11 11:11:00,Assistente 2,5006685,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Social,1
+442,2026-07-11 15:17:00,2026-07-11 15:32:00,Assistente 1,5008386,CADASTRO,Alteração de economias,Pequeno comércio,1 P. COMERCIO,4 P. COMERCIO,,,
+443,2026-07-24 15:05:00,2026-07-24 15:10:00,Assistente 5,5004228,CADASTRO,Alteração de economias,Social,3 SOCIAL,5 SOCIAL,,,
+444,2026-07-03 12:44:00,2026-07-03 13:02:00,Assistente 4,5001554,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Social,2
+445,2026-07-26 13:15:00,2026-07-26 13:18:00,Assistente 4,5008393,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,4 P. COMERCIO,,,
+446,2026-07-27 10:34:00,2026-07-27 10:47:00,Assistente 5,5001001,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pública,1
+447,2026-07-23 07:58:00,2026-07-23 08:05:00,Assistente 3,5007812,CADASTRO,Encerrado sem tratativa,,,,,,
+448,2026-07-08 12:17:00,2026-07-08 12:35:00,Assistente 3,5000931,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Industrial,1
+449,2026-07-27 13:57:00,2026-07-27 14:10:00,Assistente 4,5000441,CADASTRO,Encerrado sem tratativa,,,,,,
+450,2026-07-06 08:44:00,2026-07-06 09:04:00,Assistente 4,5003899,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Comercial,1
+451,2026-07-12 13:12:00,2026-07-12 13:24:00,Assistente 5,5004109,CADASTRO,Encerrado sem tratativa,,,,,,
+452,2026-07-10 07:59:00,2026-07-10 08:11:00,Assistente 3,5003990,CADASTRO,Encerrado sem tratativa,,,,,,
+453,2026-07-17 14:30:00,2026-07-17 14:36:00,Assistente 3,5002093,CADASTRO,Alteração de economias,Comercial,1 COMERCIAL,2 COMERCIAL,,,
+454,2026-07-09 15:45:00,2026-07-09 15:57:00,Assistente 3,5003388,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,6 RESIDENCIAL,,,
+455,2026-07-19 16:23:00,2026-07-19 16:27:00,Assistente 2,5001281,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+456,2026-07-14 09:03:00,2026-07-14 09:23:00,Assistente 4,5008113,CADASTRO,Alteração de categoria,Pública,,,Pública,Residencial,1
+457,2026-07-18 14:26:00,2026-07-18 14:36:00,Assistente 1,5002758,CADASTRO,Encerrado sem tratativa,,,,,,
+458,2026-07-02 09:15:00,2026-07-02 09:26:00,Assistente 1,5005243,CADASTRO,Alteração de economias,Industrial,1 INDUSTRIAL,3 INDUSTRIAL,,,
+459,2026-07-21 13:17:00,2026-07-21 13:36:00,Assistente 2,5004753,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,4 P. COMERCIO,,,
+460,2026-07-01 10:00:00,2026-07-01 10:20:00,Assistente 2,5004557,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,2 P. COMERCIO,,,
+461,2026-07-09 08:31:00,2026-07-09 08:43:00,Assistente 3,5003731,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Comercial,1
+462,2026-07-12 13:15:00,2026-07-12 13:34:00,Assistente 2,5004627,CADASTRO,Encerrado sem tratativa,,,,,,
+463,2026-07-21 08:10:00,2026-07-21 08:22:00,Assistente 3,5006755,CADASTRO,Alteração de economias,Pequeno comércio,1 P. COMERCIO,2 P. COMERCIO,,,
+464,2026-07-05 13:08:00,2026-07-05 13:25:00,Assistente 1,5000812,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+465,2026-07-12 10:26:00,2026-07-12 10:31:00,Assistente 4,5003780,CADASTRO,Encerrado sem tratativa,,,,,,
+466,2026-07-17 12:17:00,2026-07-17 12:33:00,Assistente 1,5003808,CADASTRO,Alteração de economias,Comercial,3 COMERCIAL,2 COMERCIAL,,,
+467,2026-07-02 17:21:00,2026-07-02 17:30:00,Assistente 1,5001806,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pequeno comércio,1
+468,2026-07-05 14:19:00,2026-07-05 14:33:00,Assistente 1,5004942,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+469,2026-07-22 11:25:00,2026-07-22 11:30:00,Assistente 3,5004144,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+470,2026-07-09 08:19:00,2026-07-09 08:29:00,Assistente 2,5002205,CADASTRO,Encerrado sem tratativa,,,,,,
+471,2026-07-07 12:12:00,2026-07-07 12:32:00,Assistente 5,5002037,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pública,1
+472,2026-07-27 09:04:00,2026-07-27 09:10:00,Assistente 2,5001505,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,6 P. COMERCIO,,,
+473,2026-07-24 15:24:00,2026-07-24 15:44:00,Assistente 5,5000392,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,2 RESIDENCIAL,,,
+474,2026-07-15 07:52:00,2026-07-15 08:00:00,Assistente 3,5006909,CADASTRO,Encerrado sem tratativa,,,,,,
+475,2026-07-04 08:24:00,2026-07-04 08:30:00,Assistente 3,5000147,CADASTRO,Alteração de economias,Social,1 SOCIAL,2 SOCIAL,,,
+476,2026-07-21 08:32:00,2026-07-21 08:47:00,Assistente 2,5001253,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pública,1
+477,2026-07-07 17:09:00,2026-07-07 17:19:00,Assistente 2,5003290,CADASTRO,Alteração de categoria,Social,,,Social,Pública,1
+478,2026-07-13 09:26:00,2026-07-13 09:30:00,Assistente 5,5006118,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pequeno comércio,1
+479,2026-07-26 08:02:00,2026-07-26 08:18:00,Assistente 3,5004942,CADASTRO,Alteração de categoria,Social,,,Social,Residencial,2
+480,2026-07-03 08:30:00,2026-07-03 08:34:00,Assistente 5,5001337,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Comercial,1
+481,2026-07-05 14:11:00,2026-07-05 14:22:00,Assistente 2,5003696,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Comercial,1
+482,2026-07-14 13:08:00,2026-07-14 13:23:00,Assistente 5,5004298,CADASTRO,Encerrado sem tratativa,,,,,,
+483,2026-07-13 13:29:00,2026-07-13 13:34:00,Assistente 3,5003136,CADASTRO,Alteração de economias,Industrial,3 INDUSTRIAL,4 INDUSTRIAL,,,
+484,2026-07-01 17:40:00,2026-07-01 17:54:00,Assistente 2,5005838,CADASTRO,Alteração de economias,Social,2 SOCIAL,3 SOCIAL,,,
+485,2026-07-02 16:51:00,2026-07-02 17:07:00,Assistente 2,5005635,CADASTRO,Alteração de economias,Pública,3 PUBLICA,4 PUBLICA,,,
+486,2026-07-15 13:39:00,2026-07-15 13:59:00,Assistente 3,5007567,CADASTRO,Encerrado sem tratativa,,,,,,
+487,2026-07-02 14:50:00,2026-07-02 15:00:00,Assistente 3,5007714,CADASTRO,Alteração de economias,Social,3 SOCIAL,6 SOCIAL,,,
+488,2026-07-18 08:40:00,2026-07-18 08:59:00,Assistente 2,5004851,CADASTRO,Alteração de economias,Industrial,2 INDUSTRIAL,3 INDUSTRIAL,,,
+489,2026-07-23 14:41:00,2026-07-23 14:54:00,Assistente 2,5006090,CADASTRO,Alteração de categoria,Pública,,,Pública,Social,1
+490,2026-07-04 15:02:00,2026-07-04 15:04:00,Assistente 5,5005061,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Social,1
+491,2026-07-27 12:35:00,2026-07-27 12:41:00,Assistente 3,5000994,CADASTRO,Encerrado sem tratativa,,,,,,
+492,2026-07-02 13:20:00,2026-07-02 13:36:00,Assistente 5,5007763,CADASTRO,Encerrado sem tratativa,,,,,,
+493,2026-07-26 12:04:00,2026-07-26 12:12:00,Assistente 5,5006671,CADASTRO,Alteração de categoria,Pública,,,Pública,Comercial,1
+494,2026-07-20 16:37:00,2026-07-20 16:56:00,Assistente 2,5004354,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pública,1
+495,2026-07-21 11:19:00,2026-07-21 11:25:00,Assistente 4,5003808,CADASTRO,Alteração de categoria,Pública,,,Pública,Residencial,2
+496,2026-08-25 11:34:00,2026-08-25 11:52:00,Assistente 4,5005698,CADASTRO,Encerrado sem tratativa,,,,,,
+497,2026-08-27 12:32:00,2026-08-27 12:47:00,Assistente 2,5004172,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,4 COMERCIAL,,,
+498,2026-08-26 09:34:00,2026-08-26 09:36:00,Assistente 1,5001554,CADASTRO,Alteração de categoria,Pública,,,Pública,Comercial,1
+499,2026-08-18 13:46:00,2026-08-18 13:53:00,Assistente 2,5001680,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,3 COMERCIAL,,,
+500,2026-08-04 09:22:00,2026-08-04 09:34:00,Assistente 5,5000490,CADASTRO,Encerrado sem tratativa,,,,,,
+501,2026-08-27 16:36:00,2026-08-27 16:48:00,Assistente 3,5000091,CADASTRO,Alteração de economias,Social,2 SOCIAL,3 SOCIAL,,,
+502,2026-08-20 09:08:00,2026-08-20 09:18:00,Assistente 3,5004151,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Residencial,1
+503,2026-08-26 16:21:00,2026-08-26 16:27:00,Assistente 1,5001981,CADASTRO,Encerrado sem tratativa,,,,,,
+504,2026-08-08 12:43:00,2026-08-08 12:49:00,Assistente 3,5002100,CADASTRO,Encerrado sem tratativa,,,,,,
+505,2026-08-19 10:59:00,2026-08-19 11:03:00,Assistente 1,5002653,CADASTRO,Encerrado sem tratativa,,,,,,
+506,2026-08-15 13:18:00,2026-08-15 13:37:00,Assistente 5,5004606,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Industrial,2
+507,2026-08-16 09:15:00,2026-08-16 09:31:00,Assistente 2,5001225,CADASTRO,Alteração de economias,Pública,1 PUBLICA,4 PUBLICA,,,
+508,2026-08-01 17:40:00,2026-08-01 17:49:00,Assistente 1,5001302,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Residencial,1
+509,2026-08-01 15:31:00,2026-08-01 15:40:00,Assistente 2,5006202,CADASTRO,Encerrado sem tratativa,,,,,,
+510,2026-08-02 09:45:00,2026-08-02 09:53:00,Assistente 5,5001932,CADASTRO,Encerrado sem tratativa,,,,,,
+511,2026-08-26 11:34:00,2026-08-26 11:47:00,Assistente 5,5006804,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Industrial,2
+512,2026-08-13 09:12:00,2026-08-13 09:30:00,Assistente 4,5006020,CADASTRO,Alteração de categoria,Social,,,Social,Residencial,1
+513,2026-08-18 14:14:00,2026-08-18 14:20:00,Assistente 1,5001820,CADASTRO,Encerrado sem tratativa,,,,,,
+514,2026-08-11 08:55:00,2026-08-11 08:57:00,Assistente 4,5001834,CADASTRO,Encerrado sem tratativa,,,,,,
+515,2026-08-24 13:11:00,2026-08-24 13:19:00,Assistente 4,5005005,CADASTRO,Alteração de categoria,Social,,,Social,Industrial,1
+516,2026-08-25 16:03:00,2026-08-25 16:08:00,Assistente 2,5005915,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pequeno comércio,1
+517,2026-08-12 09:20:00,2026-08-12 09:34:00,Assistente 1,5002100,CADASTRO,Alteração de economias,Social,1 SOCIAL,2 SOCIAL,,,
+518,2026-08-06 10:41:00,2026-08-06 10:53:00,Assistente 1,5003570,CADASTRO,Encerrado sem tratativa,,,,,,
+519,2026-08-16 08:18:00,2026-08-16 08:34:00,Assistente 2,5006160,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,5 RESIDENCIAL,,,
+520,2026-08-24 10:26:00,2026-08-24 10:44:00,Assistente 5,5001463,CADASTRO,Alteração de categoria,Social,,,Social,Pequeno comércio,1
+521,2026-08-12 09:59:00,2026-08-12 10:02:00,Assistente 2,5006769,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+522,2026-08-08 09:55:00,2026-08-08 09:57:00,Assistente 5,5003290,CADASTRO,Alteração de economias,Social,2 SOCIAL,3 SOCIAL,,,
+523,2026-08-12 14:14:00,2026-08-12 14:27:00,Assistente 5,5007357,CADASTRO,Alteração de categoria,Social,,,Social,Residencial,2
+524,2026-08-13 08:16:00,2026-08-13 08:19:00,Assistente 1,5007511,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pública,2
+525,2026-08-15 11:04:00,2026-08-15 11:07:00,Assistente 4,5003892,CADASTRO,Encerrado sem tratativa,,,,,,
+526,2026-08-15 12:45:00,2026-08-15 12:48:00,Assistente 2,5000252,CADASTRO,Alteração de categoria,Social,,,Social,Comercial,1
+527,2026-08-05 10:43:00,2026-08-05 10:55:00,Assistente 1,5002877,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pequeno comércio,1
+528,2026-08-01 11:01:00,2026-08-01 11:18:00,Assistente 1,5002100,CADASTRO,Alteração de economias,Pequeno comércio,2 P. COMERCIO,3 P. COMERCIO,,,
+529,2026-08-15 12:18:00,2026-08-15 12:24:00,Assistente 1,5008309,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Comercial,2
+530,2026-08-09 08:01:00,2026-08-09 08:16:00,Assistente 2,5004697,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pequeno comércio,1
+531,2026-08-05 09:30:00,2026-08-05 09:45:00,Assistente 4,5003577,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,5 COMERCIAL,,,
+532,2026-08-17 13:17:00,2026-08-17 13:30:00,Assistente 4,5004172,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pequeno comércio,1
+533,2026-08-16 17:32:00,2026-08-16 17:44:00,Assistente 3,5003535,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,4 RESIDENCIAL,,,
+534,2026-08-04 08:53:00,2026-08-04 09:03:00,Assistente 3,5006426,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,2 RESIDENCIAL,,,
+535,2026-08-20 13:12:00,2026-08-20 13:17:00,Assistente 5,5002590,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+536,2026-08-08 13:41:00,2026-08-08 13:52:00,Assistente 3,5001750,CADASTRO,Alteração de economias,Residencial,4 RESIDENCIAL,3 RESIDENCIAL,,,
+537,2026-08-22 08:55:00,2026-08-22 08:59:00,Assistente 2,5004550,CADASTRO,Alteração de economias,Comercial,3 COMERCIAL,4 COMERCIAL,,,
+538,2026-08-23 11:19:00,2026-08-23 11:23:00,Assistente 4,5006909,CADASTRO,Encerrado sem tratativa,,,,,,
+539,2026-08-27 17:23:00,2026-08-27 17:38:00,Assistente 5,5003346,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,3 RESIDENCIAL,,,
+540,2026-08-04 11:08:00,2026-08-04 11:11:00,Assistente 4,5006202,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,4 RESIDENCIAL,,,
+541,2026-08-07 09:11:00,2026-08-07 09:21:00,Assistente 4,5001841,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Social,2
+542,2026-08-15 14:19:00,2026-08-15 14:23:00,Assistente 5,5004403,CADASTRO,Alteração de economias,Social,2 SOCIAL,3 SOCIAL,,,
+543,2026-08-23 08:04:00,2026-08-23 08:22:00,Assistente 5,5002583,CADASTRO,Encerrado sem tratativa,,,,,,
+544,2026-08-25 14:31:00,2026-08-25 14:51:00,Assistente 4,5005978,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Social,2
+545,2026-08-26 17:55:00,2026-08-26 17:58:00,Assistente 4,5000518,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,1 COMERCIAL,,,
+546,2026-08-27 16:01:00,2026-08-27 16:14:00,Assistente 1,5007399,CADASTRO,Alteração de economias,Comercial,3 COMERCIAL,5 COMERCIAL,,,
+547,2026-08-21 08:46:00,2026-08-21 08:52:00,Assistente 4,5002149,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Comercial,2
+548,2026-08-10 13:49:00,2026-08-10 13:52:00,Assistente 3,5007301,CADASTRO,Alteração de economias,Pequeno comércio,2 P. COMERCIO,1 P. COMERCIO,,,
+549,2026-08-20 14:04:00,2026-08-20 14:17:00,Assistente 5,5000210,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,3 COMERCIAL,,,
+550,2026-08-11 15:57:00,2026-08-11 16:17:00,Assistente 3,5004361,CADASTRO,Encerrado sem tratativa,,,,,,
+551,2026-08-07 09:37:00,2026-08-07 09:49:00,Assistente 2,5002660,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Comercial,1
+552,2026-08-27 08:16:00,2026-08-27 08:21:00,Assistente 5,5006608,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,1 RESIDENCIAL,,,
+553,2026-08-27 09:50:00,2026-08-27 10:01:00,Assistente 3,5003038,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Comercial,1
+554,2026-08-18 10:50:00,2026-08-18 11:01:00,Assistente 1,5002086,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Residencial,2
+555,2026-08-07 13:11:00,2026-08-07 13:28:00,Assistente 1,5004879,CADASTRO,Alteração de economias,Pequeno comércio,2 P. COMERCIO,1 P. COMERCIO,,,
+556,2026-08-09 16:43:00,2026-08-09 16:57:00,Assistente 2,5003304,CADASTRO,Encerrado sem tratativa,,,,,,
+557,2026-08-22 08:04:00,2026-08-22 08:10:00,Assistente 1,5007168,CADASTRO,Alteração de categoria,Social,,,Social,Pequeno comércio,1
+558,2026-08-03 17:32:00,2026-08-03 17:48:00,Assistente 5,5002688,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,3 COMERCIAL,,,
+559,2026-08-16 17:11:00,2026-08-16 17:16:00,Assistente 4,5004564,CADASTRO,Alteração de categoria,Pública,,,Pública,Social,1
+560,2026-08-13 12:59:00,2026-08-13 13:04:00,Assistente 2,5004963,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pública,1
+561,2026-08-13 09:31:00,2026-08-13 09:50:00,Assistente 5,5000175,CADASTRO,Alteração de categoria,Social,,,Social,Comercial,2
+562,2026-08-07 13:20:00,2026-08-07 13:26:00,Assistente 5,5003290,CADASTRO,Alteração de economias,Pequeno comércio,4 P. COMERCIO,3 P. COMERCIO,,,
+563,2026-08-05 12:58:00,2026-08-05 13:02:00,Assistente 4,5006251,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Comercial,1
+564,2026-08-04 13:22:00,2026-08-04 13:28:00,Assistente 3,5005082,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,6 RESIDENCIAL,,,
+565,2026-08-12 17:24:00,2026-08-12 17:36:00,Assistente 3,5007742,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Comercial,1
+566,2026-08-25 08:44:00,2026-08-25 09:04:00,Assistente 4,5003829,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,5 RESIDENCIAL,,,
+567,2026-08-12 11:25:00,2026-08-12 11:41:00,Assistente 5,5004403,CADASTRO,Encerrado sem tratativa,,,,,,
+568,2026-08-02 14:47:00,2026-08-02 15:05:00,Assistente 1,5000882,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Social,1
+569,2026-08-08 12:31:00,2026-08-08 12:50:00,Assistente 3,5003472,CADASTRO,Alteração de categoria,Pública,,,Pública,Social,2
+570,2026-08-27 11:44:00,2026-08-27 11:55:00,Assistente 5,5003332,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Comercial,2
+571,2026-08-12 08:32:00,2026-08-12 08:41:00,Assistente 3,5001414,CADASTRO,Alteração de categoria,Pública,,,Pública,Industrial,2
+572,2026-08-23 12:28:00,2026-08-23 12:41:00,Assistente 4,5002828,CADASTRO,Encerrado sem tratativa,,,,,,
+573,2026-08-08 16:17:00,2026-08-08 16:27:00,Assistente 5,5000007,CADASTRO,Encerrado sem tratativa,,,,,,
+574,2026-08-02 14:10:00,2026-08-02 14:15:00,Assistente 3,5004795,CADASTRO,Encerrado sem tratativa,,,,,,
+575,2026-08-04 08:33:00,2026-08-04 08:50:00,Assistente 3,5006853,CADASTRO,Alteração de economias,Social,2 SOCIAL,1 SOCIAL,,,
+576,2026-08-19 15:57:00,2026-08-19 15:59:00,Assistente 3,5004802,CADASTRO,Encerrado sem tratativa,,,,,,
+577,2026-08-12 13:20:00,2026-08-12 13:35:00,Assistente 3,5005411,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+578,2026-08-15 12:00:00,2026-08-15 12:04:00,Assistente 5,5001715,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pública,2
+579,2026-08-05 16:25:00,2026-08-05 16:36:00,Assistente 5,5008239,CADASTRO,Alteração de economias,Social,2 SOCIAL,3 SOCIAL,,,
+580,2026-08-04 16:24:00,2026-08-04 16:29:00,Assistente 3,5007203,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,3 COMERCIAL,,,
+581,2026-08-17 12:58:00,2026-08-17 13:06:00,Assistente 2,5005292,CADASTRO,Encerrado sem tratativa,,,,,,
+582,2026-08-12 11:16:00,2026-08-12 11:30:00,Assistente 4,5004193,CADASTRO,Alteração de economias,Comercial,1 COMERCIAL,2 COMERCIAL,,,
+583,2026-08-03 11:24:00,2026-08-03 11:44:00,Assistente 2,5003318,CADASTRO,Encerrado sem tratativa,,,,,,
+584,2026-08-24 10:03:00,2026-08-24 10:10:00,Assistente 5,5000868,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+585,2026-08-15 11:26:00,2026-08-15 11:46:00,Assistente 2,5002485,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pequeno comércio,2
+586,2026-08-05 10:45:00,2026-08-05 10:57:00,Assistente 1,5003066,CADASTRO,Encerrado sem tratativa,,,,,,
+587,2026-08-05 10:45:00,2026-08-05 10:55:00,Assistente 2,5007434,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+588,2026-08-16 10:16:00,2026-08-16 10:19:00,Assistente 3,5008323,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,5 RESIDENCIAL,,,
+589,2026-08-01 14:43:00,2026-08-01 14:57:00,Assistente 4,5000322,CADASTRO,Alteração de economias,Residencial,4 RESIDENCIAL,3 RESIDENCIAL,,,
+590,2026-08-14 15:22:00,2026-08-14 15:33:00,Assistente 2,5000434,CADASTRO,Encerrado sem tratativa,,,,,,
+591,2026-08-05 16:00:00,2026-08-05 16:04:00,Assistente 5,5007329,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pública,1
+592,2026-08-12 08:42:00,2026-08-12 09:02:00,Assistente 5,5007455,CADASTRO,Alteração de economias,Pública,4 PUBLICA,3 PUBLICA,,,
+593,2026-08-20 11:58:00,2026-08-20 12:02:00,Assistente 5,5003885,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,3 RESIDENCIAL,,,
+594,2026-08-26 10:08:00,2026-08-26 10:28:00,Assistente 5,5004893,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,2 P. COMERCIO,,,
+595,2026-08-04 08:48:00,2026-08-04 08:58:00,Assistente 5,5004942,CADASTRO,Alteração de categoria,Social,,,Social,Pública,1
+596,2026-08-06 14:33:00,2026-08-06 14:46:00,Assistente 5,5005222,CADASTRO,Alteração de economias,Comercial,4 COMERCIAL,3 COMERCIAL,,,
+597,2026-08-24 12:11:00,2026-08-24 12:22:00,Assistente 3,5006797,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Comercial,1
+598,2026-08-24 15:38:00,2026-08-24 15:46:00,Assistente 3,5001792,CADASTRO,Alteração de categoria,Pública,,,Pública,Industrial,1
+599,2026-08-04 09:39:00,2026-08-04 09:57:00,Assistente 4,5008127,CADASTRO,Encerrado sem tratativa,,,,,,
+600,2026-08-03 12:08:00,2026-08-03 12:10:00,Assistente 3,5005950,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+601,2026-08-09 12:47:00,2026-08-09 12:56:00,Assistente 5,5004942,CADASTRO,Alteração de economias,Pequeno comércio,1 P. COMERCIO,2 P. COMERCIO,,,
+602,2026-08-15 17:17:00,2026-08-15 17:22:00,Assistente 2,5005740,CADASTRO,Encerrado sem tratativa,,,,,,
+603,2026-08-12 07:57:00,2026-08-12 08:11:00,Assistente 3,5001519,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,2 RESIDENCIAL,,,
+604,2026-08-14 15:16:00,2026-08-14 15:31:00,Assistente 5,5005355,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Industrial,1
+605,2026-08-12 12:30:00,2026-08-12 12:34:00,Assistente 1,5003325,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+606,2026-08-24 14:11:00,2026-08-24 14:28:00,Assistente 4,5003311,CADASTRO,Alteração de categoria,Pública,,,Pública,Residencial,1
+607,2026-08-03 09:02:00,2026-08-03 09:06:00,Assistente 5,5002471,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Residencial,2
+608,2026-08-19 08:45:00,2026-08-19 09:05:00,Assistente 2,5004998,CADASTRO,Alteração de economias,Comercial,3 COMERCIAL,4 COMERCIAL,,,
+609,2026-08-08 11:59:00,2026-08-08 12:14:00,Assistente 2,5007280,CADASTRO,Alteração de categoria,Pública,,,Pública,Industrial,1
+610,2026-08-26 16:46:00,2026-08-26 16:53:00,Assistente 5,5000980,CADASTRO,Alteração de economias,Comercial,1 COMERCIAL,2 COMERCIAL,,,
+611,2026-08-04 12:23:00,2026-08-04 12:30:00,Assistente 2,5000742,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+612,2026-08-14 09:56:00,2026-08-14 10:09:00,Assistente 2,5005292,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Social,1
+613,2026-08-13 14:50:00,2026-08-13 15:06:00,Assistente 2,5006048,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,2 P. COMERCIO,,,
+614,2026-08-09 14:01:00,2026-08-09 14:06:00,Assistente 3,5007161,CADASTRO,Encerrado sem tratativa,,,,,,
+615,2026-08-23 09:01:00,2026-08-23 09:06:00,Assistente 4,5007588,CADASTRO,Alteração de categoria,Pública,,,Pública,Comercial,1
+616,2026-08-27 10:37:00,2026-08-27 10:54:00,Assistente 2,5007462,CADASTRO,Alteração de categoria,Pública,,,Pública,Residencial,1
+617,2026-08-21 09:03:00,2026-08-21 09:21:00,Assistente 1,5001561,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pequeno comércio,1
+618,2026-08-07 13:25:00,2026-08-07 13:39:00,Assistente 5,5000889,CADASTRO,Alteração de economias,Residencial,4 RESIDENCIAL,3 RESIDENCIAL,,,
+619,2026-08-05 09:39:00,2026-08-05 09:46:00,Assistente 4,5003570,CADASTRO,Alteração de categoria,Pública,,,Pública,Pequeno comércio,2
+620,2026-08-03 08:49:00,2026-08-03 08:53:00,Assistente 2,5008099,CADASTRO,Alteração de categoria,Social,,,Social,Industrial,1
+621,2026-08-27 08:04:00,2026-08-27 08:14:00,Assistente 3,5001351,CADASTRO,Alteração de economias,Industrial,3 INDUSTRIAL,4 INDUSTRIAL,,,
+622,2026-08-16 14:01:00,2026-08-16 14:15:00,Assistente 4,5007658,CADASTRO,Alteração de economias,Pequeno comércio,1 P. COMERCIO,2 P. COMERCIO,,,
+623,2026-08-03 17:06:00,2026-08-03 17:16:00,Assistente 4,5004452,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+624,2026-08-08 08:55:00,2026-08-08 09:08:00,Assistente 5,5006608,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Industrial,2
+625,2026-08-18 16:51:00,2026-08-18 16:56:00,Assistente 1,5001456,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Residencial,1
+626,2026-09-22 15:48:00,2026-09-22 16:02:00,Assistente 1,5003353,CADASTRO,Encerrado sem tratativa,,,,,,
+627,2026-09-20 15:57:00,2026-09-20 16:11:00,Assistente 3,5007231,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,1 RESIDENCIAL,,,
+628,2026-09-12 08:58:00,2026-09-12 09:06:00,Assistente 2,5004214,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Residencial,2
+629,2026-09-25 12:04:00,2026-09-25 12:21:00,Assistente 1,5001771,CADASTRO,Alteração de categoria,Pública,,,Pública,Social,2
+630,2026-09-17 17:18:00,2026-09-17 17:25:00,Assistente 4,5003206,CADASTRO,Alteração de economias,Social,3 SOCIAL,4 SOCIAL,,,
+631,2026-09-25 09:56:00,2026-09-25 10:09:00,Assistente 1,5005390,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pequeno comércio,1
+632,2026-09-05 15:16:00,2026-09-05 15:21:00,Assistente 3,5000056,CADASTRO,Encerrado sem tratativa,,,,,,
+633,2026-09-21 17:22:00,2026-09-21 17:26:00,Assistente 2,5003136,CADASTRO,Encerrado sem tratativa,,,,,,
+634,2026-09-20 14:12:00,2026-09-20 14:21:00,Assistente 2,5008365,CADASTRO,Alteração de categoria,Social,,,Social,Pública,1
+635,2026-09-07 08:22:00,2026-09-07 08:35:00,Assistente 2,5008281,CADASTRO,Alteração de economias,Social,4 SOCIAL,3 SOCIAL,,,
+636,2026-09-01 14:52:00,2026-09-01 14:58:00,Assistente 1,5003262,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,6 P. COMERCIO,,,
+637,2026-09-14 15:53:00,2026-09-14 16:05:00,Assistente 1,5000427,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,1 COMERCIAL,,,
+638,2026-09-11 17:17:00,2026-09-11 17:22:00,Assistente 4,5004151,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Pública,1
+639,2026-09-26 14:18:00,2026-09-26 14:31:00,Assistente 4,5004298,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+640,2026-09-05 16:27:00,2026-09-05 16:38:00,Assistente 1,5002534,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pública,1
+641,2026-09-20 12:10:00,2026-09-20 12:13:00,Assistente 5,5000756,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,5 RESIDENCIAL,,,
+642,2026-09-09 10:01:00,2026-09-09 10:05:00,Assistente 5,5004270,CADASTRO,Encerrado sem tratativa,,,,,,
+643,2026-09-12 16:24:00,2026-09-12 16:40:00,Assistente 4,5000973,CADASTRO,Alteração de categoria,Social,,,Social,Pública,2
+644,2026-09-12 08:16:00,2026-09-12 08:31:00,Assistente 4,5006860,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Residencial,1
+645,2026-09-18 12:43:00,2026-09-18 12:55:00,Assistente 3,5004802,CADASTRO,Encerrado sem tratativa,,,,,,
+646,2026-09-12 11:16:00,2026-09-12 11:24:00,Assistente 3,5006349,CADASTRO,Alteração de categoria,Pública,,,Pública,Comercial,1
+647,2026-09-23 14:49:00,2026-09-23 14:59:00,Assistente 2,5007819,CADASTRO,Alteração de economias,Pequeno comércio,1 P. COMERCIO,2 P. COMERCIO,,,
+648,2026-09-01 08:26:00,2026-09-01 08:31:00,Assistente 1,5005243,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,5 RESIDENCIAL,,,
+649,2026-09-23 08:43:00,2026-09-23 08:54:00,Assistente 2,5005271,CADASTRO,Alteração de economias,Social,2 SOCIAL,4 SOCIAL,,,
+650,2026-09-24 10:50:00,2026-09-24 10:52:00,Assistente 4,5004039,CADASTRO,Encerrado sem tratativa,,,,,,
+651,2026-09-08 13:18:00,2026-09-08 13:36:00,Assistente 4,5002499,CADASTRO,Encerrado sem tratativa,,,,,,
+652,2026-09-11 12:58:00,2026-09-11 13:08:00,Assistente 1,5000917,CADASTRO,Encerrado sem tratativa,,,,,,
+653,2026-09-03 10:48:00,2026-09-03 11:02:00,Assistente 1,5005656,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Comercial,1
+654,2026-09-05 12:39:00,2026-09-05 12:51:00,Assistente 3,5002352,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Industrial,1
+655,2026-09-21 13:21:00,2026-09-21 13:29:00,Assistente 2,5000917,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,2 RESIDENCIAL,,,
+656,2026-09-08 11:14:00,2026-09-08 11:16:00,Assistente 3,5004753,CADASTRO,Alteração de economias,Comercial,1 COMERCIAL,3 COMERCIAL,,,
+657,2026-09-14 08:02:00,2026-09-14 08:10:00,Assistente 1,5007924,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Residencial,2
+658,2026-09-24 10:39:00,2026-09-24 10:58:00,Assistente 5,5004333,CADASTRO,Alteração de economias,Social,1 SOCIAL,2 SOCIAL,,,
+659,2026-09-05 15:02:00,2026-09-05 15:15:00,Assistente 2,5000070,CADASTRO,Alteração de economias,Pequeno comércio,4 P. COMERCIO,3 P. COMERCIO,,,
+660,2026-09-20 14:21:00,2026-09-20 14:38:00,Assistente 4,5008379,CADASTRO,Alteração de categoria,Pública,,,Pública,Industrial,1
+661,2026-09-24 09:07:00,2026-09-24 09:26:00,Assistente 4,5001498,CADASTRO,Encerrado sem tratativa,,,,,,
+662,2026-09-12 17:17:00,2026-09-12 17:30:00,Assistente 5,5000833,CADASTRO,Alteração de economias,Industrial,1 INDUSTRIAL,2 INDUSTRIAL,,,
+663,2026-09-15 09:53:00,2026-09-15 10:00:00,Assistente 2,5007714,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,3 COMERCIAL,,,
+664,2026-09-27 16:59:00,2026-09-27 17:02:00,Assistente 2,5000686,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Residencial,1
+665,2026-09-13 13:52:00,2026-09-13 13:58:00,Assistente 5,5002345,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pequeno comércio,2
+666,2026-09-17 12:24:00,2026-09-17 12:33:00,Assistente 1,5002569,CADASTRO,Alteração de economias,Social,1 SOCIAL,4 SOCIAL,,,
+667,2026-09-10 14:20:00,2026-09-10 14:32:00,Assistente 1,5006874,CADASTRO,Encerrado sem tratativa,,,,,,
+668,2026-09-13 17:39:00,2026-09-13 17:50:00,Assistente 2,5002170,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,1 COMERCIAL,,,
+669,2026-09-02 15:09:00,2026-09-02 15:11:00,Assistente 5,5003661,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Social,1
+670,2026-09-24 10:55:00,2026-09-24 11:09:00,Assistente 1,5004172,CADASTRO,Alteração de categoria,Pública,,,Pública,Social,1
+671,2026-09-11 13:48:00,2026-09-11 13:58:00,Assistente 5,5001673,CADASTRO,Alteração de categoria,Social,,,Social,Comercial,2
+672,2026-09-12 15:21:00,2026-09-12 15:28:00,Assistente 5,5001813,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+673,2026-09-06 12:22:00,2026-09-06 12:42:00,Assistente 5,5005502,CADASTRO,Alteração de categoria,Social,,,Social,Residencial,1
+674,2026-09-10 17:20:00,2026-09-10 17:29:00,Assistente 4,5007098,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,5 RESIDENCIAL,,,
+675,2026-09-07 16:47:00,2026-09-07 17:00:00,Assistente 4,5007371,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pública,2
+676,2026-09-19 08:00:00,2026-09-19 08:10:00,Assistente 4,5002373,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Pública,2
+677,2026-09-05 15:34:00,2026-09-05 15:52:00,Assistente 3,5003829,CADASTRO,Alteração de categoria,Social,,,Social,Residencial,2
+678,2026-09-03 10:39:00,2026-09-03 10:41:00,Assistente 3,5006160,CADASTRO,Encerrado sem tratativa,,,,,,
+679,2026-09-08 08:08:00,2026-09-08 08:26:00,Assistente 3,5004270,CADASTRO,Alteração de economias,Residencial,4 RESIDENCIAL,3 RESIDENCIAL,,,
+680,2026-09-06 12:21:00,2026-09-06 12:34:00,Assistente 5,5004984,CADASTRO,Alteração de economias,Social,2 SOCIAL,4 SOCIAL,,,
+681,2026-09-24 10:42:00,2026-09-24 10:44:00,Assistente 2,5002177,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Comercial,1
+682,2026-09-15 15:01:00,2026-09-15 15:21:00,Assistente 1,5008162,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+683,2026-09-06 12:36:00,2026-09-06 12:38:00,Assistente 2,5001582,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Comercial,2
+684,2026-09-10 15:37:00,2026-09-10 15:57:00,Assistente 1,5003472,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+685,2026-09-13 14:37:00,2026-09-13 14:52:00,Assistente 5,5003115,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+686,2026-09-15 17:45:00,2026-09-15 17:58:00,Assistente 4,5008127,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Residencial,1
+687,2026-09-10 17:06:00,2026-09-10 17:13:00,Assistente 4,5002555,CADASTRO,Alteração de categoria,Pública,,,Pública,Social,1
+688,2026-09-02 11:05:00,2026-09-02 11:11:00,Assistente 1,5004389,CADASTRO,Alteração de economias,Pequeno comércio,3 P. COMERCIO,4 P. COMERCIO,,,
+689,2026-09-25 07:53:00,2026-09-25 08:06:00,Assistente 3,5005565,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Social,1
+690,2026-09-12 07:55:00,2026-09-12 08:02:00,Assistente 3,5008239,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Comercial,2
+691,2026-09-22 16:19:00,2026-09-22 16:26:00,Assistente 3,5005453,CADASTRO,Alteração de categoria,Social,,,Social,Comercial,2
+692,2026-09-19 15:51:00,2026-09-19 16:00:00,Assistente 1,5008183,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,2 RESIDENCIAL,,,
+693,2026-09-04 12:05:00,2026-09-04 12:18:00,Assistente 5,5001162,CADASTRO,Alteração de economias,Pública,3 PUBLICA,4 PUBLICA,,,
+694,2026-09-25 17:54:00,2026-09-25 17:56:00,Assistente 5,5004088,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Residencial,1
+695,2026-09-02 16:58:00,2026-09-02 17:13:00,Assistente 3,5001127,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,4 RESIDENCIAL,,,
+696,2026-09-10 17:13:00,2026-09-10 17:29:00,Assistente 3,5003094,CADASTRO,Encerrado sem tratativa,,,,,,
+697,2026-09-21 12:58:00,2026-09-21 13:16:00,Assistente 2,5001638,CADASTRO,Alteração de economias,Social,3 SOCIAL,4 SOCIAL,,,
+698,2026-09-10 08:06:00,2026-09-10 08:12:00,Assistente 3,5004480,CADASTRO,Alteração de categoria,Pública,,,Pública,Social,2
+699,2026-09-06 08:20:00,2026-09-06 08:37:00,Assistente 4,5005068,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Pública,1
+700,2026-09-25 09:15:00,2026-09-25 09:19:00,Assistente 1,5003094,CADASTRO,Alteração de categoria,Pública,,,Pública,Comercial,1
+701,2026-09-27 09:54:00,2026-09-27 10:04:00,Assistente 3,5007063,CADASTRO,Alteração de economias,Industrial,1 INDUSTRIAL,2 INDUSTRIAL,,,
+702,2026-09-15 15:07:00,2026-09-15 15:09:00,Assistente 4,5003437,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,5 RESIDENCIAL,,,
+703,2026-09-10 13:04:00,2026-09-10 13:15:00,Assistente 1,5005453,CADASTRO,Encerrado sem tratativa,,,,,,
+704,2026-09-14 08:17:00,2026-09-14 08:31:00,Assistente 5,5003318,CADASTRO,Alteração de economias,Social,2 SOCIAL,3 SOCIAL,,,
+705,2026-09-02 14:10:00,2026-09-02 14:18:00,Assistente 5,5007392,CADASTRO,Alteração de economias,Pública,4 PUBLICA,3 PUBLICA,,,
+706,2026-09-13 16:27:00,2026-09-13 16:46:00,Assistente 5,5004368,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,1 RESIDENCIAL,,,
+707,2026-09-01 08:58:00,2026-09-01 09:13:00,Assistente 5,5007980,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pequeno comércio,1
+708,2026-09-06 13:03:00,2026-09-06 13:19:00,Assistente 1,5001316,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,5 RESIDENCIAL,,,
+709,2026-09-22 16:38:00,2026-09-22 16:41:00,Assistente 4,5005299,CADASTRO,Alteração de categoria,Social,,,Social,Pequeno comércio,1
+710,2026-09-16 12:32:00,2026-09-16 12:43:00,Assistente 3,5001841,CADASTRO,Alteração de categoria,Social,,,Social,Pequeno comércio,2
+711,2026-09-27 09:29:00,2026-09-27 09:32:00,Assistente 2,5004753,CADASTRO,Alteração de categoria,Social,,,Social,Pequeno comércio,1
+712,2026-09-26 08:15:00,2026-09-26 08:25:00,Assistente 4,5001967,CADASTRO,Alteração de economias,Industrial,1 INDUSTRIAL,2 INDUSTRIAL,,,
+713,2026-09-13 09:32:00,2026-09-13 09:40:00,Assistente 3,5004284,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pública,1
+714,2026-09-06 10:13:00,2026-09-06 10:28:00,Assistente 4,5002422,CADASTRO,Alteração de categoria,Pública,,,Pública,Industrial,1
+715,2026-09-10 13:31:00,2026-09-10 13:34:00,Assistente 4,5001456,CADASTRO,Alteração de economias,Comercial,2 COMERCIAL,1 COMERCIAL,,,
+716,2026-09-19 13:00:00,2026-09-19 13:15:00,Assistente 2,5002814,CADASTRO,Alteração de categoria,Pública,,,Pública,Pequeno comércio,1
+717,2026-09-01 12:44:00,2026-09-01 12:54:00,Assistente 2,5007175,CADASTRO,Alteração de categoria,Pública,,,Pública,Industrial,2
+718,2026-09-18 11:57:00,2026-09-18 12:15:00,Assistente 4,5002849,CADASTRO,Alteração de categoria,Social,,,Social,Comercial,2
+719,2026-09-22 14:59:00,2026-09-22 15:05:00,Assistente 5,5003479,CADASTRO,Alteração de economias,Social,1 SOCIAL,2 SOCIAL,,,
+720,2026-09-12 17:39:00,2026-09-12 17:56:00,Assistente 3,5007994,CADASTRO,Alteração de economias,Comercial,3 COMERCIAL,6 COMERCIAL,,,
+721,2026-09-02 09:25:00,2026-09-02 09:44:00,Assistente 4,5000210,CADASTRO,Alteração de economias,Pública,2 PUBLICA,5 PUBLICA,,,
+722,2026-09-17 16:07:00,2026-09-17 16:11:00,Assistente 3,5008288,CADASTRO,Alteração de categoria,Social,,,Social,Industrial,1
+723,2026-09-01 15:15:00,2026-09-01 15:17:00,Assistente 5,5006167,CADASTRO,Encerrado sem tratativa,,,,,,
+724,2026-09-16 08:36:00,2026-09-16 08:50:00,Assistente 1,5005257,CADASTRO,Encerrado sem tratativa,,,,,,
+725,2026-09-18 10:44:00,2026-09-18 10:46:00,Assistente 1,5008050,CADASTRO,Alteração de economias,Residencial,1 RESIDENCIAL,4 RESIDENCIAL,,,
+726,2026-09-01 09:23:00,2026-09-01 09:30:00,Assistente 1,5004935,CADASTRO,Alteração de economias,Industrial,4 INDUSTRIAL,3 INDUSTRIAL,,,
+727,2026-09-08 10:14:00,2026-09-08 10:16:00,Assistente 3,5007084,CADASTRO,Encerrado sem tratativa,,,,,,
+728,2026-09-25 12:53:00,2026-09-25 13:09:00,Assistente 4,5006195,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,4 RESIDENCIAL,,,
+729,2026-09-19 12:34:00,2026-09-19 12:48:00,Assistente 4,5004802,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+730,2026-09-21 11:00:00,2026-09-21 11:12:00,Assistente 5,5002534,CADASTRO,Alteração de categoria,Pública,,,Pública,Pequeno comércio,2
+731,2026-09-02 10:29:00,2026-09-02 10:34:00,Assistente 3,5000392,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pequeno comércio,1
+732,2026-09-22 11:18:00,2026-09-22 11:37:00,Assistente 4,5002478,CADASTRO,Alteração de categoria,Social,,,Social,Residencial,1
+733,2026-09-25 09:34:00,2026-09-25 09:54:00,Assistente 2,5003542,CADASTRO,Alteração de economias,Residencial,4 RESIDENCIAL,3 RESIDENCIAL,,,
+734,2026-09-07 09:22:00,2026-09-07 09:35:00,Assistente 5,5001141,CADASTRO,Alteração de categoria,Social,,,Social,Industrial,2
+735,2026-09-04 09:32:00,2026-09-04 09:50:00,Assistente 1,5005187,CADASTRO,Alteração de categoria,Residencial,,,Residencial,Pequeno comércio,1
+736,2026-09-19 17:48:00,2026-09-19 17:59:00,Assistente 4,5000049,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,2 RESIDENCIAL,,,
+737,2026-09-16 17:26:00,2026-09-16 17:40:00,Assistente 2,5003234,CADASTRO,Alteração de economias,Social,3 SOCIAL,2 SOCIAL,,,
+738,2026-09-21 10:40:00,2026-09-21 10:54:00,Assistente 5,5000259,CADASTRO,Encerrado sem tratativa,,,,,,
+739,2026-09-13 13:17:00,2026-09-13 13:27:00,Assistente 2,5007133,CADASTRO,Alteração de economias,Industrial,2 INDUSTRIAL,5 INDUSTRIAL,,,
+740,2026-09-27 07:59:00,2026-09-27 08:01:00,Assistente 5,5005250,CADASTRO,Alteração de economias,Pública,2 PUBLICA,3 PUBLICA,,,
+741,2026-09-15 07:54:00,2026-09-15 08:11:00,Assistente 4,5005418,CADASTRO,Encerrado sem tratativa,,,,,,
+742,2026-09-14 10:52:00,2026-09-14 11:06:00,Assistente 1,5003031,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Pequeno comércio,1
+743,2026-09-07 13:29:00,2026-09-07 13:31:00,Assistente 5,5007483,CADASTRO,Alteração de categoria,Industrial,,,Industrial,Residencial,1
+744,2026-09-27 16:33:00,2026-09-27 16:37:00,Assistente 5,5000959,CADASTRO,Alteração de categoria,Comercial,,,Comercial,Social,1
+745,2026-09-11 09:12:00,2026-09-11 09:16:00,Assistente 5,5001981,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,3 RESIDENCIAL,,,
+746,2026-09-13 07:51:00,2026-09-13 08:02:00,Assistente 3,5007357,CADASTRO,Alteração de categoria,Pequeno comércio,,,Pequeno comércio,Social,1
+747,2026-09-23 09:05:00,2026-09-23 09:14:00,Assistente 2,5007525,CADASTRO,Encerrado sem tratativa,,,,,,
+748,2026-09-09 11:44:00,2026-09-09 12:04:00,Assistente 3,5007812,CADASTRO,Alteração de economias,Residencial,3 RESIDENCIAL,6 RESIDENCIAL,,,
+749,2026-09-27 16:26:00,2026-09-27 16:32:00,Assistente 4,5006594,CADASTRO,Alteração de economias,Residencial,2 RESIDENCIAL,1 RESIDENCIAL,,,
+750,2026-09-05 10:55:00,2026-09-05 11:11:00,Assistente 5,5003948,CADASTRO,Alteração de economias,Comercial,3 COMERCIAL,2 COMERCIAL,,,
