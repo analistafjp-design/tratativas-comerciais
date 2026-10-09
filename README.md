@@ -1,6 +1,6 @@
 # Impacto do Cadastro
 
-Painel simples para mostrar o que as tratativas do cadastro trazem de valor: **novas economias**, **trocas de categoria** e o **faturamento recorrente** que isso gera, mês a mês e até dezembro. Segue o desenho do relatório do Power BI: resultado de cada mês e as quatro tabelas (incremento/decremento de economia e de categoria).
+Painel simples para mostrar o que as tratativas do cadastro trazem de valor. Para cada mês: **novas economias**, **trocas de categoria**, o **valor que entra na próxima fatura cheia** e o **total até dezembro**. No topo, o resumo do ano.
 
 Endereço depois de publicado: `https://analistafjp-design.github.io/tratativas-comerciais/`
 
@@ -43,9 +43,9 @@ Igual às medidas do modelo. O resultado do mês é a **soma das quatro tabelas*
 | Decremento de categoria | `ANTERIOR`, `ATUAL`, `QUANTIDADE` | idem, quando negativo. Categoria sem tarifa ("Outros") vale R$ 0 |
 
 - **Ganhos** = incrementos; **Perdas** = decrementos. **Resultado do mês = ganhos − perdas.**
-- Os indicadores "Novas economias" e "Trocas de categoria" são os totais das tabelas de **incremento**; os decrementos aparecem como detalhe.
+- "Novas economias" e "Trocas de categoria" são os totais das tabelas de **incremento** do relatório. Os decrementos entram só no valor (como perdas).
 - Mês de referência: `Hora de conclusão`. A triagem é feita no fim do mês, então a primeira fatura cheia é a do **mês seguinte**.
-- **Total até dezembro** = resultado do mês × meses restantes após o mês da tratativa (julho → ago a dez = 5). Em "Ano todo" o painel soma isso para todos os meses.
+- **Até dezembro** = resultado do mês × meses restantes após o mês da tratativa (julho → ago a dez = 5). O resumo do ano soma isso de todos os meses.
 - **Água + esgoto (valor × 2)**: Cordeiro, Miracema e Aperibé, definidos em `DOUBLE_CITIES` no script. Os demais pagam só água. É uma regra por município; se a base de clientes passar a ter o tipo de faturamento por ligação, o ideal é usar esse campo.
 - **Tarifas** (por economia/mês): Residencial R$ 85,41 · Comercial R$ 443,57 · Industrial R$ 613,17 · Pública R$ 129,16 · Pequeno comércio R$ 221,78 · Social R$ 30,12 · Comércio popular R$ 60,24. Comercial, Industrial e Pública seguem a tabela `Tarifas` do modelo, que é o que o relatório usa (ex.: 2 × 443,57 = R$ 887,14). A lista de tarifas informada em texto tem 1 centavo a menos nessas três (443,56 / 613,16 / 129,15). Para mudar, edite `TARIFFS_CENTS` em `scripts/build_data.py` e gere de novo.
 
@@ -64,7 +64,7 @@ O script também avisa quando há categorias não reconhecidas (tratadas como "O
 
 ```
 site/                     painel estático (index.html, styles.css, app.js)
-site/data/summary.json    totais por mês × localidade × (de → para) (gerado, sem dados de cliente)
+site/data/summary.json    totais por mês, localidade e (de → para) (gerado, sem dados de cliente)
 scripts/build_data.py     gera o summary.json a partir da exportação
 scripts/gerar_exemplo.py  dados fictícios para teste
 tests/                    python -m unittest discover -s tests

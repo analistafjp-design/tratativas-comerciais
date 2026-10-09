@@ -21,104 +21,55 @@
         <span class="identity-mark" aria-hidden="true">↗</span>
         <div><strong>Acompanhamento Tratativas Comerciais</strong><span>Cadastro · 2026</span></div>
       </div>
-      <div class="header-actions">
-        <span class="status"><span class="status-dot"></span><span id="status-text">Carregando dados</span></span>
-        <button class="outline-button" id="assumptions-button" type="button">Como calculamos</button>
-      </div>
+      <span class="status"><span class="status-dot"></span><span id="status-text">Carregando dados</span></span>
     </div>
   </header>
 
   <main class="wrap" id="main">
     <section class="intro" aria-labelledby="title">
-      <div>
-        <h1 id="title">Cada correção do cadastro gera <em>valor recorrente.</em></h1>
-        <p class="intro-copy">Novas economias e trocas de categoria, já descontadas as perdas. O valor cheio entra na fatura do mês seguinte à tratativa.</p>
-      </div>
-      <div class="filters">
-        <label for="period">Mês / Ano<select id="period"></select></label>
-        <label for="city" id="city-label">Localidade<select id="city"></select></label>
-      </div>
+      <h1 id="title">Cada correção do cadastro gera <em>valor recorrente.</em></h1>
+      <p class="intro-copy" id="scope">Carregando resultados…</p>
     </section>
 
-    <p class="period-line" id="period-description">Carregando resultados…</p>
-
-    <section class="kpis" aria-label="Indicadores principais">
+    <section class="kpis" aria-label="Resultado do ano">
       <article class="kpi">
-        <span class="kpi-icon green" aria-hidden="true">↗</span>
         <p class="kpi-label">Novas economias</p>
-        <strong class="kpi-value" id="new-economies">—</strong>
-        <p class="kpi-detail" id="lost-economies"></p>
+        <strong class="kpi-value" id="total-economies">—</strong>
       </article>
       <article class="kpi">
-        <span class="kpi-icon blue" aria-hidden="true">⇄</span>
         <p class="kpi-label">Trocas de categoria</p>
-        <strong class="kpi-value" id="category-swaps">—</strong>
-        <p class="kpi-detail" id="category-detail"></p>
+        <strong class="kpi-value" id="total-swaps">—</strong>
       </article>
       <article class="kpi accent">
-        <span class="kpi-icon light" aria-hidden="true">R$</span>
-        <p class="kpi-label" id="monthly-label">Na fatura cheia</p>
-        <strong class="kpi-value currency" id="monthly-net">—</strong>
-        <p class="kpi-detail" id="monthly-detail"></p>
+        <p class="kpi-label">Entra por mês na fatura</p>
+        <strong class="kpi-value currency" id="total-monthly">—</strong>
       </article>
       <article class="kpi">
-        <span class="kpi-icon amber" aria-hidden="true">▤</span>
-        <p class="kpi-label" id="projection-label">Até dezembro</p>
-        <strong class="kpi-value currency" id="projection">—</strong>
-        <p class="kpi-detail" id="annualized"></p>
+        <p class="kpi-label" id="total-until-label">Faturamento até dezembro</p>
+        <strong class="kpi-value currency" id="total-until">—</strong>
       </article>
     </section>
 
-    <section class="section" aria-labelledby="tiles-title">
-      <h2 id="tiles-title">Resultado de cada mês</h2>
-      <p class="section-copy">Ganhos menos perdas das tratativas do mês. Clique em um mês para ver o detalhe.</p>
-      <div class="tiles" id="month-tiles" role="group" aria-label="Resultado por mês"></div>
-    </section>
-
-    <section class="section" aria-labelledby="detail-title">
-      <h2 id="detail-title">Detalhe</h2>
-      <p class="equation" id="equation"></p>
-      <div class="detail-grid">
-        <article class="panel inc">
-          <h3>Incremento de economia</h3>
-          <div class="table-scroll"><table class="detail-table"><thead><tr><th>De</th><th>Para</th><th class="num">Qtd.</th><th class="num">Valor</th></tr></thead><tbody id="econ-inc-body"></tbody><tfoot id="econ-inc-foot"></tfoot></table></div>
-        </article>
-        <article class="panel inc">
-          <h3>Incremento de categoria</h3>
-          <div class="table-scroll"><table class="detail-table"><thead><tr><th>Anterior</th><th>Atual</th><th class="num">Qtd.</th><th class="num">Valor</th></tr></thead><tbody id="cat-inc-body"></tbody><tfoot id="cat-inc-foot"></tfoot></table></div>
-        </article>
-        <article class="panel dec">
-          <h3>Decremento de economia</h3>
-          <div class="table-scroll"><table class="detail-table"><thead><tr><th>De</th><th>Para</th><th class="num">Qtd.</th><th class="num">Valor</th></tr></thead><tbody id="econ-dec-body"></tbody><tfoot id="econ-dec-foot"></tfoot></table></div>
-        </article>
-        <article class="panel dec">
-          <h3>Decremento de categoria</h3>
-          <div class="table-scroll"><table class="detail-table"><thead><tr><th>Anterior</th><th>Atual</th><th class="num">Qtd.</th><th class="num">Valor</th></tr></thead><tbody id="cat-dec-body"></tbody><tfoot id="cat-dec-foot"></tfoot></table></div>
-        </article>
-      </div>
-      <p class="data-note" id="data-note"></p>
+    <section class="section" aria-labelledby="table-title">
+      <h2 id="table-title">Mês a mês</h2>
+      <table class="months-table">
+        <thead>
+          <tr>
+            <th scope="col">Mês</th>
+            <th scope="col" class="num">Novas economias</th>
+            <th scope="col" class="num">Trocas de categoria</th>
+            <th scope="col" class="num">Na próxima fatura cheia</th>
+            <th scope="col" class="num">Até dezembro</th>
+          </tr>
+        </thead>
+        <tbody id="months-body"></tbody>
+      </table>
     </section>
 
     <footer class="footer">
-      <span id="source-note">Dados consolidados, sem identificação de clientes.</span>
-      <span>Estimativa de faturamento, sujeita à efetiva cobrança e à permanência das alterações.</span>
+      <p id="rules">Valor por mês = ganhos − perdas. Na troca de categoria desconta-se a tarifa da categoria anterior. A primeira fatura cheia é a do mês seguinte à tratativa.</p>
+      <p>Estimativa de faturamento, sujeita à efetiva cobrança e à permanência das alterações. Dados consolidados, sem identificação de clientes.</p>
     </footer>
   </main>
-
-  <dialog id="assumptions-dialog" aria-labelledby="dialog-title">
-    <form method="dialog" class="dialog-body">
-      <div class="dialog-header">
-        <h2 id="dialog-title">Como calculamos</h2>
-        <button class="close-button" aria-label="Fechar" value="cancel">×</button>
-      </div>
-      <ul class="dialog-list">
-        <li><strong>Resultado do mês</strong> = ganhos − perdas. Ganhos: incremento de economia e de categoria. Perdas: decremento de economia e de categoria. É a soma das quatro tabelas.</li>
-        <li><strong>Total até dezembro</strong> = resultado do mês × meses restantes após a tratativa. A primeira fatura cheia é a do mês seguinte, porque a triagem é feita no fim de cada mês.</li>
-        <li><strong>Água + esgoto (valor 2×)</strong> em <span id="double-cities">Cordeiro, Miracema e Aperibé</span>. Nas demais localidades, só água (1×).</li>
-      </ul>
-      <p class="dialog-title-small">Tarifa mensal por economia</p>
-      <table class="tariff-table"><tbody id="tariff-rows"></tbody></table>
-    </form>
-  </dialog>
 </body>
 </html>
