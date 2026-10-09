@@ -3,73 +3,84 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101d38">
+  <title>Tratativas Comerciais</title>
   <meta name="description" content="Resultado das tratativas do cadastro: novas economias, trocas de categoria e faturamento recorrente estimado.">
-  <title>Impacto do Cadastro | Tratativas Comerciais</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23c4f0cf'/%3E%3Cpath d='M10 22 22 10M13 10h9v9' fill='none' stroke='%23123c2f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <meta name="theme-color" content="#1c3a8f">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23364dd4'/%3E%3Cpath d='M9 22V15M16 22V10M23 22V13' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="./styles.css">
   <script src="./app.js" defer></script>
 </head>
 <body>
-  <div class="sample-banner" id="sample-banner" role="alert" hidden>
-    <strong>Dados de exemplo (fictícios).</strong> Gere o painel com a sua exportação da tabela TRATATIVAS antes de compartilhar. Veja o README.
-  </div>
-
-  <header class="site-header">
-    <div class="wrap header-inner">
-      <div class="identity">
-        <span class="identity-mark" aria-hidden="true">↗</span>
-        <div><strong>Acompanhamento Tratativas Comerciais</strong><span>Cadastro · 2026</span></div>
+  <header class="topo">
+    <div class="wrap">
+      <div class="linha-topo">
+        <div class="marca">
+          <span class="logo" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M7 18v-6M12 18V6M17 18v-9"/></svg></span>
+          <div>
+            <h1>Tratativas Comerciais</h1>
+            <small id="sub-topo">Carregando dados…</small>
+          </div>
+        </div>
       </div>
-      <span class="status"><span class="status-dot"></span><span id="status-text">Carregando dados</span></span>
     </div>
   </header>
 
-  <main class="wrap" id="main">
-    <section class="intro" aria-labelledby="title">
-      <h1 id="title">Cada correção do cadastro gera <em>valor recorrente.</em></h1>
-      <p class="intro-copy" id="scope">Carregando resultados…</p>
+  <div class="wrap">
+    <div class="mensagens" aria-live="polite">
+      <div class="msg aviso" id="sample-banner" hidden><span class="ic">!</span><span><b>Dados de exemplo (fictícios).</b> Gere o painel com a sua exportação da tabela TRATATIVAS antes de compartilhar. Veja o README.</span></div>
+    </div>
+  </div>
+
+  <main class="wrap painel" id="main">
+    <h2 class="secao">Resultado do ano</h2>
+    <section class="cartoes" aria-label="Resultado do ano">
+      <div class="cartao heroi">
+        <div class="rot"><i class="dot" style="background: var(--accent)"></i>Entra por mês na fatura</div>
+        <div class="valor" id="total-monthly">—</div>
+        <div class="sub" id="hero-sub">Ganhos menos perdas, valor que se repete a cada fatura</div>
+      </div>
+      <div class="cartao">
+        <div class="rot"><i class="dot" style="background: var(--c-verde)"></i>Novas economias</div>
+        <div class="valor" id="total-economies">—</div>
+        <div class="sub">Incremento de economia</div>
+      </div>
+      <div class="cartao">
+        <div class="rot"><i class="dot" style="background: var(--c-azul)"></i>Trocas de categoria</div>
+        <div class="valor" id="total-swaps">—</div>
+        <div class="sub">Que aumentam a tarifa</div>
+      </div>
+      <div class="cartao">
+        <div class="rot"><i class="dot" style="background: var(--c-laranja)"></i><span id="total-until-label">Faturamento até dezembro</span></div>
+        <div class="valor moeda" id="total-until">—</div>
+        <div class="sub">Se mantidas as alterações</div>
+      </div>
     </section>
 
-    <section class="kpis" aria-label="Resultado do ano">
-      <article class="kpi">
-        <p class="kpi-label">Novas economias</p>
-        <strong class="kpi-value" id="total-economies">—</strong>
-      </article>
-      <article class="kpi">
-        <p class="kpi-label">Trocas de categoria</p>
-        <strong class="kpi-value" id="total-swaps">—</strong>
-      </article>
-      <article class="kpi accent">
-        <p class="kpi-label">Entra por mês na fatura</p>
-        <strong class="kpi-value currency" id="total-monthly">—</strong>
-      </article>
-      <article class="kpi">
-        <p class="kpi-label" id="total-until-label">Faturamento até dezembro</p>
-        <strong class="kpi-value currency" id="total-until">—</strong>
-      </article>
+    <section class="bloco" aria-labelledby="table-title">
+      <div class="topo-bloco">
+        <div>
+          <h2 id="table-title">Mês a mês</h2>
+          <p class="desc">O valor de cada mês passa a ser cobrado integralmente na fatura do mês seguinte e se repete até dezembro.</p>
+        </div>
+      </div>
+      <div class="tabela-wrap">
+        <table class="tab months-table">
+          <thead>
+            <tr>
+              <th scope="col">Mês</th>
+              <th scope="col">Novas economias</th>
+              <th scope="col">Trocas de categoria</th>
+              <th scope="col">Na próxima fatura cheia</th>
+              <th scope="col">Até dezembro</th>
+            </tr>
+          </thead>
+          <tbody id="months-body"></tbody>
+        </table>
+      </div>
     </section>
 
-    <section class="section" aria-labelledby="table-title">
-      <h2 id="table-title">Mês a mês</h2>
-      <table class="months-table">
-        <thead>
-          <tr>
-            <th scope="col">Mês</th>
-            <th scope="col" class="num">Novas economias</th>
-            <th scope="col" class="num">Trocas de categoria</th>
-            <th scope="col" class="num">Na próxima fatura cheia</th>
-            <th scope="col" class="num">Até dezembro</th>
-          </tr>
-        </thead>
-        <tbody id="months-body"></tbody>
-      </table>
-    </section>
-
-    <footer class="footer">
-      <p id="rules">Valor por mês = ganhos − perdas. Na troca de categoria desconta-se a tarifa da categoria anterior. A primeira fatura cheia é a do mês seguinte à tratativa.</p>
-      <p>Estimativa de faturamento, sujeita à efetiva cobrança e à permanência das alterações. Dados consolidados, sem identificação de clientes.</p>
-    </footer>
+    <p class="explica" id="rules">Valor por mês = ganhos − perdas. Na troca de categoria desconta-se a tarifa da categoria anterior. A primeira fatura cheia é a do mês seguinte à tratativa.</p>
+    <p class="nota">Estimativa de faturamento, sujeita à efetiva cobrança e à permanência das alterações. Dados consolidados, sem identificação de clientes.</p>
   </main>
 </body>
 </html>

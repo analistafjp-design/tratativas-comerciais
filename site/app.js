@@ -49,6 +49,27 @@ function cell(text, label, className) {
   return td;
 }
 
+/** Célula de valor com barra proporcional ao maior mês, como nas tabelas dos outros painéis. */
+function barCell(text, label, cents, max) {
+  const td = document.createElement('td');
+  td.className = `num taxa${cents < 0 ? ' neg' : ''}`;
+  td.dataset.label = label;
+  const box = document.createElement('div');
+  box.className = 'celula';
+  if (cents > 0) {
+    const bar = document.createElement('span');
+    bar.className = 'barra';
+    bar.style.width = `${(100 * cents) / max}%`;
+    box.append(bar);
+  }
+  const value = document.createElement('span');
+  value.className = 'valor';
+  value.textContent = text;
+  box.append(value);
+  td.append(box);
+  return td;
+}
+
 /** Frase do rodapé sobre água + esgoto, conforme o cruzamento com a base de clientes. */
 function billingNote({ clientsLinked, billing, coverage }) {
   if (!clientsLinked) return 'Água + esgoto (2×) não aplicado: falta o cruzamento com a base de clientes.';
@@ -65,9 +86,10 @@ function render(feed) {
   const [first, last] = [feed.months[0], feed.months.at(-1)];
 
   $('#sample-banner').hidden = !feed.sample;
-  $('#status-text').textContent = `Base até ${dayFormat.format(new Date(`${feed.source.lastDate}T00:00:00Z`))}`;
   const from = first.slice(0, 4) === last.slice(0, 4) ? nameLabel(first) : monthLong.format(dateOf(first));
-  $('#scope').textContent = `Resultado de ${from.toLowerCase()} a ${monthLong.format(dateOf(last))}.`;
+  const lastDate = dayFormat.format(new Date(`${feed.source.lastDate}T00:00:00Z`));
+  $('#sub-topo').textContent = `Cadastro · ${from.toLowerCase()} a ${monthLong.format(dateOf(last))} · base até ${lastDate}`;
+  $('#hero-sub').textContent = `Ganhos menos perdas de ${from.toLowerCase()} a ${nameLabel(last).toLowerCase()}, valor que se repete a cada fatura`;
 
   $('#total-economies').textContent = count.format(sum('newEconomies'));
   $('#total-swaps').textContent = count.format(sum('swaps'));
@@ -76,16 +98,23 @@ function render(feed) {
   $('#total-until').textContent = brl(sum('untilYearEndCents'));
 
   const columns = ['Novas economias', 'Trocas de categoria', 'Na próxima fatura cheia', 'Até dezembro'];
+  const max = Math.max(1, ...rows.map((row) => row.netCents));
   $('#months-body').replaceChildren(...rows.map((row) => {
     const tr = document.createElement('tr');
     const th = document.createElement('th');
     th.scope = 'row';
-    th.textContent = nameLabel(row.month) + (isPartial(feed, row.month) ? ' (parcial)' : '');
+    th.textContent = nameLabel(row.month);
+    if (isPartial(feed, row.month)) {
+      const tag = document.createElement('span');
+      tag.className = 'etiqueta baixa';
+      tag.textContent = 'parcial';
+      th.append(tag);
+    }
     tr.append(
       th,
       cell(count.format(row.newEconomies), columns[0], 'num'),
       cell(count.format(row.swaps), columns[1], 'num'),
-      cell(brl(row.netCents), columns[2], `num strong${row.netCents < 0 ? ' neg' : ''}`),
+      barCell(brl(row.netCents), columns[2], row.netCents, max),
       cell(brl(row.untilYearEndCents), columns[3], `num${row.untilYearEndCents < 0 ? ' neg' : ''}`),
     );
     return tr;
@@ -107,9 +136,9 @@ fetch('./data/summary.json', { cache: 'no-cache' })
     render(feed);
   })
   .catch((error) => {
-    $('#status-text').textContent = 'Falha ao carregar';
-    const message = document.createElement('p');
-    message.className = 'error';
+    $('#sub-topo').textContent = 'Falha ao carregar';
+    const message = document.createElement('div');
+    message.className = 'msg erro';
     message.textContent = `Não foi possível carregar os dados do painel: ${error.message}`;
     $('#main').prepend(message);
   });
