@@ -4,7 +4,7 @@ Painel simples para mostrar o que as tratativas do cadastro trazem de valor. Par
 
 Endereço depois de publicado: `https://analistafjp-design.github.io/tratativas-comerciais/`
 
-> **Os dados que vêm neste repositório são de exemplo (fictícios)** e aparecem com uma faixa de aviso no topo. Gere o painel com a sua exportação antes de compartilhar o endereço (passo 2).
+> **Dados publicados:** tabela `Resultados - 2026.xlsx` (frente Cadastro, até 08/10/2026), com o cálculo **corrigido** (tarifas reais) e **sem o 2× de água + esgoto**, porque ainda falta o cruzamento com a base de clientes (passo 2). Dados fictícios de teste ficam só em `exemplo/`.
 
 ## 1. Publicar no GitHub Pages (uma vez)
 
@@ -29,7 +29,7 @@ A planilha tem duas frentes de serviço (Cadastro e Bairro Legal – VCG): use `
 
 Opções úteis: `--de 2026-03 --ate 2026-09` (período), `--frente CADASTRO` (só uma FRENTE DE SERVIÇO), `--col-ligacao` e `--col-localidade` (se o script não reconhecer as colunas da base de clientes). `python scripts/build_data.py --help` lista tudo.
 
-Para ver o formato esperado e testar o painel: `python scripts/gerar_exemplo.py` cria dados fictícios em `exemplo/`. Pré-visualização local: `python -m http.server 8000 -d site`.
+Para ver o formato esperado e testar o painel: `python scripts/gerar_exemplo.py` cria dados fictícios em `exemplo/` (use `--exemplo` ao gerar o painel com eles, para exibir a faixa de aviso). Pré-visualização local: `python -m http.server 8000 -d site`.
 
 ## Como o valor é calculado
 
