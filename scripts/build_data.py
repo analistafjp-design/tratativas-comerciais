@@ -74,11 +74,14 @@ def clean(value):
     return re.sub(r"\s+", " ", plain(value).replace(".", " ").replace(";", " ")).strip()
 
 
-def category_of(text):
-    """Texto livre -> categoria de tarifa, ou 'Outros' quando não reconhecido."""
+def category_of(text, powerbi=False, path="categoria"):
+    """Texto livre -> categoria de tarifa, ou 'Outros' quando não reconhecido.
+
+    powerbi=True reproduz o relatório: 'popular' vira Comercial (o texto contém "COM") e, nas trocas
+    de categoria (ANTERIOR/ATUAL), 'Pública' não acha tarifa e vale R$ 0."""
     s = clean(text)
     if "POPULAR" in s:
-        return "Comércio popular"
+        return "Comercial" if powerbi else "Comércio popular"
     if "PEQUENO" in s or re.search(r"\bP ?COM", s):
         return "Pequeno comércio"
     if re.search(r"\bSOC", s):
@@ -86,7 +89,7 @@ def category_of(text):
     if re.search(r"\bIND", s):
         return "Industrial"
     if re.search(r"\bPUB", s):
-        return "Pública"
+        return OTHER if powerbi and path == "categoria" else "Pública"
     if re.search(r"\bCOM", s):
         return "Comercial"
     if re.search(r"\bRES", s):
@@ -97,7 +100,7 @@ def category_of(text):
 FILLER = re.compile(r"\b(ECONOMIAS?|UNIDADES?|UND|DE|E)\b")
 
 
-def parse_side(text, fallback=None):
+def parse_side(text, fallback=None, powerbi=False):
     """'2 RESIDENCIAL' -> (2, 'Residencial'). '0' -> (0, None).
 
     Retorna None quando não há número ou quando o campo mistura categorias ('1 RES E 1 COM'),
@@ -111,7 +114,7 @@ def parse_side(text, fallback=None):
         end = numbers[i + 1].start() if i + 1 < len(numbers) else len(s)
         label = FILLER.sub(" ", s[m.end():end]).strip()
         if label:
-            units[category_of(label)] += int(m.group())
+            units[category_of(label, powerbi, "economia")] += int(m.group())
         elif fallback:
             units[fallback] += int(m.group())
         else:
@@ -159,15 +162,16 @@ def parse_date(value):
 
 
 # ---------------------------------------------------------------- efeitos
-def economy_effect(rec):
+def economy_effect(rec, powerbi=False):
     """DE:/PARA: -> ('economia', de, para, diferença, valor em centavos) | None | ('erro', motivo)."""
     de, para = str(rec.get("DE") or "").strip(), str(rec.get("PARA") or "").strip()
     if not (de or para):
         return None
     if not (de and para):
         return "erro", "incompleto"
-    fallback = category_of(rec.get("TIPODEECONOMIA")) if str(rec.get("TIPODEECONOMIA") or "").strip() else None
-    before, after = parse_side(de, fallback), parse_side(para, fallback)
+    fallback = (category_of(rec.get("TIPODEECONOMIA"), powerbi, "economia")
+                if str(rec.get("TIPODEECONOMIA") or "").strip() else None)
+    before, after = parse_side(de, fallback, powerbi), parse_side(para, fallback, powerbi)
     if before is None or after is None:
         return "erro", "nao_reconhecido"
     (n, a), (m, b) = before, after
@@ -175,6 +179,8 @@ def economy_effect(rec):
     diff = m - n
     if diff == 0:
         return "mesma_quantidade", a, b  # o modelo valoriza em R$ 0 e não lista
+    if powerbi and diff > 0 and plain(rec.get("QUALFOIAALTERACAODEECONOMIA")).strip() != "INCREMENTO":
+        return "marcacao_divergente", a, b  # o relatório só lista incremento marcado como "Incremento" no Forms
     if a == b:
         value = diff * tariff(b)
     elif diff > 0:
@@ -184,7 +190,7 @@ def economy_effect(rec):
     return "economia", a, b, diff, value
 
 
-def category_effect(rec):
+def category_effect(rec, powerbi=False):
     """ANTERIOR/ATUAL x QUANTIDADE -> ('categoria', anterior, atual, quantidade, valor) | None | ('erro', motivo)."""
     ant, atu = str(rec.get("ANTERIOR") or "").strip(), str(rec.get("ATUAL") or "").strip()
     if not (ant or atu):
@@ -194,25 +200,31 @@ def category_effect(rec):
     qty = to_number(rec.get("QUANTIDADE"))
     if qty is None or qty <= 0 or qty != int(qty):
         return "erro", "quantidade_invalida"
-    a, b = category_of(ant), category_of(atu)
+    a, b = category_of(ant, powerbi), category_of(atu, powerbi)
     if a == b:
         return None
     return "categoria", a, b, int(qty), int(qty) * (tariff(b) - tariff(a))
 
 
-def row_effects(rec):
-    """Linha -> (lista de efeitos, motivo de pendência, houve troca de categoria sem variação de quantidade)."""
-    effects, same_count = [], False
-    for found in (economy_effect(rec), category_effect(rec)):
+def row_effects(rec, powerbi=False):
+    """Linha -> (efeitos, motivo de pendência, nota).
+
+    nota: 'troca_sem_variacao' (DE:/PARA: com categoria diferente e mesma quantidade, valor R$ 0) ou
+    'marcacao_divergente' (modo --como-powerbi: aumento de economias marcado como "Decremento" no Forms)."""
+    effects, note = [], None
+    for found in (economy_effect(rec, powerbi), category_effect(rec, powerbi)):
         if found is None:
             continue
         if found[0] == "erro":
-            return [], found[1], False
+            return [], found[1], None
         if found[0] == "mesma_quantidade":
-            same_count = found[1] != found[2]
+            note = "troca_sem_variacao" if found[1] != found[2] else None
+            continue
+        if found[0] == "marcacao_divergente":
+            note = "marcacao_divergente"
             continue
         effects.append(found)
-    return effects, None, same_count
+    return effects, None, note
 
 
 # ---------------------------------------------------------------- leitura
@@ -288,7 +300,7 @@ def load_localities(path, col_ligacao=None, col_localidade=None):
 
 
 # ---------------------------------------------------------------- agregação
-def build(rows, places=None, only_front=None, since=None, until=None):
+def build(rows, places=None, only_front=None, since=None, until=None, powerbi=False):
     agg = defaultdict(Counter)
     pending = Counter()
     notes = Counter()
@@ -297,7 +309,7 @@ def build(rows, places=None, only_front=None, since=None, until=None):
         if only_front and plain(rec.get("FRENTEDESERVICO")).strip() != plain(only_front).strip():
             continue
         when = parse_date(rec.get("HORADECONCLUSAO"))
-        effects, reason, same_count = row_effects(rec)
+        effects, reason, note = row_effects(rec, powerbi)
         if when is None:
             if effects or reason:
                 pending[("", UNKNOWN_CITY, "sem_data")] += 1
@@ -312,7 +324,8 @@ def build(rows, places=None, only_front=None, since=None, until=None):
         if reason:
             pending[(month, city, reason)] += 1
             continue
-        notes["economia_troca_sem_variacao"] += same_count
+        if note:
+            notes[note] += 1
         factor = 2 if plain(city).strip() in DOUBLE_CITIES else 1
         row_value = 0
         for kind, old, new, qty, value in effects:
@@ -337,6 +350,7 @@ def build(rows, places=None, only_front=None, since=None, until=None):
             "firstDate": min(dates).date().isoformat() if dates else None,
             "lastDate": max(dates).date().isoformat() if dates else None,
             "clientsLinked": places is not None,
+            "rules": "powerbi" if powerbi else "corrigida",
         },
         "tariffsCents": TARIFFS_CENTS,
         "doubleCities": sorted(DOUBLE_CITIES),
@@ -372,9 +386,11 @@ def report(feed, top, notes):
         print("\nPendências (fora dos valores):", dict(pend))
     if notes["outros"]:
         print(f"Categorias não reconhecidas, tratadas como 'Outros' (R$ 0): {notes['outros']} movimentos")
-    if notes["economia_troca_sem_variacao"]:
+    if notes["troca_sem_variacao"]:
         print(f"Linhas DE:/PARA: com categoria diferente e mesma quantidade (o modelo valoriza em R$ 0): "
-              f"{notes['economia_troca_sem_variacao']}")
+              f"{notes['troca_sem_variacao']}")
+    if notes["marcacao_divergente"]:
+        print(f"Aumentos de economia marcados como 'Decremento' no Forms, fora do relatório: {notes['marcacao_divergente']}")
     if top:
         print("\nMaiores impactos individuais (linha da planilha, valor/mês) — confira se não são erro de digitação:")
         for _, number, month, city, signed in top[:5]:
@@ -391,6 +407,9 @@ def main():
     p.add_argument("--frente", help="Considerar só esta FRENTE DE SERVIÇO (ex.: CADASTRO)")
     p.add_argument("--de", dest="since", help="Primeiro mês, AAAA-MM")
     p.add_argument("--ate", dest="until", help="Último mês, AAAA-MM")
+    p.add_argument("--como-powerbi", action="store_true",
+                   help="Reproduz as particularidades do relatório (comércio popular = comercial, "
+                        "pública sem tarifa nas trocas, incremento só se marcado no Forms) para conferir os valores")
     p.add_argument("--exemplo", action="store_true", help="Marca o resultado como dados de exemplo")
     p.add_argument("--saida", type=Path, default=OUTPUT)
     args = p.parse_args()
@@ -405,7 +424,7 @@ def main():
         sys.exit(f"Coluna 'MATRICULA S/ DIGITO' não encontrada. Colunas: {', '.join(names)}")
 
     places = load_localities(args.clientes, args.col_ligacao, args.col_localidade) if args.clientes else None
-    feed, top, notes = build(rows, places, args.frente, args.since, args.until)
+    feed, top, notes = build(rows, places, args.frente, args.since, args.until, args.como_powerbi)
     feed["sample"] = args.exemplo
     args.saida.parent.mkdir(parents=True, exist_ok=True)
     args.saida.write_text(json.dumps(feed, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
