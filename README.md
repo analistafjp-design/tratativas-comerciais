@@ -16,7 +16,7 @@ Endereço depois de publicado: `https://analistafjp-design.github.io/tratativas-
 ## 2. Atualizar com os dados reais
 
 1. No Power BI, exporte a tabela **TRATATIVAS** (Exportar dados → `.xlsx` ou `.csv`). Só as colunas originais são necessárias: `Hora de conclusão`, `DE:`, `PARA:`, `ANTERIOR`, `ATUAL`, `QUANTIDADE`, `MATRICULA S/ DIGITO` (e, opcionalmente, `TIPO DE ECONOMIA` e `FRENTE DE SERVIÇO`).
-2. Tenha em mãos a base de clientes que liga **matrícula → localidade** (usada para o cálculo de água + esgoto).
+2. Exporte a base de clientes com as colunas `NUM_LIGACAO`, `CIDADE` e `TIPO_FATURAMENTO` ("AGUA" ou "AGUA E ESGOTO"), de **um mês completo** (ex.: `09/2026`). O tipo de faturamento de uma ligação não muda de um mês para o outro, então um mês basta. **Atenção ao limite do sistema:** a exportação corta em 150.000 linhas (aviso *"Exported data exceeded the allowed volume"* no rodapé) e vem ordenada por ligação, então as ligações de número mais alto ficam de fora. O script informa quantas tratativas achou na base; o painel mostra essa cobertura no rodapé.
 3. Rode no seu computador (precisa de Python 3 e `pip install openpyxl`):
 
 ```bash
@@ -27,7 +27,7 @@ A planilha tem duas frentes de serviço (Cadastro e Bairro Legal – VCG): use `
 
 **Como conferir com o Power BI:** rode com `--como-powerbi`, que reproduz as particularidades do relatório (veja abaixo). Com os dados de 2026, SET/2026 bate ao centavo: R$ 6.263,06. Sobre a coluna `líquido s/2×`: o relatório atual não aplica água + esgoto (2×). A coluna **`líquido s/2×`** do terminal é o resultado sem o 2× e deve bater com o rodapé do relatório (Julho, Agosto, Setembro…), salvo as diferenças listadas abaixo. A coluna **`líquido`** é o valor do painel, já com o 2×.
 
-Opções úteis: `--de 2026-03 --ate 2026-09` (período), `--frente CADASTRO` (só uma FRENTE DE SERVIÇO), `--col-ligacao` e `--col-localidade` (se o script não reconhecer as colunas da base de clientes). `python scripts/build_data.py --help` lista tudo.
+Opções úteis: `--de 2026-03 --ate 2026-09` (período), `--frente Cadastro` (só uma FRENTE DE SERVIÇO), `--col-ligacao`, `--col-localidade` e `--col-faturamento` (se o script não reconhecer as colunas da base de clientes). `python scripts/build_data.py --help` lista tudo.
 
 Para ver o formato esperado e testar o painel: `python scripts/gerar_exemplo.py` cria dados fictícios em `exemplo/` (use `--exemplo` ao gerar o painel com eles, para exibir a faixa de aviso). Pré-visualização local: `python -m http.server 8000 -d site`.
 
@@ -46,7 +46,7 @@ Igual às medidas do modelo. O resultado do mês é a **soma das quatro tabelas*
 - "Novas economias" e "Trocas de categoria" são os totais das tabelas de **incremento** do relatório. Os decrementos entram só no valor (como perdas).
 - Mês de referência: `Hora de conclusão`. A triagem é feita no fim do mês, então a primeira fatura cheia é a do **mês seguinte**.
 - **Até dezembro** = resultado do mês × meses restantes após o mês da tratativa (julho → ago a dez = 5). O resumo do ano soma isso de todos os meses.
-- **Água + esgoto (valor × 2)**: Cordeiro, Miracema e Aperibé, definidos em `DOUBLE_CITIES` no script. Os demais pagam só água. É uma regra por município; se a base de clientes passar a ter o tipo de faturamento por ligação, o ideal é usar esse campo.
+- **Água + esgoto (valor × 2)**: pelo `TIPO_FATURAMENTO` **de cada ligação** na base de clientes (cruzamento `NUM_LIGACAO` = `MATRICULA S/ DIGITO`). Não vale dobrar a cidade inteira: na amostra exportada, só 12% das ligações de Cordeiro e 23% das de Miracema faturam água e esgoto (em Aperibé, 90%). Tratativas cuja ligação não está na base são calculadas só com água. Se a base não tiver a coluna de faturamento, o script usa a regra por município (`DOUBLE_CITIES`: Cordeiro, Miracema e Aperibé).
 - **Tarifas** (por economia/mês): Residencial R$ 85,41 · Comercial R$ 443,57 · Industrial R$ 613,17 · Pública R$ 129,16 · Pequeno comércio R$ 221,78 · Social R$ 30,12 · Comércio popular R$ 60,24. Comercial, Industrial e Pública seguem a tabela `Tarifas` do modelo, que é o que o relatório usa (ex.: 2 × 443,57 = R$ 887,14). A lista de tarifas informada em texto tem 1 centavo a menos nessas três (443,56 / 613,16 / 129,15). Para mudar, edite `TARIFFS_CENTS` em `scripts/build_data.py` e gere de novo.
 
 ### Onde o painel difere do Power BI
