@@ -333,21 +333,33 @@ class FilesTest(unittest.TestCase):
 
 
 class MergeFilesTest(unittest.TestCase):
-    def test_second_file_replaces_rows_with_the_same_id(self):
+    def run_main(self, tmp, *files):
         import json, subprocess
         script = Path(__file__).resolve().parents[1] / "scripts" / "build_data.py"
-        head = "Id,Hora de conclusão,MATRICULA S/ DIGITO,DE:,PARA:,ANTERIOR,ATUAL,QUANTIDADE\n"
+        out = tmp / "out.json"
+        subprocess.run([sys.executable, "-I", str(script), *map(str, files), "--saida", str(out)], check=True, capture_output=True)
+        feed = json.loads(out.read_text())
+        return {m: sum(l["cents"] for l in feed["lines"] if l["month"] == m) for m in feed["months"]}
+
+    HEAD = "Id,Hora de conclusão,MATRICULA S/ DIGITO,DE:,PARA:,ANTERIOR,ATUAL,QUANTIDADE\n"
+
+    def test_second_file_replaces_rows_with_the_same_id(self):
         with tempfile.TemporaryDirectory() as tmp:
             tmp = Path(tmp)
-            (tmp / "a.csv").write_text(head + "1,2026-03-10 10:00,10,1 RES,2 RES,,,\n"
-                                              "2,2026-04-10 10:00,11,,,Residencial,Comercial,DE 1 RES. P/ 1 RES. E 1 COM.\n", encoding="utf-8")
-            (tmp / "b.csv").write_text(head + "2,2026-04-10 10:00,11,,,Residencial,Comercial,3\n", encoding="utf-8")
-            out = tmp / "out.json"
-            subprocess.run([sys.executable, "-I", str(script), str(tmp / "a.csv"), str(tmp / "b.csv"), "--saida", str(out)],
-                           check=True, capture_output=True)
-            feed = json.loads(out.read_text())
-            by_month = {m: sum(l["cents"] for l in feed["lines"] if l["month"] == m) for m in feed["months"]}
-            self.assertEqual(by_month, {"2026-03": RES, "2026-04": 3 * (COM - RES)})  # abril vem do arquivo b
+            (tmp / "a.csv").write_text(self.HEAD + "1,2026-03-10 10:00,10,1 RES,2 RES,,,\n"
+                                                   "2,2026-04-10 10:00,11,,,Residencial,Comercial,DE 1 RES. P/ 1 RES. E 1 COM.\n", encoding="utf-8")
+            (tmp / "b.csv").write_text(self.HEAD + "2,2026-04-10 10:00,11,,,Residencial,Comercial,3\n", encoding="utf-8")
+            self.assertEqual(self.run_main(tmp, tmp / "a.csv", tmp / "b.csv"),
+                             {"2026-03": RES, "2026-04": 3 * (COM - RES)})  # abril vem do arquivo b
+
+    def test_rows_deleted_from_the_second_file_stay_deleted(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            (tmp / "a.csv").write_text(self.HEAD + "1,2026-03-10 10:00,10,1 RES,2 RES,,,\n"
+                                                   "2,2026-04-10 10:00,11,1 RES,2 RES,,,\n"
+                                                   "3,2026-04-12 10:00,12,100 RES,1 RES,,,\n", encoding="utf-8")  # erro de digitação
+            (tmp / "b.csv").write_text(self.HEAD + "2,2026-04-10 10:00,11,1 RES,2 RES,,,\n", encoding="utf-8")  # o Id 3 foi apagado
+            self.assertEqual(self.run_main(tmp, tmp / "a.csv", tmp / "b.csv"), {"2026-03": RES, "2026-04": RES})
 
 
 if __name__ == "__main__":

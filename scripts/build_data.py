@@ -574,8 +574,9 @@ def report(feed, top, notes):
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("tratativas", type=Path, nargs="+",
-                   help="Exportação da tabela TRATATIVAS (.xlsx ou .csv). Com mais de um arquivo, as linhas do último "
-                        "valem no lugar das de mesmo Id dos anteriores (ex.: Resultados.xlsx Formulario_editado.xlsx)")
+                   help="Exportação da tabela TRATATIVAS (.xlsx ou .csv). Com mais de um arquivo, o último vale por todo "
+                        "o período dele: o que os anteriores têm a partir da primeira data dele é substituído "
+                        "(ex.: Resultados.xlsx Formulario_editado.xlsx)")
     p.add_argument("--aba", help="Nome da aba do Excel (padrão: primeira)")
     p.add_argument("--clientes", type=Path, help="Base de clientes para obter a localidade (cruzamento por matrícula)")
     p.add_argument("--col-ligacao", help="Coluna da ligação/matrícula na base de clientes")
@@ -595,10 +596,16 @@ def main():
     for extra in args.tratativas[1:]:
         more_names, more_rows = read_table(extra, args.aba)
         names += [n for n in more_names if n not in names]
-        replaced = {r.get("ID") for r in more_rows if r.get("ID") is not None}
-        n_before = len(rows)
-        rows = [r for r in rows if r.get("ID") not in replaced] + more_rows
-        print(f"{extra.name}: {len(more_rows)} linhas; {n_before - (len(rows) - len(more_rows))} do arquivo anterior foram substituídas")
+        starts = [d for d in (parse_date(r.get("HORADECONCLUSAO")) for r in more_rows) if d]
+        if not starts:
+            sys.exit(f"{extra.name}: nenhuma linha com 'Hora de conclusão' válida.")
+        start = min(starts)
+        # o arquivo editado vale por todo o período dele: o que o anterior tem nesse período é substituído,
+        # inclusive as linhas que foram apagadas do editado
+        kept = [r for r in rows if not ((d := parse_date(r.get("HORADECONCLUSAO"))) and d >= start)]
+        print(f"{extra.name}: {len(more_rows)} linhas a partir de {start:%d/%m/%Y}; "
+              f"{len(rows) - len(kept)} linhas do arquivo anterior nesse período foram substituídas")
+        rows = kept + more_rows
     keys = {header_key(n) for n in names}
     if "HORADECONCLUSAO" not in keys:
         sys.exit(f"Coluna 'Hora de conclusão' não encontrada. Colunas: {', '.join(names)}")
