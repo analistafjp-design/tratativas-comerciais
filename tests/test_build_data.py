@@ -162,7 +162,7 @@ class EffectsTest(unittest.TestCase):
 
 
 class ResultTypeTest(unittest.TestCase):
-    """A contagem é a do painel Cadastro e Venda: tratativas, e "incremento e categoria" entra nas duas colunas."""
+    """A contagem é a do painel Cadastro e Venda: tratativas, e "incremento e troca de categoria" entra nos dois totais."""
 
     def test_types(self):
         for fields, expected in [
@@ -195,7 +195,7 @@ class ResultTypeTest(unittest.TestCase):
                                           dict(month="2026-08", inc=0, incCat=0, cat=1)])
         july_counts = feed["counts"][0]
         self.assertEqual(july_counts["inc"] + july_counts["incCat"], 2)   # total de incremento
-        self.assertEqual(july_counts["cat"] + july_counts["incCat"], 2)   # total de alteração de categoria
+        self.assertEqual(july_counts["cat"] + july_counts["incCat"], 2)   # total de troca de categoria
 
     def test_identical_rows_and_other_fronts_are_not_counted(self):
         row = rec(id=1, horadeconclusao="2026-07-10 10:00:00", frentedeservico="Cadastro",
@@ -227,11 +227,12 @@ class DetailTest(unittest.TestCase):
     def test_rows_close_with_the_summary_and_counts(self):
         feed, _, _ = build(self.ROWS)
         rows = self.cols(feed)
-        self.assertEqual([r["id"] for r in rows], [1, 2, 3, 4])
+        self.assertEqual([r["id"] for r in rows], [4, 3, 2, 1])  # do mais novo para o mais antigo
+        rows = rows[::-1]
         net = sum((r["gainCents"] + r["lossCents"]) * r["factor"] for r in rows)
         self.assertEqual(net, sum(l["cents"] * l["factor"] for l in feed["lines"]))
         self.assertEqual(net, 2 * RES + 2 * (COM - RES))
-        self.assertEqual([r["class"] for r in rows], ["Incremento", "Incremento e categoria", "Categoria", "Categoria"])
+        self.assertEqual([r["class"] for r in rows], ["Incremento", "Incremento e troca de categoria", "Troca de categoria", "Troca de categoria"])
         count = feed["counts"][0]
         self.assertEqual((count["inc"], count["incCat"], count["cat"]), (1, 1, 2))
         first = rows[0]
@@ -249,7 +250,7 @@ class DetailTest(unittest.TestCase):
                 qualfoiaalteracaodeeconomia="Incremento", de="1 RES", para="2 RES"),
         ]
         feed, _, _ = build(rows)
-        self.assertEqual([r["class"] for r in self.cols(feed)], ["Decremento", "Alteração de economia", "Incremento"])
+        self.assertEqual([r["class"] for r in self.cols(feed)][::-1], ["Decremento", "Alteração de economia", "Incremento"])
         count = feed["counts"][0]
         self.assertEqual((count["inc"], count["incCat"], count["cat"]), (1, 0, 0))
         self.assertEqual(sum((r["gainCents"] + r["lossCents"]) * r["factor"] for r in self.cols(feed)), RES)  # -1 +1 +1
@@ -264,7 +265,7 @@ class DetailTest(unittest.TestCase):
                     anterior="Social", atual="Residencial", quantidade=1)
         rows = [rec(**same), rec(**dict(same, id=11)), rec(**dict(same, id=12, matriculasdigito="778"))]
         feed, _, notes = build(rows)
-        self.assertEqual([r["repeat"] for r in self.cols(feed)], ["R01", "R01", ""])
+        self.assertEqual(sorted(r["repeat"] for r in self.cols(feed)), ["", "R01", "R01"])
         self.assertEqual((feed["detail"]["repeatedGroups"], notes["linhas_repetidas"]), (1, 2))
         # só entram os meses com valor: o analítico fecha com a tabela
         self.assertEqual({r["date"][:7] for r in self.cols(feed)}, set(feed["months"]))

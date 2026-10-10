@@ -1,6 +1,6 @@
 # Impacto do Cadastro
 
-Painel simples para mostrar o que as tratativas do cadastro trazem de valor. Para cada mês: **incrementos**, **trocas de categoria**, o **valor que entra na próxima fatura cheia** e o **total até dezembro**. No topo, o resumo do ano.
+Painel simples para mostrar o que as tratativas do cadastro trazem de valor. Para cada mês (do mais novo para o mais antigo): **incremento**, **incremento e troca de categoria**, **troca de categoria**, os dois **totais**, o **valor que entra na próxima fatura cheia** e o **total até dezembro**. No topo, o resumo do ano.
 
 Endereço depois de publicado: `https://analistafjp-design.github.io/tratativas-comerciais/`
 
@@ -37,7 +37,7 @@ Os botões do bloco "Mês a mês" geram, no próprio navegador, o **analítico p
 
 - **Excel**: aba **Resumo** (mês a mês, com **fórmulas** sobre o Analítico: contagens, ganhos, perdas, valor no mês e até dezembro; colunas "Painel" e "Confere" comparam com o que o painel mostra); aba **Analítico** (uma linha por tratativa, com filtros); aba **Regras e fonte**. Qualquer célula do Resumo pode ser clicada para ver de onde vem o número.
 - **PDF** (A4 paisagem): resumo com a conferência, regras e fonte, "pontos para conferir" e o analítico completo, paginado.
-- **Colunas do analítico**: `Id` e data/hora da tratativa, classe (Incremento, Incremento e categoria, Categoria, Decremento), tipo de ordem, marcação do Forms, `DE:`, `PARA:`, `ANTERIOR`, `ATUAL`, `QUANTIDADE` como digitados, **como foi lido** (ex.: `+17 Comercial; 1× Residencial → Comercial`), novas economias, retiradas, trocas, ganho, perda, fator (2× água e esgoto), cidade, **repetição** e observação (leitura especial ou `PENDENTE`).
+- **Colunas do analítico**: `Id` e data/hora da tratativa, classe (Incremento, Incremento e troca de categoria, Troca de categoria, Decremento), tipo de ordem, marcação do Forms, `DE:`, `PARA:`, `ANTERIOR`, `ATUAL`, `QUANTIDADE` como digitados, **como foi lido** (ex.: `+17 Comercial; 1× Residencial → Comercial`), novas economias, retiradas, trocas, ganho, perda, fator (2× água e esgoto), cidade, **repetição** e observação (leitura especial ou `PENDENTE`).
 - **Pontos de atenção marcados**: pendências (quantidade ilegível), texto lido pela convenção, e **possíveis repetições** (mesma ligação, mesmo mês e mesmo efeito em linhas diferentes, códigos R01, R02...). As repetições são somadas, como no painel; o analítico só mostra quais são para você decidir.
 - **Sem dados do cliente**: o arquivo `site/data/analitico.json` (que fica público junto com o painel) **não leva matrícula, nome, e-mail nem colaborador**. Para achar uma tratativa no formulário ou no Power BI use o `Id` e a data/hora. Enquanto o repositório for público, não inclua a matrícula nesse arquivo.
 - O arquivo é remontado no navegador a partir do `analitico.json`, e o resumo é **recalculado das linhas** e conferido com o painel; se algum mês não fechar, o PDF avisa e a tela mostra o alerta.
@@ -54,7 +54,7 @@ Igual às medidas do modelo. O resultado do mês é a **soma das quatro tabelas*
 | Decremento de categoria | `ANTERIOR`, `ATUAL`, `QUANTIDADE` | idem, quando negativo. Categoria sem tarifa ("Outros") vale R$ 0 |
 
 - **Ganhos** = incrementos; **Perdas** = decrementos. **Resultado do mês = ganhos − perdas.**
-- **Incrementos** e **Trocas de categoria** contam **tratativas** (linhas da planilha), igual ao painel Cadastro e Venda, e valem para qualquer sentido (inclusive trocas que reduzem a tarifa). **Incrementos** = incremento de economia + incremento e categoria. **Trocas de categoria** = alteração de categoria + incremento e categoria. A tratativa de *incremento e categoria* entra nas duas contagens; o valor dela entra uma vez só, em R$. Cada linha é classificada por `TIPO DE ORDEM DE SERVIÇO`, `QUAL FOI A ALTERAÇÃO DE ECONOMIA?` e `TIPO DE ALTERAÇÃO`: marcada "Incremento" e sem categoria = incremento; tipo com "categoria" e ("Incremento" marcado ou tipo com "economia", como "Alteração de Categoria e Economia") = incremento e categoria; tipo com "categoria" sem economia = categoria. Contam também as tratativas sem valor preenchido (o painel mostra o volume de trabalho; o valor em R$ só vem das que têm número). Entram só os meses que têm tratativas valoradas (os formulários de janeiro e fevereiro não tinham os campos de valor). As colunas `incr.` e `categ.` do terminal mostram essas contagens; `novas` e `trocas↑` são economias e trocas que aumentam a tarifa.
+- A separação das contagens é a do painel Cadastro e Venda, em **tratativas** (linhas da planilha): **Incremento** (só incremento de economia, sem troca de categoria), **Incremento e troca de categoria** (o mesmo retorno traz economia e categoria), **Troca de categoria** (só troca de categoria), **Total de incremento** = incremento + incremento e troca de categoria e **Total de troca de categoria** = troca de categoria + incremento e troca de categoria. A tratativa de *incremento e troca de categoria* entra nos dois totais; o valor dela entra uma vez só, em R$. Os totais valem para qualquer sentido (inclusive trocas que reduzem a tarifa). Cada linha é classificada por `TIPO DE ORDEM DE SERVIÇO`, `QUAL FOI A ALTERAÇÃO DE ECONOMIA?` e `TIPO DE ALTERAÇÃO`: marcada "Incremento" e sem categoria = incremento; tipo com "categoria" e ("Incremento" marcado ou tipo com "economia", como "Alteração de Categoria e Economia") = incremento e troca de categoria; tipo com "categoria" sem economia = só troca de categoria. Contam também as tratativas sem valor preenchido (o painel mostra o volume de trabalho; o valor em R$ só vem das que têm número). Entram só os meses que têm tratativas valoradas (os formulários de janeiro e fevereiro não tinham os campos de valor). As colunas `incr.` e `categ.` do terminal mostram os dois totais; `novas` e `trocas↑` são economias e trocas que aumentam a tarifa.
 - Os decrementos entram só no valor (como perdas).
 - Mês de referência: `Hora de conclusão`. A triagem é feita no fim do mês, então a primeira fatura cheia é a do **mês seguinte**.
 - **Até dezembro** = resultado do mês × meses restantes após o mês da tratativa (julho → ago a dez = 5). O resumo do ano soma isso de todos os meses.
@@ -87,7 +87,7 @@ site/data/summary.json    totais por mês, localidade e (de → para) (gerado, s
 site/data/analitico.json  uma linha por tratativa, para os botões Baixar Excel/PDF (gerado, sem matrícula nem colaborador)
 scripts/build_data.py     gera o summary.json a partir da exportação
 scripts/gerar_exemplo.py  dados fictícios para teste
-tests/                    python -m unittest discover -s tests
+tests/                    python -m unittest discover -s tests  (script)  e  node --test tests/exporta.test.js  (Excel/PDF)
 .github/workflows/        publicação no Pages
 ```
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tratativas Comerciais</title>
-  <meta name="description" content="Resultado das tratativas do cadastro: incrementos, trocas de categoria e faturamento recorrente estimado.">
+  <meta name="description" content="Resultado das tratativas do cadastro: incremento, troca de categoria e faturamento recorrente estimado.">
   <meta name="theme-color" content="#1c3a8f">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23364dd4'/%3E%3Cpath d='M9 22V15M16 22V10M23 22V13' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="./styles.css">
@@ -42,20 +42,39 @@
         <div class="valor" id="total-monthly">—</div>
         <div class="sub" id="hero-sub">Ganhos menos perdas, valor que se repete a cada fatura</div>
       </div>
-      <div class="cartao">
-        <div class="rot"><i class="dot" style="background: var(--c-verde)"></i>Incrementos</div>
-        <div class="valor" id="total-economies">—</div>
-        <div class="sub">Incremento + incremento e categoria</div>
-      </div>
-      <div class="cartao">
-        <div class="rot"><i class="dot" style="background: var(--c-azul)"></i>Trocas de categoria</div>
-        <div class="valor" id="total-swaps">—</div>
-        <div class="sub">Categoria + incremento e categoria</div>
-      </div>
-      <div class="cartao">
+      <div class="cartao largo">
         <div class="rot"><i class="dot" style="background: var(--c-laranja)"></i><span id="total-until-label">Faturamento até dezembro</span></div>
         <div class="valor moeda" id="total-until">—</div>
         <div class="sub">Se mantidas as alterações</div>
+      </div>
+    </section>
+
+    <h2 class="secao">Tipo de resultado</h2>
+    <section class="cartoes tipos" aria-label="Tipo de resultado">
+      <div class="cartao">
+        <div class="rot"><i class="dot" style="background: var(--c-azul)"></i>Incremento</div>
+        <div class="valor" id="total-inc">—</div>
+        <div class="sub">Só incremento de economia, sem troca de categoria</div>
+      </div>
+      <div class="cartao">
+        <div class="rot"><i class="dot" style="background: var(--c-roxo)"></i>Incremento e troca de categoria</div>
+        <div class="valor" id="total-inc-cat">—</div>
+        <div class="sub">Mesmo retorno com economia e categoria alteradas</div>
+      </div>
+      <div class="cartao">
+        <div class="rot"><i class="dot" style="background: var(--c-laranja)"></i>Troca de categoria</div>
+        <div class="valor" id="total-cat">—</div>
+        <div class="sub">Só troca de categoria, sem incremento de economia</div>
+      </div>
+      <div class="cartao">
+        <div class="rot"><i class="dot" style="background: var(--c-azul-esc)"></i>Total de incremento</div>
+        <div class="valor" id="total-increments">—</div>
+        <div class="sub">Incremento + incremento e troca de categoria</div>
+      </div>
+      <div class="cartao">
+        <div class="rot"><i class="dot" style="background: var(--c-verde)"></i>Total de troca de categoria</div>
+        <div class="valor" id="total-swaps">—</div>
+        <div class="sub">Troca de categoria + incremento e troca de categoria</div>
       </div>
     </section>
 
@@ -79,8 +98,11 @@
           <thead>
             <tr>
               <th scope="col">Mês</th>
-              <th scope="col">Incrementos</th>
-              <th scope="col">Trocas de categoria</th>
+              <th scope="col">Incremento</th>
+              <th scope="col">Incremento e troca de categoria</th>
+              <th scope="col">Troca de categoria</th>
+              <th scope="col">Total de incremento</th>
+              <th scope="col">Total de troca de categoria</th>
               <th scope="col">Na próxima fatura cheia</th>
               <th scope="col">Até dezembro</th>
             </tr>
