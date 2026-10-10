@@ -64,12 +64,19 @@ class EffectsTest(unittest.TestCase):
     def test_economy_decrement_same_category(self):
         self.assertEqual(self.one(de="14 RES", para="1 RES"), [("economia", "Residencial", "Residencial", -13, -13 * RES)])
 
-    def test_economy_decrement_with_category_change_follows_model_formula(self):
-        # Valor Decremento = diferença x (tarifa DE - tarifa PARA): -1 x (85,41 - 443,57) = +358,16
-        self.assertEqual(self.one(de="2 RES", para="1 COM"), [("economia", "Residencial", "Comercial", -1, COM - RES)])
+    def test_economy_decrement_with_category_change_is_after_minus_before(self):
+        # 2 residências -> 1 comercial: uma troca residencial->comercial e uma residência retirada (depois - antes)
+        self.assertEqual(self.one(de="2 RES", para="1 COM"), [("categoria", "Residencial", "Comercial", 1, COM - RES),
+                                                                ("economia", "Residencial", "Residencial", -1, -RES)])
+        # o relatório (Valor Decremento): diferença x (tarifa DE - tarifa PARA) = -1 x (85,41 - 443,57)
+        effects, _, _ = row_effects(rec(de="2 RES", para="1 COM"), powerbi=True)
+        self.assertEqual(effects, [("economia", "Residencial", "Comercial", -1, POWERBI_TARIFFS_CENTS["Comercial"] - RES)])
 
     def test_economy_increment_with_category_change(self):
-        self.assertEqual(self.one(de="1 RES", para="3 COM"), [("economia", "Residencial", "Comercial", 2, 2 * (COM - RES))])
+        # 1 residência -> 3 comerciais: 1 troca (desconta a residência) + 2 comerciais novos, pela tarifa cheia
+        effects = self.one(de="1 RES", para="3 COM")
+        self.assertEqual(sorted(e[0] for e in effects), ["categoria", "economia", "economia"])
+        self.assertEqual(sum(e[4] for e in effects), 3 * COM - RES)
 
     def test_category_swap_uses_quantity(self):
         self.assertEqual(self.one(anterior="Residencial", atual="Comercial", quantidade=2),
@@ -83,7 +90,10 @@ class EffectsTest(unittest.TestCase):
         self.assertEqual(self.one(anterior="Residencial", atual="RES.", quantidade=1), [])
 
     def test_same_count_different_category_is_reported_not_valued(self):
-        self.assertEqual(row_effects(rec(de="1 RES", para="1 COM")), ([], None, "troca_sem_variacao"))
+        # no relatório a linha vale R$ 0 e some; no painel é uma troca de categoria Residencial -> Comercial
+        self.assertEqual(row_effects(rec(de="1 RES", para="1 COM"), powerbi=True), ([], None, "troca_sem_variacao"))
+        self.assertEqual(row_effects(rec(de="1 RES", para="1 COM")),
+                         ([("categoria", "Residencial", "Comercial", 1, COM - RES)], None, "categoria_na_linha"))
 
     def test_cadunico_to_social_is_not_a_change(self):
         self.assertEqual(self.one(anterior="CADÚNICO", atual="Social", quantidade=1), [])
@@ -95,17 +105,28 @@ class EffectsTest(unittest.TestCase):
         self.assertEqual(self.one(anterior="Residencial", atual="ENTIDADE SEM FINS LUCRATIVOS", quantidade=1),
                          [("categoria", "Residencial", "Pública", 1, PUB - RES)])
 
-    def test_text_quantity_is_read_as_before_and_after(self):
-        # 1 residencial social -> 2 residenciais normais: uma troca social->residencial e uma economia nova
-        effects = self.one(anterior="Social", atual="Residencial", quantidade="DE 1 RES. SOCIAL P/ 2 RES. NORMAIS")
-        self.assertEqual(sorted(e[0] for e in effects), ["categoria", "economia"])
-        self.assertEqual(sum(e[4] for e in effects), 2 * RES - SOC)
-        # 1 residência continua e entram 2 comerciais
-        effects = self.one(anterior="Residencial", atual="Comercial", quantidade="DE 1 RES. P/ 1 RES. E 2 COM.")
-        self.assertEqual(effects, [("economia", "Comercial", "Comercial", 1, COM)] * 2)
-        # sem o modo do relatório a linha é ignorada, como no Power BI
+    def test_text_quantity_follows_the_form_convention(self):
+        # quantidade = economias que ficaram na categoria ATUAL; valor = quantidade x (ATUAL - ANTERIOR)
+        self.assertEqual(self.one(anterior="Social", atual="Residencial", quantidade="DE 1 RES. SOCIAL P/ 2 RES. NORMAIS"),
+                         [("categoria", "Social", "Residencial", 2, 2 * (RES - SOC))])
+        self.assertEqual(self.one(anterior="Residencial", atual="Comercial", quantidade="DE 1 RES. P/ 1 RES. E 2 COM."),
+                         [("categoria", "Residencial", "Comercial", 2, 2 * (COM - RES))])
+        self.assertEqual(self.one(anterior="Residencial", atual="Comercial", quantidade="DE 1 RES. P/ 5 COM."),
+                         [("categoria", "Residencial", "Comercial", 5, 5 * (COM - RES))])
+        # só o estado depois, sem "DE ... P/ ..."
+        self.assertEqual(self.one(anterior="Residencial", atual="Comercial", quantidade="1RES. E 1 COM."),
+                         [("categoria", "Residencial", "Comercial", 1, COM - RES)])
+        # abreviações: RS. = residencial, PEQ. COM. = pequeno comércio, "2 NORMAIS" = residenciais normais
+        self.assertEqual(self.one(anterior="Social", atual="Residencial", quantidade="DE 1 SOCIAL P/ 2 NORMAIS")[0][3], 2)
+        self.assertEqual(self.one(anterior="Comercial", atual="P. Comercio", quantidade="de 2 res. e 3 com. p/ 1 peq. com")[0][3], 1)
+        # no relatório a linha é ignorada
         self.assertEqual(row_effects(rec(anterior="Residencial", atual="Comercial", quantidade="DE 1 RES. P/ 1 RES. E 2 COM."),
                                      powerbi=True)[1], "quantidade_invalida")
+
+    def test_text_quantity_falls_back_to_before_and_after_when_the_convention_does_not_apply(self):
+        # ANTERIOR = ATUAL (operador marcou igual): lê o texto literal. 1 comercial novo, a residência fica
+        effects = self.one(anterior="Comercial", atual="Comercial", quantidade="DE 1 RES. P/ 1 COM. E 1 RES,")
+        self.assertEqual(effects, [("economia", "Comercial", "Comercial", 1, COM)])
 
     def test_text_quantity_without_categories_stays_pending(self):
         for text in ("DE 2 ECONOMIAS PARA 1 ECONOMIA", "1 RES.", "ALT. DE 2 P/ 1 RES. SOCIAL"):
@@ -176,11 +197,19 @@ class PowerBiReproductionTest(unittest.TestCase):
     def test_corrected_rules_value_the_same_rows_with_the_real_tariffs(self):
         # Mesmas linhas, sem as particularidades do relatório: tarifas oficiais, comércio popular a R$ 60,24
         # (não Comercial), Pública a R$ 129,15 (não R$ 0), "sem fins lucrativos" como Pública e o aumento
-        # "1 Comercial -> 2 Residências" também entra. Conta feita à mão: economias 521.001 + categorias -173.010.
+        # "1 Comercial -> 2 Residências" também entra. As economias com categoria diferente valem depois - antes:
+        # "3 Residências -> 2 Comércios" = 2 x 443,56 - 3 x 85,41 e "1 Comercial -> 2 Residências" = 2 x 85,41 - 443,56.
+        # Conta feita à mão: economias 556.816 (troca e retirada contam em categoria) e categorias -173.010 + trocas.
         items = self.september()
-        self.assertEqual(total(items), 347991)  # R$ 3.479,91
-        self.assertEqual(total(items, kind="economia"), 521001)
-        self.assertEqual(total(items, kind="categoria"), -173010)
+        self.assertEqual(total(items), 383806)  # R$ 3.838,06
+
+    def test_powerbi_mode_values_increment_with_category_change_at_the_full_tariff(self):
+        # JUL/2026 no relatório: "1 Residencial -> 18 Comercial" = 17 x R$ 443,57 = R$ 7.540,69
+        row = rec(horadeconclusao="2026-07-27 11:11:34", de="1 Residencial", para="18 Comercial",
+                  qualfoiaalteracaodeeconomia="Incremento")
+        self.assertEqual(total(lines([row], powerbi=True)), 754069)
+        # o painel desconta a categoria anterior: 17 x (443,56 - 85,41)
+        self.assertEqual(total(lines([row])), 18 * COM - RES)  # 1 troca + 17 comerciais novos
 
     def test_powerbi_mode_uses_the_model_tariffs(self):
         self.assertEqual(POWERBI_TARIFFS_CENTS["Comercial"], T["Comercial"] + 1)
@@ -301,6 +330,24 @@ class FilesTest(unittest.TestCase):
             items = lines(rows, load_clients(tmp / "c.csv"))
             self.assertEqual(total(items, city="Cordeiro"), 2 * RES)            # água + esgoto
             self.assertEqual(total(items, city="Rio Bonito"), 2 * (COM - RES))  # só água
+
+
+class MergeFilesTest(unittest.TestCase):
+    def test_second_file_replaces_rows_with_the_same_id(self):
+        import json, subprocess
+        script = Path(__file__).resolve().parents[1] / "scripts" / "build_data.py"
+        head = "Id,Hora de conclusão,MATRICULA S/ DIGITO,DE:,PARA:,ANTERIOR,ATUAL,QUANTIDADE\n"
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            (tmp / "a.csv").write_text(head + "1,2026-03-10 10:00,10,1 RES,2 RES,,,\n"
+                                              "2,2026-04-10 10:00,11,,,Residencial,Comercial,DE 1 RES. P/ 1 RES. E 1 COM.\n", encoding="utf-8")
+            (tmp / "b.csv").write_text(head + "2,2026-04-10 10:00,11,,,Residencial,Comercial,3\n", encoding="utf-8")
+            out = tmp / "out.json"
+            subprocess.run([sys.executable, "-I", str(script), str(tmp / "a.csv"), str(tmp / "b.csv"), "--saida", str(out)],
+                           check=True, capture_output=True)
+            feed = json.loads(out.read_text())
+            by_month = {m: sum(l["cents"] for l in feed["lines"] if l["month"] == m) for m in feed["months"]}
+            self.assertEqual(by_month, {"2026-03": RES, "2026-04": 3 * (COM - RES)})  # abril vem do arquivo b
 
 
 if __name__ == "__main__":

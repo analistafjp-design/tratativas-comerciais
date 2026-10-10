@@ -25,8 +25,10 @@ Regras, portadas das medidas do modelo Power BI (as quatro tabelas do relatório
   Além do relatório (cálculo "corrigido", o padrão; --como-powerbi desliga tudo isto):
     * Tarifas oficiais (Comercial 443,56, Industrial 613,16, Pública 129,15) e comércio popular a 60,24.
     * CADÚNICO é Social e "sem fins lucrativos" é Pública.
-    * QUANTIDADE escrita como texto ("DE 1 RES. P/ 1 RES. E 2 COM.") é lida como antes -> depois e entra
-      como troca de categoria + economia nova/retirada. O mesmo vale para campos DE:/PARA: com duas categorias.
+    * QUANTIDADE escrita como texto ("DE 1 RES. P/ 1 RES. E 2 COM.") segue a convenção das conversões feitas
+      à mão no Forms: quantidade = economias que ficaram na categoria ATUAL, valor = quantidade x (tarifa
+      ATUAL - tarifa ANTERIOR). Sem essa leitura possível, o texto é lido como antes -> depois (troca de
+      categoria + economia nova/retirada). O mesmo vale para campos DE:/PARA: com duas categorias.
     * Linhas com o mesmo Id e todas as colunas iguais (duplicadas na exportação) contam uma vez.
   Água + esgoto: o valor é multiplicado por 2 nas ligações cujo TIPO_FATURAMENTO da base de clientes é
   "AGUA E ESGOTO" (cruzamento por matrícula). Se a base não tiver essa coluna, vale a regra por município
@@ -98,6 +100,12 @@ def category_of(text, powerbi=False, path="categoria"):
             return "Social"
         if "LUCRATIV" in s:  # entidade sem fins lucrativos paga a tarifa pública
             return "Pública"
+        if re.fullmatch(r"NORMAIS?|NORMAL", s):  # "2 NORMAIS" depois de "1 SOCIAL": residencial normal
+            return "Residencial"
+        if re.search(r"\bPEQ", s):  # PEQ. COM. = pequeno comércio
+            return "Pequeno comércio"
+        if re.fullmatch(r"RS", s):  # RS. = residencial
+            return "Residencial"
     if "POPULAR" in s:
         return "Comercial" if powerbi else "Comércio popular"
     if "PEQUENO" in s or re.search(r"\bP ?COM", s):
@@ -164,6 +172,17 @@ def parse_narrative(text):
         if not units or None in units or OTHER in units:
             return None
     return before, after
+
+
+def story_units(text):
+    """Texto da QUANTIDADE -> (antes ou None, depois). 'DE 1 RES. P/ 1 RES. E 2 COM.' ou só '1 RES. E 1 COM.'."""
+    story = parse_narrative(text)
+    if story:
+        return story
+    after = parse_units(text)
+    if after and None not in after and OTHER not in after:
+        return None, after
+    return None
 
 
 def decompose(before, after):
@@ -255,6 +274,10 @@ def economy_effect(rec, powerbi=False):
         return "erro", "nao_reconhecido"
     (n, a), (m, b) = before, after
     a, b = a or b or OTHER, b or a or OTHER
+    if not powerbi and a != b and OTHER not in (a, b):
+        # categoria muda na linha: só quem trocou de categoria desconta a anterior; o que sobra é economia nova
+        # ou retirada, pela tarifa cheia. Valor = depois x tarifa - antes x tarifa.
+        return "varios", move_effects(decompose(Counter({a: n}), Counter({b: m}))), "categoria_na_linha"
     diff = m - n
     if diff == 0:
         return "mesma_quantidade", a, b  # o modelo valoriza em R$ 0 e não lista
@@ -263,7 +286,7 @@ def economy_effect(rec, powerbi=False):
     if a == b:
         value = diff * tariff(b, powerbi)
     elif diff > 0:
-        value = diff * (tariff(b, powerbi) - tariff(a, powerbi))
+        value = diff * tariff(b, powerbi)  # relatório (medida "Valor Incre"): diferença x tarifa cheia do PARA
     else:
         value = diff * (tariff(a, powerbi) - tariff(b, powerbi))
     return "economia", a, b, diff, value
@@ -278,9 +301,16 @@ def category_effect(rec, powerbi=False):
         return "erro", "incompleto"
     qty = to_number(rec.get("QUANTIDADE"))
     if qty is None or qty <= 0 or qty != int(qty):
-        story = None if powerbi else parse_narrative(rec.get("QUANTIDADE"))  # quantidade escrita como texto
+        story = None if powerbi else story_units(rec.get("QUANTIDADE"))  # quantidade escrita como texto
         if story:
-            return "varios", move_effects(decompose(*story)), "narrativa"
+            before, after = story
+            a, b = category_of(ant), category_of(atu)
+            if a != b and OTHER not in (a, b) and after.get(b):
+                # convenção do Forms: quantidade = economias na categoria ATUAL; desconta a categoria ANTERIOR
+                q = after[b]
+                return "categoria", a, b, q, q * (tariff(b) - tariff(a)), "texto"
+            if before:  # sem como seguir a convenção: lê o texto como antes -> depois
+                return "varios", move_effects(decompose(before, after)), "narrativa"
         return "erro", "quantidade_invalida"
     a, b = category_of(ant, powerbi), category_of(atu, powerbi)
     if a == b:
@@ -293,7 +323,9 @@ def row_effects(rec, powerbi=False):
 
     nota: 'troca_sem_variacao' (DE:/PARA: com categoria diferente e mesma quantidade, valor R$ 0),
     'marcacao_divergente' (modo --como-powerbi: aumento de economias marcado como "Decremento" no Forms),
-    'narrativa' (quantidade ou DE:/PARA: escritos como "DE ... P/ ...") ou 'misto' (duas categorias no campo)."""
+    'texto' (quantidade escrita como texto, lida pela convenção), 'narrativa' (texto lido como antes -> depois),
+    'misto' (duas categorias no campo)
+    ou 'categoria_na_linha' (DE:/PARA: com categoria diferente: troca + economia nova/retirada)."""
     effects, note = [], None
     for found in (economy_effect(rec, powerbi), category_effect(rec, powerbi)):
         if found is None:
@@ -310,6 +342,9 @@ def row_effects(rec, powerbi=False):
             effects.extend(found[1])
             note = found[2]
             continue
+        if len(found) == 6:  # efeito normal + etiqueta (texto lido pela convenção)
+            note = found[5]
+            found = found[:5]
         effects.append(found)
     return effects, None, note
 
@@ -516,8 +551,10 @@ def report(feed, top, notes):
         found, total = notes["cobertura_found"], notes["cobertura_total"]
         print(f"Base de clientes: {found} de {total} tratativas com valor encontradas ({100 * found / total:.1f}%); "
               f"{notes['cobertura_double']} com água e esgoto (2×). As não encontradas foram calculadas só com água.")
-    for key, text in (("narrativa", "Quantidade ou DE:/PARA: escritos como texto, lidos como antes → depois"),
+    for key, text in (("texto", "Quantidade escrita como texto, lida pela convenção (quantidade na categoria ATUAL)"),
+                      ("narrativa", "Texto lido como antes → depois"),
                       ("misto", "Campos DE:/PARA: com duas categorias, valorados pela diferença por categoria"),
+                      ("categoria_na_linha", "Linhas DE:/PARA: com categoria diferente, valoradas por depois − antes"),
                       ("id_repetido", "Linhas idênticas (mesmo Id) contadas uma vez")):
         if notes[key]:
             print(f"{text}: {notes[key]}")
@@ -536,7 +573,9 @@ def report(feed, top, notes):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("tratativas", type=Path, help="Exportação da tabela TRATATIVAS (.xlsx ou .csv)")
+    p.add_argument("tratativas", type=Path, nargs="+",
+                   help="Exportação da tabela TRATATIVAS (.xlsx ou .csv). Com mais de um arquivo, as linhas do último "
+                        "valem no lugar das de mesmo Id dos anteriores (ex.: Resultados.xlsx Formulario_editado.xlsx)")
     p.add_argument("--aba", help="Nome da aba do Excel (padrão: primeira)")
     p.add_argument("--clientes", type=Path, help="Base de clientes para obter a localidade (cruzamento por matrícula)")
     p.add_argument("--col-ligacao", help="Coluna da ligação/matrícula na base de clientes")
@@ -552,7 +591,14 @@ def main():
     p.add_argument("--saida", type=Path, default=OUTPUT)
     args = p.parse_args()
 
-    names, rows = read_table(args.tratativas, args.aba)
+    names, rows = read_table(args.tratativas[0], args.aba)
+    for extra in args.tratativas[1:]:
+        more_names, more_rows = read_table(extra, args.aba)
+        names += [n for n in more_names if n not in names]
+        replaced = {r.get("ID") for r in more_rows if r.get("ID") is not None}
+        n_before = len(rows)
+        rows = [r for r in rows if r.get("ID") not in replaced] + more_rows
+        print(f"{extra.name}: {len(more_rows)} linhas; {n_before - (len(rows) - len(more_rows))} do arquivo anterior foram substituídas")
     keys = {header_key(n) for n in names}
     if "HORADECONCLUSAO" not in keys:
         sys.exit(f"Coluna 'Hora de conclusão' não encontrada. Colunas: {', '.join(names)}")
