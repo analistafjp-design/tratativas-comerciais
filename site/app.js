@@ -135,6 +135,7 @@ fetch('./data/summary.json', { cache: 'no-cache' })
     if (!feed.months.length) throw new Error('Não há tratativas com valor na base.');
     if (!feed.counts) throw new Error('Dados desatualizados: gere o summary.json de novo.');
     render(feed);
+    TratativasExporta.attach(() => ({ feed, panel: summarize(feed), billing: billingNote(feed.source) }));
   })
   .catch((error) => {
     $('#sub-topo').textContent = 'Falha ao carregar';

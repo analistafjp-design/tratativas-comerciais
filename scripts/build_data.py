@@ -350,6 +350,11 @@ def row_effects(rec, powerbi=False):
 
 
 # ---------------------------------------------------------------- leitura
+def text_key(value):
+    """Texto sem acento, maiúsculo e só com letras e números separados por um espaço (como o painel Cadastro e Venda)."""
+    return re.sub(r"[^A-Z0-9]+", " ", plain(value)).strip()
+
+
 def result_type(rec):
     """Tipo de resultado da tratativa, igual ao painel Cadastro e Venda (conta tratativas, não economias).
 
@@ -358,11 +363,8 @@ def result_type(rec):
     'cat'     só alteração de categoria
     None      qualquer outra tratativa
     """
-    def key(value):
-        return re.sub(r"[^A-Z0-9]+", " ", plain(value)).strip()
-
-    order, flag, kind = (key(rec.get(name)) for name in ("TIPODEORDEMDESERVICO", "QUALFOIAALTERACAODEECONOMIA",
-                                                         "TIPODEALTERACAO"))
+    order, flag, kind = (text_key(rec.get(name)) for name in ("TIPODEORDEMDESERVICO", "QUALFOIAALTERACAODEECONOMIA",
+                                                              "TIPODEALTERACAO"))
     inc, dec = flag == "INCREMENTO", flag == "DECREMENTO"
     cat = "CATEGORIA" in order or "CATEGORIA" in kind
     eco = not inc and not dec and bool(re.search(r"ECONOMIA|\bECO\b", f"{order} | {kind}"))
@@ -464,6 +466,87 @@ def load_clients(path, col_ligacao=None, col_localidade=None, col_faturamento=No
     return {ident: client for ident, (_, client) in latest.items()}
 
 
+# ---------------------------------------------------------------- analítico (uma linha por tratativa)
+DETAIL_COLUMNS = ["id", "date", "class", "order", "flag", "de", "para", "previous", "current", "quantity", "read",
+                  "newEconomies", "removed", "swapsUp", "swapsDown", "gainCents", "lossCents", "factor", "city",
+                  "note", "repeat"]
+CLASS_NAMES = {"inc": "Incremento", "inc_cat": "Incremento e categoria", "cat": "Categoria", None: ""}
+
+
+def display_class(rec, rtype):
+    """Classe mostrada no analítico. As três de `result_type` entram nas contagens; Decremento e Alteração de economia
+    (sem marcação) não entram em Incrementos nem em Trocas, mas o valor delas conta."""
+    if rtype:
+        return CLASS_NAMES[rtype]
+    if text_key(rec.get("QUALFOIAALTERACAODEECONOMIA")) == "DECREMENTO":
+        return "Decremento"
+    if re.search(r"ECONOMIA|\bECO\b", text_key(rec.get("TIPODEORDEMDESERVICO")) + " | " + text_key(rec.get("TIPODEALTERACAO"))):
+        return "Alteração de economia"
+    return ""
+NOTE_TEXT = {
+    "texto": "quantidade escrita em texto: lida como economias na categoria ATUAL",
+    "narrativa": "texto lido como antes → depois",
+    "misto": "campo com duas categorias: valor pela diferença por categoria",
+    "categoria_na_linha": "categoria diferente entre DE: e PARA:: troca + economia nova ou retirada",
+    "troca_sem_variacao": "categoria diferente com a mesma quantidade (o relatório valoriza em R$ 0)",
+    "marcacao_divergente": "aumento marcado como Decremento no Forms (fora do relatório)",
+}
+REASON_TEXT = {
+    "incompleto": "PENDENTE: campos incompletos, fora dos valores",
+    "quantidade_invalida": "PENDENTE: quantidade ilegível, fora dos valores",
+    "nao_reconhecido": "PENDENTE: categoria ou quantidade não reconhecida, fora dos valores",
+}
+
+
+def typed(value, limit=140):
+    text = re.sub(r"\s+", " ", "" if value is None else str(value)).strip()
+    return text if len(text) <= limit else text[:limit - 1] + "…"
+
+
+def row_id(value):
+    number = to_number(value)
+    return int(number) if number is not None and number == int(number) else typed(value, 40)
+
+
+def reading(effects):
+    """Texto curto do que foi lido na linha: '+17 Comercial; 1× Residencial → Comercial'."""
+    merged = Counter()
+    for kind, old, new, qty, _ in effects:
+        merged[(kind, old, new)] += qty
+    parts = [f"{qty:+d} {new}" if kind == "economia" else f"{qty}× {old} → {new}"
+             for (kind, old, new), qty in merged.items() if qty]
+    return "; ".join(parts)
+
+
+def detail_row(rec, when, rtype, effects, reason, note, city, factor):
+    """Uma tratativa para o analítico. Não leva matrícula, nome, e-mail nem colaborador."""
+    up = lambda e: e[3] > 0 if e[0] == "economia" else e[4] > 0  # noqa: E731
+    if reason:
+        text = REASON_TEXT.get(reason, f"PENDENTE: {reason}")
+    elif note in NOTE_TEXT:
+        text = NOTE_TEXT[note]
+    elif effects or not rtype:
+        text = ""
+    elif rec.get("ANTERIOR") and rec.get("ATUAL"):
+        text = "categoria anterior igual à atual: sem valor"
+    elif not any(rec.get(k) for k in ("DE", "PARA", "ANTERIOR", "ATUAL")):
+        text = "sem valor preenchido (só conta como tratativa)"
+    else:
+        text = "sem variação de valor"
+    return [
+        row_id(rec.get("ID")), when.strftime("%Y-%m-%d %H:%M"), display_class(rec, rtype),
+        typed(rec.get("TIPODEORDEMDESERVICO"), 60), typed(rec.get("QUALFOIAALTERACAODEECONOMIA"), 30),
+        typed(rec.get("DE")), typed(rec.get("PARA")), typed(rec.get("ANTERIOR")), typed(rec.get("ATUAL")),
+        typed(rec.get("QUANTIDADE")), reading(effects),
+        sum(e[3] for e in effects if e[0] == "economia" and e[3] > 0),
+        -sum(e[3] for e in effects if e[0] == "economia" and e[3] < 0),
+        sum(e[3] for e in effects if e[0] == "categoria" and e[4] > 0),
+        sum(e[3] for e in effects if e[0] == "categoria" and e[4] < 0),
+        sum(e[4] for e in effects if up(e)), sum(e[4] for e in effects if not up(e)),
+        factor, city, text, "",
+    ]
+
+
 # ---------------------------------------------------------------- agregação
 def build(rows, places=None, only_front=None, since=None, until=None, powerbi=False):
     agg = defaultdict(Counter)
@@ -473,22 +556,26 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
     coverage = Counter()
     dates, top = [], []
     first_by_id = {}
-    for number, rec in enumerate(rows, start=2):
+    detail, groups = [], defaultdict(list)
+
+    def is_copy(rec):
         rid = rec.get("ID")
-        if not powerbi and rid not in (None, ""):  # linha idêntica repetida na exportação conta uma vez
-            if first_by_id.setdefault(rid, rec) is not rec and first_by_id[rid] == rec:
-                notes["id_repetido"] += 1
-                continue
+        return (rid not in (None, "") and first_by_id.setdefault(rid, rec) is not rec and first_by_id[rid] == rec)
+
+    for number, rec in enumerate(rows, start=2):
         if only_front and plain(rec.get("FRENTEDESERVICO")).strip() != plain(only_front).strip():
             continue
         when = parse_date(rec.get("HORADECONCLUSAO"))
+        month = when.strftime("%Y-%m") if when else None
+        if month and ((since and month < since) or (until and month > until)):
+            continue
+        if not powerbi and is_copy(rec):  # linha idêntica repetida na exportação conta uma vez
+            notes["id_repetido"] += 1
+            continue
         effects, reason, note = row_effects(rec, powerbi)
         if when is None:
             if effects or reason:
                 pending[("", UNKNOWN_CITY, "sem_data")] += 1
-            continue
-        month = when.strftime("%Y-%m")
-        if (since and month < since) or (until and month > until):
             continue
         dates.append(when)
         rtype = result_type(rec)
@@ -500,15 +587,21 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
         city = client.city if client else UNKNOWN_CITY
         if reason:
             pending[(month, city, reason)] += 1
-            continue
-        if note:
-            notes[note] += 1
         if client is None:
             factor = 1  # sem localidade: só água
         elif client.double is not None:
             factor = 2 if client.double else 1
         else:
             factor = 2 if plain(client.city).strip() in DOUBLE_CITIES else 1
+        if rtype or effects or reason:
+            detail.append(detail_row(rec, when, rtype, effects, reason, note, city, factor))
+            ligacao = digits(rec.get("MATRICULASDIGITO"))
+            if effects and ligacao:  # a matrícula só serve para achar repetições; não vai para o arquivo
+                groups[(ligacao, month, tuple(sorted(effects)))].append(len(detail) - 1)
+        if reason:
+            continue
+        if note:
+            notes[note] += 1
         if effects and places is not None:
             coverage["total"] += 1
             coverage["found"] += client is not None
@@ -524,6 +617,13 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
             notes["outros"] += OTHER in (old, new)
         if effects:
             top.append((abs(row_value * factor), number, month, city, row_value * factor))
+
+    repeated = [idx for idx in groups.values() if len(idx) > 1]
+    for label, idx in enumerate(sorted(repeated), start=1):
+        for i in idx:
+            detail[i][DETAIL_COLUMNS.index("repeat")] = f"R{label:02d}"
+    notes["grupos_repetidos"] = len(repeated)
+    notes["linhas_repetidas"] = sum(len(idx) for idx in repeated)
 
     lines = [dict(month=m, city=c, factor=f, kind=k, dir=d, **{"from": o}, to=n,
                   qty=int(a["qty"]), cents=int(a["cents"]), rows=int(a["rows"]))
@@ -549,6 +649,13 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
                    for m in months],
         "lines": lines,
         "pending": out_pending,
+        "detail": {
+            "columns": DETAIL_COLUMNS,
+            "rows": sorted((r for r in detail if r[1][:7] in months), key=lambda r: (r[1], str(r[0]))),
+            "identicalCopies": notes["id_repetido"],
+            "withoutDate": sum(n for (m, _, r), n in pending.items() if r == "sem_data"),
+            "repeatedGroups": notes["grupos_repetidos"],
+        },
     }
     notes.update({f"cobertura_{k}": v for k, v in coverage.items()})
     return feed, sorted(top, reverse=True), notes
@@ -593,6 +700,9 @@ def report(feed, top, notes):
                       ("id_repetido", "Linhas idênticas (mesmo Id) contadas uma vez")):
         if notes[key]:
             print(f"{text}: {notes[key]}")
+    if notes["grupos_repetidos"]:
+        print(f"Possíveis repetições (mesma ligação, mesmo mês e mesmo efeito): {notes['grupos_repetidos']} grupos, "
+              f"{notes['linhas_repetidas']} linhas, marcadas no analítico para você conferir.")
     if notes["outros"]:
         print(f"Categorias não reconhecidas, tratadas como 'Outros' (R$ 0): {notes['outros']} movimentos")
     if notes["troca_sem_variacao"]:
@@ -653,10 +763,14 @@ def main():
               if args.clientes else None)
     feed, top, notes = build(rows, places, args.frente, args.since, args.until, args.como_powerbi)
     feed["sample"] = args.exemplo
+    detail = feed.pop("detail")
     args.saida.parent.mkdir(parents=True, exist_ok=True)
     args.saida.write_text(json.dumps(feed, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    detail_path = args.saida.with_name("analitico.json")
+    detail_path.write_text(json.dumps(detail, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     report(feed, top, notes)
     print(f"\n{args.saida}: {len(feed['lines'])} linhas agregadas de {len(rows)} tratativas.")
+    print(f"{detail_path}: {len(detail['rows'])} tratativas no analítico (botões Baixar Excel e Baixar PDF).")
 
 
 if __name__ == "__main__":

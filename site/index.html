@@ -8,6 +8,9 @@
   <meta name="theme-color" content="#1c3a8f">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23364dd4'/%3E%3Cpath d='M9 22V15M16 22V10M23 22V13' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="./styles.css">
+  <script src="./xlsx.js" defer></script>
+  <script src="./pdf.js" defer></script>
+  <script src="./exporta.js" defer></script>
   <script src="./app.js" defer></script>
 </head>
 <body>
@@ -62,6 +65,14 @@
           <h2 id="table-title">Mês a mês</h2>
           <p class="desc">O valor de cada mês passa a ser cobrado integralmente na fatura do mês seguinte e se repete até dezembro.</p>
         </div>
+        <div class="acoes">
+          <button type="button" class="btn mini" id="baixar-excel" title="Analítico por tratativa, com fórmulas, para conferir os números">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>Baixar Excel
+          </button>
+          <button type="button" class="btn mini" id="baixar-pdf" title="Resumo e analítico por tratativa em PDF">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>Baixar PDF
+          </button>
+        </div>
       </div>
       <div class="tabela-wrap">
         <table class="tab months-table">
@@ -79,6 +90,7 @@
       </div>
     </section>
 
+    <p class="nota export-status" id="export-status" role="status"></p>
     <p class="explica" id="rules">Valor por mês = ganhos − perdas. Na troca de categoria desconta-se a tarifa da categoria anterior. A primeira fatura cheia é a do mês seguinte à tratativa.</p>
     <p class="nota">Estimativa de faturamento, sujeita à efetiva cobrança e à permanência das alterações. Dados consolidados, sem identificação de clientes.</p>
   </main>
