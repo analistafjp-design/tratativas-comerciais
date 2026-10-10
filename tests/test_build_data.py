@@ -105,17 +105,28 @@ class EffectsTest(unittest.TestCase):
         self.assertEqual(self.one(anterior="Residencial", atual="ENTIDADE SEM FINS LUCRATIVOS", quantidade=1),
                          [("categoria", "Residencial", "Pública", 1, PUB - RES)])
 
-    def test_text_quantity_is_read_as_before_and_after(self):
-        # 1 residencial social -> 2 residenciais normais: uma troca social->residencial e uma economia nova
-        effects = self.one(anterior="Social", atual="Residencial", quantidade="DE 1 RES. SOCIAL P/ 2 RES. NORMAIS")
-        self.assertEqual(sorted(e[0] for e in effects), ["categoria", "economia"])
-        self.assertEqual(sum(e[4] for e in effects), 2 * RES - SOC)
-        # 1 residência continua e entram 2 comerciais
-        effects = self.one(anterior="Residencial", atual="Comercial", quantidade="DE 1 RES. P/ 1 RES. E 2 COM.")
-        self.assertEqual(effects, [("economia", "Comercial", "Comercial", 1, COM)] * 2)
-        # sem o modo do relatório a linha é ignorada, como no Power BI
+    def test_text_quantity_follows_the_form_convention(self):
+        # quantidade = economias que ficaram na categoria ATUAL; valor = quantidade x (ATUAL - ANTERIOR)
+        self.assertEqual(self.one(anterior="Social", atual="Residencial", quantidade="DE 1 RES. SOCIAL P/ 2 RES. NORMAIS"),
+                         [("categoria", "Social", "Residencial", 2, 2 * (RES - SOC))])
+        self.assertEqual(self.one(anterior="Residencial", atual="Comercial", quantidade="DE 1 RES. P/ 1 RES. E 2 COM."),
+                         [("categoria", "Residencial", "Comercial", 2, 2 * (COM - RES))])
+        self.assertEqual(self.one(anterior="Residencial", atual="Comercial", quantidade="DE 1 RES. P/ 5 COM."),
+                         [("categoria", "Residencial", "Comercial", 5, 5 * (COM - RES))])
+        # só o estado depois, sem "DE ... P/ ..."
+        self.assertEqual(self.one(anterior="Residencial", atual="Comercial", quantidade="1RES. E 1 COM."),
+                         [("categoria", "Residencial", "Comercial", 1, COM - RES)])
+        # abreviações: RS. = residencial, PEQ. COM. = pequeno comércio, "2 NORMAIS" = residenciais normais
+        self.assertEqual(self.one(anterior="Social", atual="Residencial", quantidade="DE 1 SOCIAL P/ 2 NORMAIS")[0][3], 2)
+        self.assertEqual(self.one(anterior="Comercial", atual="P. Comercio", quantidade="de 2 res. e 3 com. p/ 1 peq. com")[0][3], 1)
+        # no relatório a linha é ignorada
         self.assertEqual(row_effects(rec(anterior="Residencial", atual="Comercial", quantidade="DE 1 RES. P/ 1 RES. E 2 COM."),
                                      powerbi=True)[1], "quantidade_invalida")
+
+    def test_text_quantity_falls_back_to_before_and_after_when_the_convention_does_not_apply(self):
+        # ANTERIOR = ATUAL (operador marcou igual): lê o texto literal. 1 comercial novo, a residência fica
+        effects = self.one(anterior="Comercial", atual="Comercial", quantidade="DE 1 RES. P/ 1 COM. E 1 RES,")
+        self.assertEqual(effects, [("economia", "Comercial", "Comercial", 1, COM)])
 
     def test_text_quantity_without_categories_stays_pending(self):
         for text in ("DE 2 ECONOMIAS PARA 1 ECONOMIA", "1 RES.", "ALT. DE 2 P/ 1 RES. SOCIAL"):
@@ -319,6 +330,24 @@ class FilesTest(unittest.TestCase):
             items = lines(rows, load_clients(tmp / "c.csv"))
             self.assertEqual(total(items, city="Cordeiro"), 2 * RES)            # água + esgoto
             self.assertEqual(total(items, city="Rio Bonito"), 2 * (COM - RES))  # só água
+
+
+class MergeFilesTest(unittest.TestCase):
+    def test_second_file_replaces_rows_with_the_same_id(self):
+        import json, subprocess
+        script = Path(__file__).resolve().parents[1] / "scripts" / "build_data.py"
+        head = "Id,Hora de conclusão,MATRICULA S/ DIGITO,DE:,PARA:,ANTERIOR,ATUAL,QUANTIDADE\n"
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            (tmp / "a.csv").write_text(head + "1,2026-03-10 10:00,10,1 RES,2 RES,,,\n"
+                                              "2,2026-04-10 10:00,11,,,Residencial,Comercial,DE 1 RES. P/ 1 RES. E 1 COM.\n", encoding="utf-8")
+            (tmp / "b.csv").write_text(head + "2,2026-04-10 10:00,11,,,Residencial,Comercial,3\n", encoding="utf-8")
+            out = tmp / "out.json"
+            subprocess.run([sys.executable, "-I", str(script), str(tmp / "a.csv"), str(tmp / "b.csv"), "--saida", str(out)],
+                           check=True, capture_output=True)
+            feed = json.loads(out.read_text())
+            by_month = {m: sum(l["cents"] for l in feed["lines"] if l["month"] == m) for m in feed["months"]}
+            self.assertEqual(by_month, {"2026-03": RES, "2026-04": 3 * (COM - RES)})  # abril vem do arquivo b
 
 
 if __name__ == "__main__":
