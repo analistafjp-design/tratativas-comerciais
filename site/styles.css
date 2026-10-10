@@ -111,7 +111,7 @@ table.tab { width: 100%; border-collapse: separate; border-spacing: 0; font-size
 .tab th, .tab td { padding: 11px 12px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--line); }
 .tab tbody tr:last-child th, .tab tbody tr:last-child td { border-bottom: 0; }
 .tab th:first-child, .tab td:first-child { text-align: left; }
-.tab thead th { background: var(--surface-2); color: var(--ink-3); font-weight: 600; font-size: 12px; vertical-align: bottom; }
+.tab thead th { background: var(--surface-2); color: var(--ink-3); font-weight: 600; font-size: 12px; vertical-align: bottom; white-space: normal; line-height: 1.25; }
 .tab tbody th { font-weight: 600; color: var(--ink); }
 .tab tbody tr:hover > * { background: var(--bg); }
 .tab td.num { font-variant-numeric: tabular-nums; }

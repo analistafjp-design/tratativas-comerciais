@@ -359,8 +359,8 @@ def result_type(rec):
     """Tipo de resultado da tratativa, igual ao painel Cadastro e Venda (conta tratativas, não economias).
 
     'inc'     incremento de economia (marcado "Incremento" no Forms), sem categoria
-    'inc_cat' alteração de categoria junto com economia (ex.: tipo "Alteração de Categoria e Economia")
-    'cat'     só alteração de categoria
+    'inc_cat' troca de categoria junto com economia (ex.: tipo "Alteração de Categoria e Economia")
+    'cat'     só troca de categoria
     None      qualquer outra tratativa
     """
     order, flag, kind = (text_key(rec.get(name)) for name in ("TIPODEORDEMDESERVICO", "QUALFOIAALTERACAODEECONOMIA",
@@ -470,7 +470,7 @@ def load_clients(path, col_ligacao=None, col_localidade=None, col_faturamento=No
 DETAIL_COLUMNS = ["id", "date", "class", "order", "flag", "de", "para", "previous", "current", "quantity", "read",
                   "newEconomies", "removed", "swapsUp", "swapsDown", "gainCents", "lossCents", "factor", "city",
                   "note", "repeat"]
-CLASS_NAMES = {"inc": "Incremento", "inc_cat": "Incremento e categoria", "cat": "Categoria", None: ""}
+CLASS_NAMES = {"inc": "Incremento", "inc_cat": "Incremento e troca de categoria", "cat": "Troca de categoria", None: ""}
 
 
 def display_class(rec, rtype):
@@ -681,7 +681,7 @@ def report(feed, top, notes):
         print(f"{month:8} {c['inc'] + c['incCat']:6} {c['cat'] + c['incCat']:6} {t['novas']:6} {t['retir']:6} "
               f"{t['up']:8} {t['down']:8} {t['inc'] / 100:12,.2f} {t['dec'] / 100:12,.2f} "
               f"{t['base'] / 100:13,.2f} {(t['inc'] + t['dec']) / 100:12,.2f}")
-    print("\n'incr.' e 'categ.' são tratativas, como no painel Cadastro e Venda (incremento e categoria conta nas duas); "
+    print("\n'incr.' e 'categ.' são os totais em tratativas, como no painel Cadastro e Venda (incremento e troca de categoria conta nos dois); "
           "'novas' e 'trocas↑' são economias.")
     print("'líquido s/2×' é o resultado sem a cobrança de água + esgoto: deve bater com o Power BI atual.")
     pend = Counter()

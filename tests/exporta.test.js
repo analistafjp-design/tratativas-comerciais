@@ -18,7 +18,7 @@ const detail = read('analitico.json');
 const panel = [...feed.months].reverse().map((month) => {
   const counted = feed.counts.find((item) => item.month === month);
   const netCents = feed.lines.filter((line) => line.month === month).reduce((total, line) => total + line.cents * line.factor, 0);
-  return { month, inc: counted.inc, incCat: counted.incCat, increments: counted.inc + counted.incCat, swaps: counted.cat + counted.incCat, netCents };
+  return { month, inc: counted.inc, incCat: counted.incCat, cat: counted.cat, increments: counted.inc + counted.incCat, swaps: counted.cat + counted.incCat, netCents };
 });
 
 test('as linhas do analítico fecham com o painel em todos os meses', () => {
