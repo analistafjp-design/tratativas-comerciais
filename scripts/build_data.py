@@ -518,10 +518,14 @@ def reading(effects):
     return "; ".join(parts)
 
 
-def detail_row(rec, when, rtype, effects, reason, note, city, factor):
-    """Uma tratativa para o analítico. Não leva matrícula, nome, e-mail nem colaborador."""
+def detail_row(rec, when, rtype, effects, reason, note, city, factor, twin_id=None):
+    """Uma tratativa para o analítico. Não leva matrícula, nome, e-mail nem colaborador.
+
+    `twin_id`: Id da linha igual lançada antes (em até 1 hora). A linha aparece, mas não conta nem vale."""
     up = lambda e: e[3] > 0 if e[0] == "economia" else e[4] > 0  # noqa: E731
-    if reason:
+    if twin_id is not None:
+        text = f"REPETIDA (não conta): igual ao Id {twin_id}, lançada em até 1 hora"
+    elif reason:
         text = REASON_TEXT.get(reason, f"PENDENTE: {reason}")
     elif note in NOTE_TEXT:
         text = NOTE_TEXT[note]
@@ -533,21 +537,25 @@ def detail_row(rec, when, rtype, effects, reason, note, city, factor):
         text = "sem valor preenchido (só conta como tratativa)"
     else:
         text = "sem variação de valor"
+    counted = [] if twin_id is not None else effects  # a repetida mostra a leitura, mas não soma
     return [
-        row_id(rec.get("ID")), when.strftime("%Y-%m-%d %H:%M"), display_class(rec, rtype),
+        row_id(rec.get("ID")), when.strftime("%Y-%m-%d %H:%M"), "Repetida (não conta)" if twin_id is not None else display_class(rec, rtype),
         typed(rec.get("TIPODEORDEMDESERVICO"), 60), typed(rec.get("QUALFOIAALTERACAODEECONOMIA"), 30),
         typed(rec.get("DE")), typed(rec.get("PARA")), typed(rec.get("ANTERIOR")), typed(rec.get("ATUAL")),
         typed(rec.get("QUANTIDADE")), reading(effects),
-        sum(e[3] for e in effects if e[0] == "economia" and e[3] > 0),
-        -sum(e[3] for e in effects if e[0] == "economia" and e[3] < 0),
-        sum(e[3] for e in effects if e[0] == "categoria" and e[4] > 0),
-        sum(e[3] for e in effects if e[0] == "categoria" and e[4] < 0),
-        sum(e[4] for e in effects if up(e)), sum(e[4] for e in effects if not up(e)),
+        sum(e[3] for e in counted if e[0] == "economia" and e[3] > 0),
+        -sum(e[3] for e in counted if e[0] == "economia" and e[3] < 0),
+        sum(e[3] for e in counted if e[0] == "categoria" and e[4] > 0),
+        sum(e[3] for e in counted if e[0] == "categoria" and e[4] < 0),
+        sum(e[4] for e in counted if up(e)), sum(e[4] for e in counted if not up(e)),
         factor, city, text, "",
     ]
 
 
 # ---------------------------------------------------------------- agregação
+# linhas da mesma ligação, no mesmo mês e com o mesmo efeito, lançadas dentro desta janela, contam uma vez
+REPEAT_WINDOW = timedelta(hours=1)
+
 def build(rows, places=None, only_front=None, since=None, until=None, powerbi=False):
     agg = defaultdict(Counter)
     counts = defaultdict(Counter)
@@ -562,6 +570,7 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
         rid = rec.get("ID")
         return (rid not in (None, "") and first_by_id.setdefault(rid, rec) is not rec and first_by_id[rid] == rec)
 
+    entries = []
     for number, rec in enumerate(rows, start=2):
         if only_front and plain(rec.get("FRENTEDESERVICO")).strip() != plain(only_front).strip():
             continue
@@ -578,10 +587,25 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
                 pending[("", UNKNOWN_CITY, "sem_data")] += 1
             continue
         dates.append(when)
+        entries.append(dict(number=number, rec=rec, when=when, month=month, effects=effects, reason=reason, note=note,
+                            ligacao=digits(rec.get("MATRICULASDIGITO")), twin=None))
+
+    if not powerbi:  # a mesma ligação, no mesmo mês, com o mesmo efeito, em até 1 hora: foi lançada duas vezes
+        kept = {}
+        for e in sorted((e for e in entries if e["effects"] and e["ligacao"]), key=lambda e: (e["when"], e["number"])):
+            key = (e["ligacao"], e["month"], tuple(sorted(e["effects"])))
+            if key in kept and e["when"] - kept[key]["when"] <= REPEAT_WINDOW:
+                e["twin"] = kept[key]
+            else:
+                kept[key] = e
+
+    for e in entries:
+        number, rec, when, month = e["number"], e["rec"], e["when"], e["month"]
+        effects, reason, note, twin = e["effects"], e["reason"], e["note"], e["twin"]
         rtype = result_type(rec)
-        if rtype:
+        if rtype and not twin:
             counts[month][rtype] += 1
-        client = places.get(digits(rec.get("MATRICULASDIGITO"))) if places is not None else None
+        client = places.get(e["ligacao"]) if places is not None else None
         if isinstance(client, str):  # só a cidade (testes e bases antigas)
             client = Client(client, None)
         city = client.city if client else UNKNOWN_CITY
@@ -594,10 +618,14 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
         else:
             factor = 2 if plain(client.city).strip() in DOUBLE_CITIES else 1
         if rtype or effects or reason:
-            detail.append(detail_row(rec, when, rtype, effects, reason, note, city, factor))
-            ligacao = digits(rec.get("MATRICULASDIGITO"))
-            if effects and ligacao:  # a matrícula só serve para achar repetições; não vai para o arquivo
-                groups[(ligacao, month, tuple(sorted(effects)))].append(len(detail) - 1)
+            twin_id = row_id(twin["rec"].get("ID")) if twin else None
+            detail.append(detail_row(rec, when, rtype, effects, reason, note, city, factor, twin_id))
+            if effects and e["ligacao"] and not twin:  # a matrícula só serve para achar repetições; não vai para o arquivo
+                groups[(e["ligacao"], month, tuple(sorted(effects)))].append(len(detail) - 1)
+        if twin:
+            notes["repetida_1h"] += 1
+            notes["repetida_1h_centavos"] += sum(x[4] for x in effects) * factor
+            continue
         if reason:
             continue
         if note:
@@ -655,6 +683,8 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
             "identicalCopies": notes["id_repetido"],
             "withoutDate": sum(n for (m, _, r), n in pending.items() if r == "sem_data"),
             "repeatedGroups": notes["grupos_repetidos"],
+            "repeatsDropped": notes["repetida_1h"],
+            "repeatsDroppedCents": notes["repetida_1h_centavos"],
         },
     }
     notes.update({f"cobertura_{k}": v for k, v in coverage.items()})
@@ -700,8 +730,12 @@ def report(feed, top, notes):
                       ("id_repetido", "Linhas idênticas (mesmo Id) contadas uma vez")):
         if notes[key]:
             print(f"{text}: {notes[key]}")
+    if notes["repetida_1h"]:
+        print(f"Repetições lançadas em até 1 hora (mesma ligação, mês e efeito) contadas uma vez: {notes['repetida_1h']} "
+              f"linhas, R$ {notes['repetida_1h_centavos'] / 100:,.2f} por mês a menos. Aparecem no analítico como "
+              f"'Repetida (não conta)'.")
     if notes["grupos_repetidos"]:
-        print(f"Possíveis repetições (mesma ligação, mesmo mês e mesmo efeito): {notes['grupos_repetidos']} grupos, "
+        print(f"Possíveis repetições com mais de 1 hora de diferença (somadas): {notes['grupos_repetidos']} grupos, "
               f"{notes['linhas_repetidas']} linhas, marcadas no analítico para você conferir.")
     if notes["outros"]:
         print(f"Categorias não reconhecidas, tratadas como 'Outros' (R$ 0): {notes['outros']} movimentos")

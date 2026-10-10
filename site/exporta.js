@@ -10,7 +10,7 @@
   const BRL = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const INT = new Intl.NumberFormat('pt-BR');
   const MONTH = new Intl.DateTimeFormat('pt-BR', { month: 'long', timeZone: 'UTC' });
-  const CODE = { Incremento: 'INC', 'Incremento e troca de categoria': 'INC+TROCA', 'Troca de categoria': 'TROCA', Decremento: 'DEC', 'Alteração de economia': 'ECO' };
+  const CODE = { Incremento: 'INC', 'Incremento e troca de categoria': 'INC+TROCA', 'Troca de categoria': 'TROCA', Decremento: 'DEC', 'Alteração de economia': 'ECO', 'Repetida (não conta)': 'REP' };
 
   const reais = (cents) => cents / 100;
   const money = (cents) => BRL.format(cents / 100);
@@ -58,6 +58,7 @@
       // `months` vem do mais novo para o mais antigo
       first: months.at(-1).label, final: months[0].label, generated: stamp(new Date()),
       repeatedGroups: detail.repeatedGroups || 0, copies: detail.identicalCopies || 0,
+      droppedRepeats: detail.repeatsDropped || 0, droppedCents: detail.repeatsDroppedCents || 0,
     };
   }
 
@@ -83,7 +84,8 @@
       ] },
       { heading: 'Pontos para conferir', lines: [
         `Pendências fora dos valores: ${model.pending} (coluna Observação começa com PENDENTE).`,
-        `Possíveis repetições: ${model.repeatedGroups} grupos, ${model.repeatedRows} linhas (coluna Repetição): mesma ligação, mesmo mês e mesmo efeito. Foram somadas; confira se são pedidos distintos.`,
+        `Repetições lançadas em até 1 hora (mesma ligação, mês e efeito) contam uma vez: ${model.droppedRepeats} linhas, R$ ${money(model.droppedCents)} por mês a menos. Aparecem como "Repetida (não conta)", com valor zero, para você conferir.`,
+        `Possíveis repetições com mais de 1 hora de diferença: ${model.repeatedGroups} grupos, ${model.repeatedRows} linhas (coluna Repetição). Foram somadas; confira se são pedidos distintos.`,
         `Linhas idênticas (mesmo Id e mesmo conteúdo) contadas uma vez: ${model.copies}.`,
       ] },
     ];
@@ -100,11 +102,11 @@
 
   // ---------------------------------------------------------------- Excel
   const COLUMNS = [
-    ['Id', 9], ['Mês (AAAAMM)', 10], ['Data e hora', 17], ['Classe', 24], ['Tipo de ordem de serviço', 34], ['Marcação no Forms', 12],
+    ['Id', 9], ['Mês (AAAAMM)', 10], ['Data e hora', 17], ['Classe', 30], ['Tipo de ordem de serviço', 34], ['Marcação no Forms', 12],
     ['DE:', 18], ['PARA:', 18], ['ANTERIOR', 14], ['ATUAL', 14], ['QUANTIDADE', 14], ['Como foi lido', 36],
     ['Novas economias', 10], ['Economias retiradas', 10], ['Trocas que aumentam a tarifa', 12], ['Trocas que reduzem a tarifa', 12],
     ['Ganho (R$)', 13], ['Perda (R$)', 13], ['Fator (2 = água e esgoto)', 10], ['Valor no mês (R$)', 14],
-    ['Cidade', 16], ['Repetição', 10], ['Observação', 60],
+    ['Cidade', 16], ['Repetição', 10], ['Observação', 64],
   ];
 
   function excelSheets(feed, model, billing) {
@@ -196,7 +198,7 @@
       'Id e Data e hora: identificam a linha no formulário (ordem do mais novo para o mais antigo). Classe: Incremento, Incremento e troca de categoria ou Troca de categoria (contam nas colunas do Resumo, como no painel Cadastro e Venda); Decremento e Alteração de economia só entram no valor.',
       'Tipo de ordem, Marcação, DE:, PARA:, ANTERIOR, ATUAL, QUANTIDADE: como foram digitados. Como foi lido: o que o cálculo entendeu (+ economias novas, − retiradas, N× troca de categoria).',
       'Ganho e Perda: soma dos efeitos positivos e negativos da tratativa. Fator: 2 quando a ligação fatura água e esgoto (hoje 1: o cruzamento com a base de clientes ainda não foi aplicado). Valor no mês = (Ganho + Perda) × Fator.',
-      'Repetição: linhas com o mesmo código (R01, R02...) são da mesma ligação, no mesmo mês, com o mesmo efeito. Observação: leitura especial aplicada ou pendência.',
+      'Repetição: linhas com o mesmo código (R01, R02...) são da mesma ligação, no mesmo mês, com o mesmo efeito e mais de 1 hora de diferença (foram somadas). Classe "Repetida (não conta)": igual a outra linha lançada até 1 hora antes; aparece, mas não soma. Observação: leitura especial aplicada ou pendência.',
     ]) text.push([{ v: line, s: S.WRAP }]);
     const rulesSheet = { name: 'Regras e fonte', widths: [150], rows: text };
 
@@ -244,7 +246,7 @@
     }
 
     doc.heading('Analítico por tratativa');
-    doc.paragraph('Classe: INC = incremento, INC+TROCA = incremento e troca de categoria, TROCA = troca de categoria, DEC = decremento, ECO = alteração de economia sem marcação. Valor = (ganho + perda) × fator. Tipo de ordem, marcação do formulário, cidade e a leitura completa estão no Excel. Rep. igual = mesma ligação, mês e efeito.');
+    doc.paragraph('Classe: INC = incremento, INC+TROCA = incremento e troca de categoria, TROCA = troca de categoria, DEC = decremento, ECO = alteração de economia sem marcação, REP = repetida (não conta). Valor = (ganho + perda) × fator. Tipo de ordem, marcação do formulário, cidade e a leitura completa estão no Excel. Rep. igual = mesma ligação, mês e efeito, com mais de 1 hora de diferença (somadas).');
     const rows = model.rows.map((row) => [
       String(row.id), dateTimeBr(row.date), CODE[row.class] || '-', readable(row), row.read || '-', money(rowValue(row)), row.repeat, row.note,
     ]);

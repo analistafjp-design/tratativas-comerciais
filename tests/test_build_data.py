@@ -260,15 +260,45 @@ class DetailTest(unittest.TestCase):
         for secret in ("100200300", "100200301", "Fulana", "Beltrano"):
             self.assertNotIn(secret, text)
 
-    def test_same_connection_month_and_effect_is_flagged_as_possible_repetition(self):
-        same = dict(id=10, horadeconclusao="2026-07-10 10:00:00", matriculasdigito="777",
+    def test_repeated_within_one_hour_counts_once_and_is_listed_as_repeated(self):
+        same = dict(horadeconclusao="2026-07-10 10:00:00", matriculasdigito="777", tipodeordemdeservico="Alteração de Categoria",
                     anterior="Social", atual="Residencial", quantidade=1)
-        rows = [rec(**same), rec(**dict(same, id=11)), rec(**dict(same, id=12, matriculasdigito="778"))]
+        rows = [
+            rec(id=10, **same),
+            rec(id=11, **dict(same, horadeconclusao="2026-07-10 10:55:00")),                       # 55 min depois: repetida
+            rec(id=12, **dict(same, horadeconclusao="2026-07-10 10:30:00", matriculasdigito="778")),  # outra ligação: conta
+        ]
         feed, _, notes = build(rows)
-        self.assertEqual(sorted(r["repeat"] for r in self.cols(feed)), ["", "R01", "R01"])
-        self.assertEqual((feed["detail"]["repeatedGroups"], notes["linhas_repetidas"]), (1, 2))
+        lines = self.cols(feed)[::-1]  # do mais antigo para o mais novo
+        self.assertEqual([r["id"] for r in lines], [10, 12, 11])
+        self.assertEqual([r["class"] for r in lines], ["Troca de categoria", "Troca de categoria", "Repetida (não conta)"])
+        repeated = lines[2]
+        self.assertIn("igual ao Id 10", repeated["note"])
+        self.assertEqual((repeated["read"], repeated["gainCents"], repeated["lossCents"], repeated["swapsUp"]),
+                         ("1× Social → Residencial", 0, 0, 0))
+        # só duas contam: no valor, nas contagens e nas linhas agregadas
+        self.assertEqual(sum(l["cents"] for l in feed["lines"]), 2 * (RES - SOC))
+        self.assertEqual(feed["counts"][0]["cat"], 2)
+        self.assertEqual((feed["detail"]["repeatsDropped"], feed["detail"]["repeatsDroppedCents"]), (1, RES - SOC))
+        self.assertEqual(sum((r["gainCents"] + r["lossCents"]) * r["factor"] for r in lines), 2 * (RES - SOC))
+
+    def test_repeated_after_more_than_one_hour_counts_twice_and_is_only_flagged(self):
+        same = dict(matriculasdigito="777", tipodeordemdeservico="Alteração de Categoria",
+                    anterior="Social", atual="Residencial", quantidade=1)
+        rows = [rec(id=10, horadeconclusao="2026-07-10 10:00:00", **same), rec(id=11, horadeconclusao="2026-07-10 11:01:00", **same),
+                rec(id=12, horadeconclusao="2026-08-10 10:00:00", **same)]  # outro mês: outra tratativa
+        feed, _, notes = build(rows)
+        lines = self.cols(feed)[::-1]
+        self.assertEqual([r["repeat"] for r in lines], ["R01", "R01", ""])
+        self.assertEqual(sum(l["cents"] for l in feed["lines"]), 3 * (RES - SOC))
+        self.assertEqual((feed["detail"]["repeatsDropped"], feed["detail"]["repeatedGroups"]), (0, 1))
         # só entram os meses com valor: o analítico fecha com a tabela
-        self.assertEqual({r["date"][:7] for r in self.cols(feed)}, set(feed["months"]))
+        self.assertEqual({r["date"][:7] for r in lines}, set(feed["months"]))
+
+    def test_the_repeat_window_does_not_apply_to_the_powerbi_mode(self):
+        row = rec(id=10, horadeconclusao="2026-07-10 10:00:00", matriculasdigito="777", anterior="Social", atual="Residencial", quantidade=1)
+        feed, _, _ = build([row, dict(row, ID=11, HORADECONCLUSAO="2026-07-10 10:05:00")], powerbi=True)
+        self.assertEqual(sum(l["qty"] for l in feed["lines"]), 2)
 
     def test_identical_copies_are_counted_in_the_file_header(self):
         row = rec(id=7, horadeconclusao="2026-07-10 10:00:00", de="1 RES", para="2 RES")
