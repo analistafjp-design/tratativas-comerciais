@@ -64,12 +64,19 @@ class EffectsTest(unittest.TestCase):
     def test_economy_decrement_same_category(self):
         self.assertEqual(self.one(de="14 RES", para="1 RES"), [("economia", "Residencial", "Residencial", -13, -13 * RES)])
 
-    def test_economy_decrement_with_category_change_follows_model_formula(self):
-        # Valor Decremento = diferença x (tarifa DE - tarifa PARA): -1 x (85,41 - 443,57) = +358,16
-        self.assertEqual(self.one(de="2 RES", para="1 COM"), [("economia", "Residencial", "Comercial", -1, COM - RES)])
+    def test_economy_decrement_with_category_change_is_after_minus_before(self):
+        # 2 residências -> 1 comercial: uma troca residencial->comercial e uma residência retirada (depois - antes)
+        self.assertEqual(self.one(de="2 RES", para="1 COM"), [("categoria", "Residencial", "Comercial", 1, COM - RES),
+                                                                ("economia", "Residencial", "Residencial", -1, -RES)])
+        # o relatório (Valor Decremento): diferença x (tarifa DE - tarifa PARA) = -1 x (85,41 - 443,57)
+        effects, _, _ = row_effects(rec(de="2 RES", para="1 COM"), powerbi=True)
+        self.assertEqual(effects, [("economia", "Residencial", "Comercial", -1, POWERBI_TARIFFS_CENTS["Comercial"] - RES)])
 
     def test_economy_increment_with_category_change(self):
-        self.assertEqual(self.one(de="1 RES", para="3 COM"), [("economia", "Residencial", "Comercial", 2, 2 * (COM - RES))])
+        # 1 residência -> 3 comerciais: 1 troca (desconta a residência) + 2 comerciais novos, pela tarifa cheia
+        effects = self.one(de="1 RES", para="3 COM")
+        self.assertEqual(sorted(e[0] for e in effects), ["categoria", "economia", "economia"])
+        self.assertEqual(sum(e[4] for e in effects), 3 * COM - RES)
 
     def test_category_swap_uses_quantity(self):
         self.assertEqual(self.one(anterior="Residencial", atual="Comercial", quantidade=2),
@@ -83,7 +90,10 @@ class EffectsTest(unittest.TestCase):
         self.assertEqual(self.one(anterior="Residencial", atual="RES.", quantidade=1), [])
 
     def test_same_count_different_category_is_reported_not_valued(self):
-        self.assertEqual(row_effects(rec(de="1 RES", para="1 COM")), ([], None, "troca_sem_variacao"))
+        # no relatório a linha vale R$ 0 e some; no painel é uma troca de categoria Residencial -> Comercial
+        self.assertEqual(row_effects(rec(de="1 RES", para="1 COM"), powerbi=True), ([], None, "troca_sem_variacao"))
+        self.assertEqual(row_effects(rec(de="1 RES", para="1 COM")),
+                         ([("categoria", "Residencial", "Comercial", 1, COM - RES)], None, "categoria_na_linha"))
 
     def test_cadunico_to_social_is_not_a_change(self):
         self.assertEqual(self.one(anterior="CADÚNICO", atual="Social", quantidade=1), [])
@@ -176,11 +186,19 @@ class PowerBiReproductionTest(unittest.TestCase):
     def test_corrected_rules_value_the_same_rows_with_the_real_tariffs(self):
         # Mesmas linhas, sem as particularidades do relatório: tarifas oficiais, comércio popular a R$ 60,24
         # (não Comercial), Pública a R$ 129,15 (não R$ 0), "sem fins lucrativos" como Pública e o aumento
-        # "1 Comercial -> 2 Residências" também entra. Conta feita à mão: economias 521.001 + categorias -173.010.
+        # "1 Comercial -> 2 Residências" também entra. As economias com categoria diferente valem depois - antes:
+        # "3 Residências -> 2 Comércios" = 2 x 443,56 - 3 x 85,41 e "1 Comercial -> 2 Residências" = 2 x 85,41 - 443,56.
+        # Conta feita à mão: economias 556.816 (troca e retirada contam em categoria) e categorias -173.010 + trocas.
         items = self.september()
-        self.assertEqual(total(items), 347991)  # R$ 3.479,91
-        self.assertEqual(total(items, kind="economia"), 521001)
-        self.assertEqual(total(items, kind="categoria"), -173010)
+        self.assertEqual(total(items), 383806)  # R$ 3.838,06
+
+    def test_powerbi_mode_values_increment_with_category_change_at_the_full_tariff(self):
+        # JUL/2026 no relatório: "1 Residencial -> 18 Comercial" = 17 x R$ 443,57 = R$ 7.540,69
+        row = rec(horadeconclusao="2026-07-27 11:11:34", de="1 Residencial", para="18 Comercial",
+                  qualfoiaalteracaodeeconomia="Incremento")
+        self.assertEqual(total(lines([row], powerbi=True)), 754069)
+        # o painel desconta a categoria anterior: 17 x (443,56 - 85,41)
+        self.assertEqual(total(lines([row])), 18 * COM - RES)  # 1 troca + 17 comerciais novos
 
     def test_powerbi_mode_uses_the_model_tariffs(self):
         self.assertEqual(POWERBI_TARIFFS_CENTS["Comercial"], T["Comercial"] + 1)

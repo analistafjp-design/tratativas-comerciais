@@ -255,6 +255,10 @@ def economy_effect(rec, powerbi=False):
         return "erro", "nao_reconhecido"
     (n, a), (m, b) = before, after
     a, b = a or b or OTHER, b or a or OTHER
+    if not powerbi and a != b and OTHER not in (a, b):
+        # categoria muda na linha: só quem trocou de categoria desconta a anterior; o que sobra é economia nova
+        # ou retirada, pela tarifa cheia. Valor = depois x tarifa - antes x tarifa.
+        return "varios", move_effects(decompose(Counter({a: n}), Counter({b: m}))), "categoria_na_linha"
     diff = m - n
     if diff == 0:
         return "mesma_quantidade", a, b  # o modelo valoriza em R$ 0 e não lista
@@ -263,7 +267,7 @@ def economy_effect(rec, powerbi=False):
     if a == b:
         value = diff * tariff(b, powerbi)
     elif diff > 0:
-        value = diff * (tariff(b, powerbi) - tariff(a, powerbi))
+        value = diff * tariff(b, powerbi)  # relatório (medida "Valor Incre"): diferença x tarifa cheia do PARA
     else:
         value = diff * (tariff(a, powerbi) - tariff(b, powerbi))
     return "economia", a, b, diff, value
@@ -293,7 +297,8 @@ def row_effects(rec, powerbi=False):
 
     nota: 'troca_sem_variacao' (DE:/PARA: com categoria diferente e mesma quantidade, valor R$ 0),
     'marcacao_divergente' (modo --como-powerbi: aumento de economias marcado como "Decremento" no Forms),
-    'narrativa' (quantidade ou DE:/PARA: escritos como "DE ... P/ ...") ou 'misto' (duas categorias no campo)."""
+    'narrativa' (quantidade ou DE:/PARA: escritos como "DE ... P/ ..."), 'misto' (duas categorias no campo)
+    ou 'categoria_na_linha' (DE:/PARA: com categoria diferente: troca + economia nova/retirada)."""
     effects, note = [], None
     for found in (economy_effect(rec, powerbi), category_effect(rec, powerbi)):
         if found is None:
@@ -518,6 +523,7 @@ def report(feed, top, notes):
               f"{notes['cobertura_double']} com água e esgoto (2×). As não encontradas foram calculadas só com água.")
     for key, text in (("narrativa", "Quantidade ou DE:/PARA: escritos como texto, lidos como antes → depois"),
                       ("misto", "Campos DE:/PARA: com duas categorias, valorados pela diferença por categoria"),
+                      ("categoria_na_linha", "Linhas DE:/PARA: com categoria diferente, valoradas por depois − antes"),
                       ("id_repetido", "Linhas idênticas (mesmo Id) contadas uma vez")):
         if notes[key]:
             print(f"{text}: {notes[key]}")
