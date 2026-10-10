@@ -1,6 +1,6 @@
 # Impacto do Cadastro
 
-Painel simples para mostrar o que as tratativas do cadastro trazem de valor. Para cada mês: **novas economias**, **trocas de categoria**, o **valor que entra na próxima fatura cheia** e o **total até dezembro**. No topo, o resumo do ano.
+Painel simples para mostrar o que as tratativas do cadastro trazem de valor. Para cada mês: **incrementos**, **trocas de categoria**, o **valor que entra na próxima fatura cheia** e o **total até dezembro**. No topo, o resumo do ano.
 
 Endereço depois de publicado: `https://analistafjp-design.github.io/tratativas-comerciais/`
 
@@ -43,7 +43,8 @@ Igual às medidas do modelo. O resultado do mês é a **soma das quatro tabelas*
 | Decremento de categoria | `ANTERIOR`, `ATUAL`, `QUANTIDADE` | idem, quando negativo. Categoria sem tarifa ("Outros") vale R$ 0 |
 
 - **Ganhos** = incrementos; **Perdas** = decrementos. **Resultado do mês = ganhos − perdas.**
-- "Novas economias" e "Trocas de categoria" são os totais das tabelas de **incremento** do relatório. Os decrementos entram só no valor (como perdas).
+- **Incrementos** e **Trocas de categoria** contam **tratativas** (linhas da planilha), igual ao painel Cadastro e Venda, e valem para qualquer sentido (inclusive trocas que reduzem a tarifa). **Incrementos** = incremento de economia + incremento e categoria. **Trocas de categoria** = alteração de categoria + incremento e categoria. A tratativa de *incremento e categoria* entra nas duas contagens; o valor dela entra uma vez só, em R$. Cada linha é classificada por `TIPO DE ORDEM DE SERVIÇO`, `QUAL FOI A ALTERAÇÃO DE ECONOMIA?` e `TIPO DE ALTERAÇÃO`: marcada "Incremento" e sem categoria = incremento; tipo com "categoria" e ("Incremento" marcado ou tipo com "economia", como "Alteração de Categoria e Economia") = incremento e categoria; tipo com "categoria" sem economia = categoria. Contam também as tratativas sem valor preenchido (o painel mostra o volume de trabalho; o valor em R$ só vem das que têm número). Entram só os meses que têm tratativas valoradas (os formulários de janeiro e fevereiro não tinham os campos de valor). As colunas `incr.` e `categ.` do terminal mostram essas contagens; `novas` e `trocas↑` são economias e trocas que aumentam a tarifa.
+- Os decrementos entram só no valor (como perdas).
 - Mês de referência: `Hora de conclusão`. A triagem é feita no fim do mês, então a primeira fatura cheia é a do **mês seguinte**.
 - **Até dezembro** = resultado do mês × meses restantes após o mês da tratativa (julho → ago a dez = 5). O resumo do ano soma isso de todos os meses.
 - **Água + esgoto (valor × 2)**: pelo `TIPO_FATURAMENTO` **de cada ligação** na base de clientes (cruzamento `NUM_LIGACAO` = `MATRICULA S/ DIGITO`). Não vale dobrar a cidade inteira: na amostra exportada, só 12% das ligações de Cordeiro e 23% das de Miracema faturam água e esgoto (em Aperibé, 90%). Tratativas cuja ligação não está na base são calculadas só com água. Se a base não tiver a coluna de faturamento, o script usa a regra por município (`DOUBLE_CITIES`: Cordeiro, Miracema e Aperibé).
