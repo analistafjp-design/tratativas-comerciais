@@ -4,8 +4,8 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from build_data import (TARIFFS_CENTS as T, build, category_of, load_clients, parse_date,
-                        parse_side, read_table, row_effects, Client)
+from build_data import (TARIFFS_CENTS as T, build, category_of, decompose, load_clients, parse_date, parse_narrative, parse_units,
+                        parse_side, read_table, row_effects, Client, POWERBI_TARIFFS_CENTS)
 
 RES, COM, SOC, PC = T["Residencial"], T["Comercial"], T["Social"], T["Pequeno comércio"]
 
@@ -27,8 +27,13 @@ class ParsingTest(unittest.TestCase):
         for text, expected in [("RESIDENCIAL", "Residencial"), ("Res. Social", "Social"),
                                ("P. COMERCIO", "Pequeno comércio"), ("Pequeno Comércio", "Pequeno comércio"),
                                ("Comércio Popular", "Comércio popular"), ("COMERCIAL", "Comercial"),
-                               ("PÚBLICA", "Pública"), ("Publica", "Pública"), ("banana", "Outros")]:
+                               ("PÚBLICA", "Pública"), ("Publica", "Pública"), ("banana", "Outros"),
+                               ("CADÚNICO", "Social"), ("ENT.S/FIM LUCRATIVO", "Pública"),
+                               ("SEM FINS LUCRATIVOS", "Pública"), ("Entidade sem fins lucrativos", "Pública")]:
             self.assertEqual(category_of(text), expected, text)
+        # o modo do relatório não conhece essas regras
+        self.assertEqual(category_of("CADÚNICO", powerbi=True), "Outros")
+        self.assertEqual(category_of("ENT.S/FIM LUCRATIVO", powerbi=True), "Outros")
 
     def test_sides(self):
         self.assertEqual(parse_side("2 RESIDENCIAL"), (2, "Residencial"))
@@ -80,9 +85,53 @@ class EffectsTest(unittest.TestCase):
     def test_same_count_different_category_is_reported_not_valued(self):
         self.assertEqual(row_effects(rec(de="1 RES", para="1 COM")), ([], None, "troca_sem_variacao"))
 
+    def test_cadunico_to_social_is_not_a_change(self):
+        self.assertEqual(self.one(anterior="CADÚNICO", atual="Social", quantidade=1), [])
+
+    def test_nonprofit_entity_pays_the_public_tariff(self):
+        PUB = T["Pública"]
+        self.assertEqual(self.one(anterior="Comercial", atual="SEM FINS LUCRATIVOS", quantidade=1),
+                         [("categoria", "Comercial", "Pública", 1, PUB - COM)])
+        self.assertEqual(self.one(anterior="Residencial", atual="ENTIDADE SEM FINS LUCRATIVOS", quantidade=1),
+                         [("categoria", "Residencial", "Pública", 1, PUB - RES)])
+
+    def test_text_quantity_is_read_as_before_and_after(self):
+        # 1 residencial social -> 2 residenciais normais: uma troca social->residencial e uma economia nova
+        effects = self.one(anterior="Social", atual="Residencial", quantidade="DE 1 RES. SOCIAL P/ 2 RES. NORMAIS")
+        self.assertEqual(sorted(e[0] for e in effects), ["categoria", "economia"])
+        self.assertEqual(sum(e[4] for e in effects), 2 * RES - SOC)
+        # 1 residência continua e entram 2 comerciais
+        effects = self.one(anterior="Residencial", atual="Comercial", quantidade="DE 1 RES. P/ 1 RES. E 2 COM.")
+        self.assertEqual(effects, [("economia", "Comercial", "Comercial", 1, COM)] * 2)
+        # sem o modo do relatório a linha é ignorada, como no Power BI
+        self.assertEqual(row_effects(rec(anterior="Residencial", atual="Comercial", quantidade="DE 1 RES. P/ 1 RES. E 2 COM."),
+                                     powerbi=True)[1], "quantidade_invalida")
+
+    def test_text_quantity_without_categories_stays_pending(self):
+        for text in ("DE 2 ECONOMIAS PARA 1 ECONOMIA", "1 RES.", "ALT. DE 2 P/ 1 RES. SOCIAL"):
+            self.assertEqual(row_effects(rec(anterior="Residencial", atual="Comercial", quantidade=text))[1],
+                             "quantidade_invalida", text)
+
+    def test_field_with_two_categories_uses_the_difference_per_category(self):
+        # 1 residência -> 6 residências e 1 comercial: +5 residenciais e +1 comercial
+        effects = self.one(de="1 Residência", para="6RES. E 1 COM.")
+        self.assertEqual(sum(e[3] for e in effects), 6)
+        self.assertEqual(sum(e[4] for e in effects), 5 * RES + COM)
+
+    def test_narrative_typed_into_de_para(self):
+        # o mesmo texto "DE 5 RES. E 1 COM. P/ 4 RES. E 1 COM." nos dois campos: sai uma residência
+        text = "DE 5 RES. E 1 COM. P/ 4 RES. E 1 COM."
+        self.assertEqual(self.one(de=text, para=text), [("economia", "Residencial", "Residencial", -1, -RES)])
+
+    def test_decompose_and_narrative_parsing(self):
+        self.assertEqual(parse_narrative("de 1 res. p/ 1 res. e 1 com."), (parse_units("1 RES"), parse_units("1 RES E 1 COM")))
+        self.assertIsNone(parse_narrative("1 RES. E 1 COM."))
+        self.assertEqual(decompose(parse_units("1 SOC"), parse_units("2 RES")),
+                         [("troca", "Social", "Residencial", 1), ("nova", None, "Residencial", 1)])
+
     def test_pending_reasons(self):
         self.assertEqual(row_effects(rec(de="2 RES"))[1], "incompleto")
-        self.assertEqual(row_effects(rec(de="1 RES E 1 COM", para="2 RES"))[1], "nao_reconhecido")
+        self.assertEqual(row_effects(rec(de="1 RES E 1 COM", para="2 RES"), powerbi=True)[1], "nao_reconhecido")
         self.assertEqual(row_effects(rec(anterior="Social", atual="Residencial"))[1], "quantidade_invalida")
         self.assertEqual(row_effects(rec(anterior="Social", atual="Residencial", quantidade=1.5))[1], "quantidade_invalida")
 
@@ -125,10 +174,19 @@ class PowerBiReproductionTest(unittest.TestCase):
         self.assertEqual(sum(i["qty"] for i in items if i["kind"] == "categoria" and i["dir"] == "dec"), 72)
 
     def test_corrected_rules_value_the_same_rows_with_the_real_tariffs(self):
-        # Mesmas linhas, sem as particularidades do relatório: comércio popular a R$ 60,24 (não Comercial),
-        # Pública a R$ 129,16 (não R$ 0) e o aumento "1 Comercial -> 2 Residências" também entra.
+        # Mesmas linhas, sem as particularidades do relatório: tarifas oficiais, comércio popular a R$ 60,24
+        # (não Comercial), Pública a R$ 129,15 (não R$ 0), "sem fins lucrativos" como Pública e o aumento
+        # "1 Comercial -> 2 Residências" também entra. Conta feita à mão: economias 521.001 + categorias -173.010.
         items = self.september()
-        self.assertEqual(total(items), 335075)  # R$ 3.350,75, o mesmo da planilha real em SET/2026
+        self.assertEqual(total(items), 347991)  # R$ 3.479,91
+        self.assertEqual(total(items, kind="economia"), 521001)
+        self.assertEqual(total(items, kind="categoria"), -173010)
+
+    def test_powerbi_mode_uses_the_model_tariffs(self):
+        self.assertEqual(POWERBI_TARIFFS_CENTS["Comercial"], T["Comercial"] + 1)
+        items = lines([rec(horadeconclusao="2026-09-15 10:00:00", de="1 Comercial", para="3 Comerciais",
+                           qualfoiaalteracaodeeconomia="Incremento")], powerbi=True)
+        self.assertEqual(total(items), 2 * POWERBI_TARIFFS_CENTS["Comercial"])
 
 
 class BuildTest(unittest.TestCase):
@@ -168,6 +226,17 @@ class BuildTest(unittest.TestCase):
         feed, _, _ = build([rec(horadeconclusao="", de="1 RES", para="2 RES")])
         self.assertEqual(feed["pending"][0]["reason"], "sem_data")
         self.assertEqual(feed["lines"], [])
+
+    def test_identical_rows_with_the_same_id_count_once(self):
+        row = rec(id=7, horadeconclusao="2026-07-10 10:00:00", de="1 RES", para="2 RES")
+        other = rec(id=8, horadeconclusao="2026-07-10 11:00:00", de="1 RES", para="2 RES")
+        changed = dict(row, PARA="3 RES")  # mesmo Id, conteúdo diferente: não é cópia, fica
+        feed, _, notes = build([row, dict(row), other, changed])
+        self.assertEqual(notes["id_repetido"], 1)
+        self.assertEqual(sum(l["cents"] for l in feed["lines"]), RES + RES + 2 * RES)
+        # o modo do relatório não remove nada
+        flagged = dict(row, QUALFOIAALTERACAODEECONOMIA="Incremento")
+        self.assertEqual(sum(l["qty"] for l in build([flagged, dict(flagged)], powerbi=True)[0]["lines"] if l["dir"] == "inc"), 2)
 
     def test_month_filters(self):
         rows = self.ROWS + [rec(horadeconclusao="2026-08-01 08:00:00", de="1 RES", para="2 RES")]

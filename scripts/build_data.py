@@ -21,6 +21,13 @@ Regras, portadas das medidas do modelo Power BI (as quatro tabelas do relatório
       Categoria sem tarifa ("Outros") vale R$ 0, como no modelo.
 
   Resultado do mês = soma dos valores das quatro tabelas.
+
+  Além do relatório (cálculo "corrigido", o padrão; --como-powerbi desliga tudo isto):
+    * Tarifas oficiais (Comercial 443,56, Industrial 613,16, Pública 129,15) e comércio popular a 60,24.
+    * CADÚNICO é Social e "sem fins lucrativos" é Pública.
+    * QUANTIDADE escrita como texto ("DE 1 RES. P/ 1 RES. E 2 COM.") é lida como antes -> depois e entra
+      como troca de categoria + economia nova/retirada. O mesmo vale para campos DE:/PARA: com duas categorias.
+    * Linhas com o mesmo Id e todas as colunas iguais (duplicadas na exportação) contam uma vez.
   Água + esgoto: o valor é multiplicado por 2 nas ligações cujo TIPO_FATURAMENTO da base de clientes é
   "AGUA E ESGOTO" (cruzamento por matrícula). Se a base não tiver essa coluna, vale a regra por município
   (DOUBLE_CITIES). O Power BI atual não faz esse cruzamento: sem --clientes o resultado é o dele.
@@ -39,17 +46,19 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "site" / "data" / "summary.json"
 
-# Tarifa mensal por economia, em centavos. Comercial, Industrial e Pública seguem a tabela
-# "Tarifas" do modelo Power BI (443,57 / 613,17 / 129,16), para reproduzir o relatório ao centavo.
+# Tarifa mensal por economia, em centavos (valores oficiais).
 TARIFFS_CENTS = {
     "Residencial": 8541,
-    "Comercial": 44357,
-    "Industrial": 61317,
-    "Pública": 12916,
+    "Comercial": 44356,
+    "Industrial": 61316,
+    "Pública": 12915,
     "Pequeno comércio": 22178,
     "Social": 3012,
     "Comércio popular": 6024,
 }
+# A tabela "Tarifas" do modelo Power BI tem 1 centavo a mais em Comercial, Industrial e Pública.
+# Só o modo --como-powerbi a usa, para reproduzir o relatório ao centavo.
+POWERBI_TARIFFS_CENTS = {**TARIFFS_CENTS, "Comercial": 44357, "Industrial": 61317, "Pública": 12916}
 OTHER = "Outros"  # categoria não reconhecida: sem tarifa, vale R$ 0 (igual ao modelo)
 
 # Localidades que hoje cobram água + esgoto (tarifa dobra). Sem acento, maiúsculas.
@@ -60,8 +69,8 @@ UNKNOWN_CITY = "Não identificada"
 Client = namedtuple("Client", "city double")
 
 
-def tariff(category):
-    return TARIFFS_CENTS.get(category, 0)
+def tariff(category, powerbi=False):
+    return (POWERBI_TARIFFS_CENTS if powerbi else TARIFFS_CENTS).get(category, 0)
 
 
 # ---------------------------------------------------------------- texto
@@ -84,6 +93,11 @@ def category_of(text, powerbi=False, path="categoria"):
     powerbi=True reproduz o relatório: 'popular' vira Comercial (o texto contém "COM") e, nas trocas
     de categoria (ANTERIOR/ATUAL), 'Pública' não acha tarifa e vale R$ 0."""
     s = clean(text)
+    if not powerbi:
+        if re.search(r"CAD ?UNICO", s):  # tarifa social do CadÚnico
+            return "Social"
+        if "LUCRATIV" in s:  # entidade sem fins lucrativos paga a tarifa pública
+            return "Pública"
     if "POPULAR" in s:
         return "Comercial" if powerbi else "Comércio popular"
     if "PEQUENO" in s or re.search(r"\bP ?COM", s):
@@ -104,11 +118,10 @@ def category_of(text, powerbi=False, path="categoria"):
 FILLER = re.compile(r"\b(ECONOMIAS?|UNIDADES?|UND|DE|E)\b")
 
 
-def parse_side(text, fallback=None, powerbi=False):
-    """'2 RESIDENCIAL' -> (2, 'Residencial'). '0' -> (0, None).
+def parse_units(text, fallback=None, powerbi=False):
+    """'1 RES E 2 COM' -> Counter(Residencial=1, Comercial=2). None se não houver número.
 
-    Retorna None quando não há número ou quando o campo mistura categorias ('1 RES E 1 COM'),
-    porque as medidas do modelo só valorizam uma categoria por lado."""
+    Contagem sem categoria entra com a chave None (a categoria sai do outro lado do DE:/PARA:)."""
     s = clean(text)
     numbers = list(re.finditer(r"\d+", s))
     if not numbers:
@@ -123,13 +136,66 @@ def parse_side(text, fallback=None, powerbi=False):
             units[fallback] += int(m.group())
         else:
             units[None] += int(m.group())
-    units = Counter({k: v for k, v in units.items() if v})
-    if len(units) > 1:
+    return Counter({k: v for k, v in units.items() if v})
+
+
+def parse_side(text, fallback=None, powerbi=False):
+    """'2 RESIDENCIAL' -> (2, 'Residencial'). '0' -> (0, None).
+
+    Retorna None quando não há número ou quando o campo mistura categorias ('1 RES E 1 COM'),
+    porque as medidas do modelo só valorizam uma categoria por lado."""
+    units = parse_units(text, fallback, powerbi)
+    if units is None or len(units) > 1:
         return None
     if not units:
         return 0, None
     (category, n), = units.items()
     return n, category
+
+
+def parse_narrative(text):
+    """'DE 1 RES. SOCIAL P/ 2 RES. NORMAIS' -> (antes, depois) como Counters por categoria, ou None."""
+    s = re.sub(r"^(ALT\s+)?DE\s+", "", clean(text))
+    parts = re.split(r"\s*\bP/+\s*|\s+PARA\s+", s, maxsplit=1)
+    if len(parts) != 2:
+        return None
+    before, after = (parse_units(re.sub(r"^DE\s+", "", part)) for part in parts)
+    for units in (before, after):  # sem número, sem categoria ou categoria desconhecida: não dá para valorar
+        if not units or None in units or OTHER in units:
+            return None
+    return before, after
+
+
+def decompose(before, after):
+    """Antes/depois por categoria -> movimentos: troca (A->B), economia nova (+B) ou retirada (-A).
+
+    Unidades iguais nos dois lados se anulam; as que sobram em ambos viram trocas de categoria; o excedente
+    é economia nova ou retirada. A soma dos valores é sempre (depois x tarifa) - (antes x tarifa)."""
+    old, new = Counter(before), Counter(after)
+    for c in TARIFFS_CENTS:
+        shared = min(old[c], new[c])
+        old[c] -= shared
+        new[c] -= shared
+    by_tariff = sorted(TARIFFS_CENTS, key=TARIFFS_CENTS.get)
+    old_left = [c for c in by_tariff for _ in range(old[c])]
+    new_left = [c for c in by_tariff for _ in range(new[c])]
+    moves = [("troca", a, b, 1) for a, b in zip(old_left, new_left)]
+    moves += [("retirada", a, None, 1) for a in old_left[len(new_left):]]
+    moves += [("nova", None, b, 1) for b in new_left[len(old_left):]]
+    return moves
+
+
+def move_effects(moves):
+    """Movimentos -> efeitos no formato das tabelas: ('categoria'|'economia', de, para, quantidade, valor)."""
+    effects = []
+    for kind, a, b, qty in moves:
+        if kind == "troca":
+            effects.append(("categoria", a, b, qty, qty * (tariff(b) - tariff(a))))
+        elif kind == "nova":
+            effects.append(("economia", b, b, qty, qty * tariff(b)))
+        else:
+            effects.append(("economia", a, a, -qty, -qty * tariff(a)))
+    return effects
 
 
 def to_number(value):
@@ -175,6 +241,15 @@ def economy_effect(rec, powerbi=False):
         return "erro", "incompleto"
     fallback = (category_of(rec.get("TIPODEECONOMIA"), powerbi, "economia")
                 if str(rec.get("TIPODEECONOMIA") or "").strip() else None)
+    if not powerbi:
+        story = parse_narrative(de) or parse_narrative(para)  # "DE 5 RES. P/ 4 RES." digitado nos campos
+        if story:
+            return "varios", move_effects(decompose(*story)), "narrativa"
+        mixed_before, mixed_after = parse_units(de, fallback), parse_units(para, fallback)
+        if mixed_before is not None and mixed_after is not None and max(len(mixed_before), len(mixed_after)) > 1:
+            if None in mixed_before or None in mixed_after or OTHER in mixed_before or OTHER in mixed_after:
+                return "erro", "nao_reconhecido"
+            return "varios", move_effects(decompose(mixed_before, mixed_after)), "misto"
     before, after = parse_side(de, fallback, powerbi), parse_side(para, fallback, powerbi)
     if before is None or after is None:
         return "erro", "nao_reconhecido"
@@ -186,11 +261,11 @@ def economy_effect(rec, powerbi=False):
     if powerbi and diff > 0 and plain(rec.get("QUALFOIAALTERACAODEECONOMIA")).strip() != "INCREMENTO":
         return "marcacao_divergente", a, b  # o relatório só lista incremento marcado como "Incremento" no Forms
     if a == b:
-        value = diff * tariff(b)
+        value = diff * tariff(b, powerbi)
     elif diff > 0:
-        value = diff * (tariff(b) - tariff(a))
+        value = diff * (tariff(b, powerbi) - tariff(a, powerbi))
     else:
-        value = diff * (tariff(a) - tariff(b))
+        value = diff * (tariff(a, powerbi) - tariff(b, powerbi))
     return "economia", a, b, diff, value
 
 
@@ -203,18 +278,22 @@ def category_effect(rec, powerbi=False):
         return "erro", "incompleto"
     qty = to_number(rec.get("QUANTIDADE"))
     if qty is None or qty <= 0 or qty != int(qty):
+        story = None if powerbi else parse_narrative(rec.get("QUANTIDADE"))  # quantidade escrita como texto
+        if story:
+            return "varios", move_effects(decompose(*story)), "narrativa"
         return "erro", "quantidade_invalida"
     a, b = category_of(ant, powerbi), category_of(atu, powerbi)
     if a == b:
         return None
-    return "categoria", a, b, int(qty), int(qty) * (tariff(b) - tariff(a))
+    return "categoria", a, b, int(qty), int(qty) * (tariff(b, powerbi) - tariff(a, powerbi))
 
 
 def row_effects(rec, powerbi=False):
     """Linha -> (efeitos, motivo de pendência, nota).
 
-    nota: 'troca_sem_variacao' (DE:/PARA: com categoria diferente e mesma quantidade, valor R$ 0) ou
-    'marcacao_divergente' (modo --como-powerbi: aumento de economias marcado como "Decremento" no Forms)."""
+    nota: 'troca_sem_variacao' (DE:/PARA: com categoria diferente e mesma quantidade, valor R$ 0),
+    'marcacao_divergente' (modo --como-powerbi: aumento de economias marcado como "Decremento" no Forms),
+    'narrativa' (quantidade ou DE:/PARA: escritos como "DE ... P/ ...") ou 'misto' (duas categorias no campo)."""
     effects, note = [], None
     for found in (economy_effect(rec, powerbi), category_effect(rec, powerbi)):
         if found is None:
@@ -226,6 +305,10 @@ def row_effects(rec, powerbi=False):
             continue
         if found[0] == "marcacao_divergente":
             note = "marcacao_divergente"
+            continue
+        if found[0] == "varios":
+            effects.extend(found[1])
+            note = found[2]
             continue
         effects.append(found)
     return effects, None, note
@@ -330,7 +413,13 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
     notes = Counter()
     coverage = Counter()
     dates, top = [], []
+    first_by_id = {}
     for number, rec in enumerate(rows, start=2):
+        rid = rec.get("ID")
+        if not powerbi and rid not in (None, ""):  # linha idêntica repetida na exportação conta uma vez
+            if first_by_id.setdefault(rid, rec) is not rec and first_by_id[rid] == rec:
+                notes["id_repetido"] += 1
+                continue
         if only_front and plain(rec.get("FRENTEDESERVICO")).strip() != plain(only_front).strip():
             continue
         when = parse_date(rec.get("HORADECONCLUSAO"))
@@ -390,7 +479,7 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
             "coverage": dict(found=coverage["found"], total=coverage["total"]) if places is not None else None,
             "rules": "powerbi" if powerbi else "corrigida",
         },
-        "tariffsCents": TARIFFS_CENTS,
+        "tariffsCents": POWERBI_TARIFFS_CENTS if powerbi else TARIFFS_CENTS,
         "doubleCities": sorted(DOUBLE_CITIES),
         "months": sorted({ln["month"] for ln in lines}),
         "lines": lines,
@@ -427,6 +516,11 @@ def report(feed, top, notes):
         found, total = notes["cobertura_found"], notes["cobertura_total"]
         print(f"Base de clientes: {found} de {total} tratativas com valor encontradas ({100 * found / total:.1f}%); "
               f"{notes['cobertura_double']} com água e esgoto (2×). As não encontradas foram calculadas só com água.")
+    for key, text in (("narrativa", "Quantidade ou DE:/PARA: escritos como texto, lidos como antes → depois"),
+                      ("misto", "Campos DE:/PARA: com duas categorias, valorados pela diferença por categoria"),
+                      ("id_repetido", "Linhas idênticas (mesmo Id) contadas uma vez")):
+        if notes[key]:
+            print(f"{text}: {notes[key]}")
     if notes["outros"]:
         print(f"Categorias não reconhecidas, tratadas como 'Outros' (R$ 0): {notes['outros']} movimentos")
     if notes["troca_sem_variacao"]:
