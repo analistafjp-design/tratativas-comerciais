@@ -25,13 +25,17 @@ function isPartial(feed, month) {
 const brl = (cents) => money.format(cents / 100);
 
 /**
- * Uma linha por mês, como no painel Cadastro e Venda: o incremento e a troca de categoria contam tratativas, e a
- * tratativa de "incremento e categoria" entra nas duas. O valor é ganhos − perdas.
+ * Uma linha por mês, do mais novo para o mais antigo, com a separação do painel Cadastro e Venda: incremento,
+ * incremento e categoria, total de incremento e total de alteração de categoria. Contam tratativas, e a tratativa
+ * de "incremento e categoria" entra nos dois totais. O valor é ganhos − perdas.
  */
 function summarize(feed) {
-  return feed.months.map((month) => {
+  return [...feed.months].reverse().map((month) => {
     const counted = feed.counts.find((item) => item.month === month);
-    const row = { month, increments: counted.inc + counted.incCat, swaps: counted.cat + counted.incCat, netCents: 0 };
+    const row = {
+      month, inc: counted.inc, incCat: counted.incCat, increments: counted.inc + counted.incCat,
+      swaps: counted.cat + counted.incCat, netCents: 0,
+    };
     for (const line of feed.lines) {
       if (line.month === month) row.netCents += line.cents * line.factor; // água + esgoto já aplicado pelo fator da linha
     }
@@ -91,13 +95,15 @@ function render(feed) {
   $('#sub-topo').textContent = `Cadastro · ${from.toLowerCase()} a ${monthLong.format(dateOf(last))} · base até ${lastDate}`;
   $('#hero-sub').textContent = `Ganhos menos perdas de ${from.toLowerCase()} a ${nameLabel(last).toLowerCase()}, valor que se repete a cada fatura`;
 
-  $('#total-economies').textContent = count.format(sum('increments'));
+  $('#total-inc').textContent = count.format(sum('inc'));
+  $('#total-inc-cat').textContent = count.format(sum('incCat'));
+  $('#total-increments').textContent = count.format(sum('increments'));
   $('#total-swaps').textContent = count.format(sum('swaps'));
   $('#total-monthly').textContent = brl(sum('netCents'));
   $('#total-until-label').textContent = `Faturamento até dez/${last.slice(0, 4)}`;
   $('#total-until').textContent = brl(sum('untilYearEndCents'));
 
-  const columns = ['Incrementos', 'Trocas de categoria', 'Na próxima fatura cheia', 'Até dezembro'];
+  const columns = ['Incremento', 'Incremento e categoria', 'Total de incremento', 'Total alteração de categoria', 'Na próxima fatura cheia', 'Até dezembro'];
   const max = Math.max(1, ...rows.map((row) => row.netCents));
   $('#months-body').replaceChildren(...rows.map((row) => {
     const tr = document.createElement('tr');
@@ -112,10 +118,12 @@ function render(feed) {
     }
     tr.append(
       th,
-      cell(count.format(row.increments), columns[0], 'num'),
-      cell(count.format(row.swaps), columns[1], 'num'),
-      barCell(brl(row.netCents), columns[2], row.netCents, max),
-      cell(brl(row.untilYearEndCents), columns[3], `num${row.untilYearEndCents < 0 ? ' neg' : ''}`),
+      cell(count.format(row.inc), columns[0], 'num'),
+      cell(count.format(row.incCat), columns[1], 'num'),
+      cell(count.format(row.increments), columns[2], 'num'),
+      cell(count.format(row.swaps), columns[3], 'num'),
+      barCell(brl(row.netCents), columns[4], row.netCents, max),
+      cell(brl(row.untilYearEndCents), columns[5], `num${row.untilYearEndCents < 0 ? ' neg' : ''}`),
     );
     return tr;
   }));
@@ -123,7 +131,7 @@ function render(feed) {
   const rules = [
     'Valor por mês = ganhos − perdas. Na troca de categoria desconta-se a tarifa da categoria anterior.',
     'A primeira fatura cheia é a do mês seguinte à tratativa.',
-    'Incrementos: incremento de economia e incremento e categoria. Trocas de categoria: alteração de categoria e incremento e categoria, que entra nas duas contagens.',
+    'Total de incremento = incremento + incremento e categoria. Total alteração de categoria = categoria + incremento e categoria. A tratativa de incremento e categoria entra nos dois totais.',
     billingNote(feed.source),
   ];
   $('#rules').textContent = rules.join(' ');

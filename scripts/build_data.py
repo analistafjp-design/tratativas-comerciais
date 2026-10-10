@@ -651,7 +651,7 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
         "pending": out_pending,
         "detail": {
             "columns": DETAIL_COLUMNS,
-            "rows": sorted((r for r in detail if r[1][:7] in months), key=lambda r: (r[1], str(r[0]))),
+            "rows": sorted((r for r in detail if r[1][:7] in months), key=lambda r: (r[1], str(r[0])), reverse=True),
             "identicalCopies": notes["id_repetido"],
             "withoutDate": sum(n for (m, _, r), n in pending.items() if r == "sem_data"),
             "repeatedGroups": notes["grupos_repetidos"],

@@ -21,6 +21,8 @@
   --c-azul: #4176d4;
   --c-laranja: #e26d3c;
   --c-verde: #3aae7a;
+  --c-roxo: #4e39a5;
+  --c-azul-esc: #364dd4;
   --barra: #cddbf8;
   --good: #1b7f55;
   --warn: #9a5b00;
@@ -36,7 +38,7 @@
     --bg: #0f131c; --surface: #171c27; --surface-2: #1f2532; --ink: #f2f5fb; --ink-2: #c3cada; --ink-3: #98a3b8;
     --line: #283041; --line-2: #36405a; --accent: #6f86f0; --accent-ink: #0b1020; --accent-wash: #1c2540;
     --head-1: #17306f; --head-2: #0f2150; --barra: #2b3f7a;
-    --c-azul: #6a95ec; --c-laranja: #f0865a; --c-verde: #52c493;
+    --c-azul: #6a95ec; --c-laranja: #f0865a; --c-verde: #52c493; --c-roxo: #8d79e0; --c-azul-esc: #6f86f0;
     --good: #5bd0a0; --warn: #f0b84a; --crit: #f08080;
     --shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 8px 24px rgba(0, 0, 0, .5);
   }
@@ -77,6 +79,9 @@ body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 var(
 .cartao .valor { font-size: 30px; font-weight: 700; line-height: 1.1; margin-top: 8px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
 .cartao .valor.moeda { font-size: 26px; white-space: nowrap; }
 .cartao .sub { margin-top: 4px; font-size: 12px; color: var(--ink-3); }
+.cartao.largo { grid-column: span 2; }
+.tipos .rot { align-items: flex-start; min-height: 2.5em; }
+.tipos .dot { margin-top: 5px; }
 .cartao.heroi { grid-column: span 2; background: var(--accent-wash); border-color: var(--accent); padding: 16px 20px 18px; }
 .cartao.heroi .rot { font-weight: 600; color: var(--ink); font-size: 14px; }
 .cartao.heroi .dot { width: 10px; height: 10px; }
@@ -126,7 +131,7 @@ table.tab { width: 100%; border-collapse: separate; border-spacing: 0; font-size
   .wrap { padding: 0 14px; }
   .cartoes { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .cartao .valor { font-size: 24px; }
-  .cartao.heroi, .cartao:last-child { grid-column: 1 / -1; }
+  .cartao.heroi, .cartao.largo { grid-column: 1 / -1; }
   .cartao.heroi .valor { font-size: 42px; }
   .cartao .valor.moeda { font-size: 26px; }
   .bloco { padding: 14px 12px 14px; }
