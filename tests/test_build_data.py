@@ -1,3 +1,4 @@
+import json
 import sys
 import tempfile
 import unittest
@@ -202,6 +203,76 @@ class ResultTypeTest(unittest.TestCase):
         other = dict(row, ID=2, FRENTEDESERVICO="Bairro Legal - VCG")
         feed, _, _ = build([row, dict(row), other], only_front="Cadastro")
         self.assertEqual(feed["counts"], [dict(month="2026-07", inc=0, incCat=0, cat=1)])
+
+
+class DetailTest(unittest.TestCase):
+    """O analítico (uma linha por tratativa) tem de fechar com o painel, sem identificar o cliente."""
+
+    ROWS = [
+        rec(id=1, horadeconclusao="2026-07-10 10:00:00", matriculasdigito="100200300", colaborador="Fulana de Tal",
+            tipodeordemdeservico="Alteração de Economia", qualfoiaalteracaodeeconomia="Incremento", de="1 RES", para="3 RES"),
+        rec(id=2, horadeconclusao="2026-07-11 10:00:00", matriculasdigito="100200301", colaborador="Beltrano",
+            tipodeordemdeservico="Alteração de Categoria e Economia", anterior="Residencial", atual="Comercial", quantidade=2),
+        rec(id=3, horadeconclusao="2026-07-12 10:00:00", matriculasdigito="100200302",
+            tipodeordemdeservico="Alteração de Categoria", anterior="Social", atual="Social", quantidade=1),  # sem valor
+        rec(id=4, horadeconclusao="2026-07-13 10:00:00", matriculasdigito="100200303",
+            tipodeordemdeservico="Alteração de Categoria", anterior="Social", atual="Residencial", quantidade="uns dois"),
+        rec(id=5, horadeconclusao="2026-07-14 10:00:00", tipodeordemdeservico="Sem Tratativa"),                 # fora
+    ]
+
+    def cols(self, feed):
+        names = feed["detail"]["columns"]
+        return [dict(zip(names, row)) for row in feed["detail"]["rows"]]
+
+    def test_rows_close_with_the_summary_and_counts(self):
+        feed, _, _ = build(self.ROWS)
+        rows = self.cols(feed)
+        self.assertEqual([r["id"] for r in rows], [1, 2, 3, 4])
+        net = sum((r["gainCents"] + r["lossCents"]) * r["factor"] for r in rows)
+        self.assertEqual(net, sum(l["cents"] * l["factor"] for l in feed["lines"]))
+        self.assertEqual(net, 2 * RES + 2 * (COM - RES))
+        self.assertEqual([r["class"] for r in rows], ["Incremento", "Incremento e categoria", "Categoria", "Categoria"])
+        count = feed["counts"][0]
+        self.assertEqual((count["inc"], count["incCat"], count["cat"]), (1, 1, 2))
+        first = rows[0]
+        self.assertEqual((first["read"], first["newEconomies"], first["gainCents"]), ("+2 Residencial", 2, 2 * RES))
+        self.assertEqual(rows[1]["read"], "2× Residencial → Comercial")
+        self.assertIn("sem valor", rows[2]["note"])
+        self.assertTrue(rows[3]["note"].startswith("PENDENTE"))
+
+    def test_decrement_and_unmarked_economy_rows_are_listed_but_not_in_the_counts(self):
+        rows = [
+            rec(id=1, horadeconclusao="2026-07-10 10:00:00", tipodeordemdeservico="Alteração de Economia",
+                qualfoiaalteracaodeeconomia="Decremento", de="3 RES", para="2 RES"),
+            rec(id=2, horadeconclusao="2026-07-11 10:00:00", tipodeordemdeservico="Alteração de Economia", de="1 RES", para="2 RES"),
+            rec(id=3, horadeconclusao="2026-07-12 10:00:00", tipodeordemdeservico="Alteração de Economia",
+                qualfoiaalteracaodeeconomia="Incremento", de="1 RES", para="2 RES"),
+        ]
+        feed, _, _ = build(rows)
+        self.assertEqual([r["class"] for r in self.cols(feed)], ["Decremento", "Alteração de economia", "Incremento"])
+        count = feed["counts"][0]
+        self.assertEqual((count["inc"], count["incCat"], count["cat"]), (1, 0, 0))
+        self.assertEqual(sum((r["gainCents"] + r["lossCents"]) * r["factor"] for r in self.cols(feed)), RES)  # -1 +1 +1
+
+    def test_no_customer_or_employee_data_in_the_file(self):
+        text = json.dumps(build(self.ROWS)[0]["detail"], ensure_ascii=False)
+        for secret in ("100200300", "100200301", "Fulana", "Beltrano"):
+            self.assertNotIn(secret, text)
+
+    def test_same_connection_month_and_effect_is_flagged_as_possible_repetition(self):
+        same = dict(id=10, horadeconclusao="2026-07-10 10:00:00", matriculasdigito="777",
+                    anterior="Social", atual="Residencial", quantidade=1)
+        rows = [rec(**same), rec(**dict(same, id=11)), rec(**dict(same, id=12, matriculasdigito="778"))]
+        feed, _, notes = build(rows)
+        self.assertEqual([r["repeat"] for r in self.cols(feed)], ["R01", "R01", ""])
+        self.assertEqual((feed["detail"]["repeatedGroups"], notes["linhas_repetidas"]), (1, 2))
+        # só entram os meses com valor: o analítico fecha com a tabela
+        self.assertEqual({r["date"][:7] for r in self.cols(feed)}, set(feed["months"]))
+
+    def test_identical_copies_are_counted_in_the_file_header(self):
+        row = rec(id=7, horadeconclusao="2026-07-10 10:00:00", de="1 RES", para="2 RES")
+        feed, _, _ = build([row, dict(row), dict(row)])
+        self.assertEqual((len(feed["detail"]["rows"]), feed["detail"]["identicalCopies"]), (1, 2))
 
 
 class PowerBiReproductionTest(unittest.TestCase):

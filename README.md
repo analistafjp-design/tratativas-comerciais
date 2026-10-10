@@ -23,13 +23,24 @@ Endereço depois de publicado: `https://analistafjp-design.github.io/tratativas-
 python scripts/build_data.py "Resultados - 2026.xlsx" "FORMULÁRIO DE CADASTRO - editado.xlsx" --frente Cadastro --clientes "Consulta Cliente.xlsx"
 ```
 
-A planilha tem duas frentes de serviço (Cadastro e Bairro Legal – VCG): use `--frente Cadastro` para o time do cadastro. Com mais de um arquivo de tratativas, **o último vale por todo o período dele**: o que o anterior tem a partir da primeira data do último é substituído, inclusive as linhas que você apagou da cópia editada. Serve para usar a cópia editada do formulário (nomes padronizados, quantidades em número; hoje cobre de abril em diante) por cima do Resultados original; o que vem antes (ex.: março) continua vindo do primeiro arquivo. O script mostra no terminal o resultado de cada mês. Depois envie `site/data/summary.json` para a `main`. **Não envie as planilhas**: `.xlsx`, `.xls`, `.csv` e `.pbix` estão no `.gitignore`.
+A planilha tem duas frentes de serviço (Cadastro e Bairro Legal – VCG): use `--frente Cadastro` para o time do cadastro. Com mais de um arquivo de tratativas, **o último vale por todo o período dele**: o que o anterior tem a partir da primeira data do último é substituído, inclusive as linhas que você apagou da cópia editada. Serve para usar a cópia editada do formulário (nomes padronizados, quantidades em número; hoje cobre de abril em diante) por cima do Resultados original; o que vem antes (ex.: março) continua vindo do primeiro arquivo. O script mostra no terminal o resultado de cada mês. Depois envie `site/data/summary.json` **e** `site/data/analitico.json` para a `main` (o segundo alimenta os botões Baixar Excel e Baixar PDF; os dois precisam ser da mesma geração). **Não envie as planilhas**: `.xlsx`, `.xls`, `.csv` e `.pbix` estão no `.gitignore`.
 
 **Como conferir com o Power BI:** rode com `--como-powerbi`, que reproduz as particularidades do relatório (veja abaixo). Com os dados de 2026, SET/2026 bate ao centavo: R$ 6.263,06. Sobre a coluna `líquido s/2×`: o relatório atual não aplica água + esgoto (2×). A coluna **`líquido s/2×`** do terminal é o resultado sem o 2× e deve bater com o rodapé do relatório (Julho, Agosto, Setembro…), salvo as diferenças listadas abaixo. A coluna **`líquido`** é o valor do painel, já com o 2×.
 
 Opções úteis: `--de 2026-03 --ate 2026-09` (período), `--frente Cadastro` (só uma FRENTE DE SERVIÇO), `--col-ligacao`, `--col-localidade` e `--col-faturamento` (se o script não reconhecer as colunas da base de clientes). `python scripts/build_data.py --help` lista tudo.
 
 Para ver o formato esperado e testar o painel: `python scripts/gerar_exemplo.py` cria dados fictícios em `exemplo/` (use `--exemplo` ao gerar o painel com eles, para exibir a faixa de aviso). Pré-visualização local: `python -m http.server 8000 -d site`.
+
+## Baixar Excel e Baixar PDF (analítico para conferência)
+
+Os botões do bloco "Mês a mês" geram, no próprio navegador, o **analítico por tratativa** para conferir os números (fechamento de PLR, por exemplo). Os arquivos saem como `tratativas-analitico-AAAA-MM-DD.xlsx` e `.pdf` (a data é a do fim da base).
+
+- **Excel**: aba **Resumo** (mês a mês, com **fórmulas** sobre o Analítico: contagens, ganhos, perdas, valor no mês e até dezembro; colunas "Painel" e "Confere" comparam com o que o painel mostra); aba **Analítico** (uma linha por tratativa, com filtros); aba **Regras e fonte**. Qualquer célula do Resumo pode ser clicada para ver de onde vem o número.
+- **PDF** (A4 paisagem): resumo com a conferência, regras e fonte, "pontos para conferir" e o analítico completo, paginado.
+- **Colunas do analítico**: `Id` e data/hora da tratativa, classe (Incremento, Incremento e categoria, Categoria, Decremento), tipo de ordem, marcação do Forms, `DE:`, `PARA:`, `ANTERIOR`, `ATUAL`, `QUANTIDADE` como digitados, **como foi lido** (ex.: `+17 Comercial; 1× Residencial → Comercial`), novas economias, retiradas, trocas, ganho, perda, fator (2× água e esgoto), cidade, **repetição** e observação (leitura especial ou `PENDENTE`).
+- **Pontos de atenção marcados**: pendências (quantidade ilegível), texto lido pela convenção, e **possíveis repetições** (mesma ligação, mesmo mês e mesmo efeito em linhas diferentes, códigos R01, R02...). As repetições são somadas, como no painel; o analítico só mostra quais são para você decidir.
+- **Sem dados do cliente**: o arquivo `site/data/analitico.json` (que fica público junto com o painel) **não leva matrícula, nome, e-mail nem colaborador**. Para achar uma tratativa no formulário ou no Power BI use o `Id` e a data/hora. Enquanto o repositório for público, não inclua a matrícula nesse arquivo.
+- O arquivo é remontado no navegador a partir do `analitico.json`, e o resumo é **recalculado das linhas** e conferido com o painel; se algum mês não fechar, o PDF avisa e a tela mostra o alerta.
 
 ## Como o valor é calculado
 
@@ -71,8 +82,9 @@ O script também avisa quando há categorias não reconhecidas (tratadas como "O
 ## Estrutura
 
 ```
-site/                     painel estático (index.html, styles.css, app.js)
+site/                     painel estático (index.html, styles.css, app.js) e os geradores de Excel e PDF (xlsx.js, pdf.js, exporta.js)
 site/data/summary.json    totais por mês, localidade e (de → para) (gerado, sem dados de cliente)
+site/data/analitico.json  uma linha por tratativa, para os botões Baixar Excel/PDF (gerado, sem matrícula nem colaborador)
 scripts/build_data.py     gera o summary.json a partir da exportação
 scripts/gerar_exemplo.py  dados fictícios para teste
 tests/                    python -m unittest discover -s tests

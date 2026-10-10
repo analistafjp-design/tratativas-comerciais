@@ -83,6 +83,19 @@ body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 var(
 .cartao.heroi .valor { font-size: clamp(34px, 4vw, 54px); line-height: 1; color: var(--accent); margin-top: 10px; letter-spacing: -.03em; white-space: nowrap; }
 .cartao.heroi .sub { margin-top: 8px; font-size: 13px; color: var(--ink-2); }
 
+/* ---------- botões ---------- */
+.acoes { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+  appearance: none; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink);
+  padding: 8px 14px; border-radius: 10px; cursor: pointer; font: inherit; font-weight: 600; line-height: 1.2; box-shadow: 0 1px 2px rgba(17, 23, 42, .04);
+}
+.btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.btn:hover { background: var(--surface-2); }
+.btn.mini { padding: 6px 11px; font-size: 12.5px; border-radius: 8px; }
+.btn[disabled] { opacity: .55; cursor: default; }
+.export-status:empty { display: none; }
+.export-status.erro { color: var(--crit); }
+
 /* ---------- bloco com tabela ---------- */
 .bloco { margin-top: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px 18px; box-shadow: 0 1px 2px rgba(17, 23, 42, .04); }
 .bloco > .topo-bloco { display: flex; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
@@ -117,6 +130,7 @@ table.tab { width: 100%; border-collapse: separate; border-spacing: 0; font-size
   .cartao.heroi .valor { font-size: 42px; }
   .cartao .valor.moeda { font-size: 26px; }
   .bloco { padding: 14px 12px 14px; }
+  .acoes { margin-left: 0; width: 100%; }
 
   /* a tabela vira uma lista de cartões */
   .tabela-wrap { border: 0; background: none; overflow: visible; }
