@@ -5,7 +5,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from build_data import (TARIFFS_CENTS as T, build, category_of, decompose, load_clients, parse_date, parse_narrative, parse_units,
-                        parse_side, read_table, row_effects, Client, POWERBI_TARIFFS_CENTS)
+                        parse_side, read_table, result_type, row_effects, Client, POWERBI_TARIFFS_CENTS)
 
 RES, COM, SOC, PC = T["Residencial"], T["Comercial"], T["Social"], T["Pequeno comércio"]
 
@@ -158,6 +158,50 @@ class EffectsTest(unittest.TestCase):
 
     def test_row_without_value_fields_is_ignored(self):
         self.assertEqual(row_effects(rec(tipo_de_alteracao="Encerrado sem tratativa")), ([], None, None))
+
+
+class ResultTypeTest(unittest.TestCase):
+    """A contagem é a do painel Cadastro e Venda: tratativas, e "incremento e categoria" entra nas duas colunas."""
+
+    def test_types(self):
+        for fields, expected in [
+            (dict(tipodeordemdeservico="Alteração de Economia", qualfoiaalteracaodeeconomia="Incremento"), "inc"),
+            (dict(tipodeordemdeservico="Alteração de Categoria"), "cat"),
+            (dict(tipodeordemdeservico="Alteração de Categoria e Economia"), "inc_cat"),
+            (dict(tipodeordemdeservico="Alteração de Categoria", qualfoiaalteracaodeeconomia="Incremento"), "inc_cat"),
+            (dict(tipodeordemdeservico="Alteração de Categoria", qualfoiaalteracaodeeconomia="Decremento"), "cat"),
+            (dict(tipodeordemdeservico="Alteração de Economia", qualfoiaalteracaodeeconomia="Decremento"), None),
+            (dict(tipodeordemdeservico="Alteração de Economia"), None),
+            (dict(tipodeordemdeservico="Sem Tratativa"), None),
+            (dict(tipodealteracao="Alteração de categoria"), "cat"),
+        ]:
+            self.assertEqual(result_type(rec(**fields)), expected, fields)
+
+    def test_counts_per_month_include_rows_without_value_and_the_combined_type_in_both_columns(self):
+        july = "2026-07-10 10:00:00"
+        rows = [
+            rec(horadeconclusao=july, tipodeordemdeservico="Alteração de Economia", qualfoiaalteracaodeeconomia="Incremento",
+                de="1 RES", para="2 RES"),
+            rec(horadeconclusao=july, tipodeordemdeservico="Alteração de Categoria e Economia",
+                anterior="Residencial", atual="Comercial", quantidade=1),
+            rec(horadeconclusao=july, tipodeordemdeservico="Alteração de Categoria"),     # sem valor, mas conta
+            rec(horadeconclusao="2026-08-02 10:00:00", tipodeordemdeservico="Alteração de Categoria",
+                anterior="Social", atual="Residencial", quantidade=1),
+            rec(horadeconclusao=july, tipodeordemdeservico="Sem Tratativa"),
+        ]
+        feed, _, _ = build(rows)
+        self.assertEqual(feed["counts"], [dict(month="2026-07", inc=1, incCat=1, cat=1),
+                                          dict(month="2026-08", inc=0, incCat=0, cat=1)])
+        july_counts = feed["counts"][0]
+        self.assertEqual(july_counts["inc"] + july_counts["incCat"], 2)   # total de incremento
+        self.assertEqual(july_counts["cat"] + july_counts["incCat"], 2)   # total de alteração de categoria
+
+    def test_identical_rows_and_other_fronts_are_not_counted(self):
+        row = rec(id=1, horadeconclusao="2026-07-10 10:00:00", frentedeservico="Cadastro",
+                  tipodeordemdeservico="Alteração de Categoria", anterior="Social", atual="Residencial", quantidade=1)
+        other = dict(row, ID=2, FRENTEDESERVICO="Bairro Legal - VCG")
+        feed, _, _ = build([row, dict(row), other], only_front="Cadastro")
+        self.assertEqual(feed["counts"], [dict(month="2026-07", inc=0, incCat=0, cat=1)])
 
 
 class PowerBiReproductionTest(unittest.TestCase):

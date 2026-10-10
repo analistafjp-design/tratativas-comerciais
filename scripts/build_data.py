@@ -350,6 +350,29 @@ def row_effects(rec, powerbi=False):
 
 
 # ---------------------------------------------------------------- leitura
+def result_type(rec):
+    """Tipo de resultado da tratativa, igual ao painel Cadastro e Venda (conta tratativas, não economias).
+
+    'inc'     incremento de economia (marcado "Incremento" no Forms), sem categoria
+    'inc_cat' alteração de categoria junto com economia (ex.: tipo "Alteração de Categoria e Economia")
+    'cat'     só alteração de categoria
+    None      qualquer outra tratativa
+    """
+    def key(value):
+        return re.sub(r"[^A-Z0-9]+", " ", plain(value)).strip()
+
+    order, flag, kind = (key(rec.get(name)) for name in ("TIPODEORDEMDESERVICO", "QUALFOIAALTERACAODEECONOMIA",
+                                                         "TIPODEALTERACAO"))
+    inc, dec = flag == "INCREMENTO", flag == "DECREMENTO"
+    cat = "CATEGORIA" in order or "CATEGORIA" in kind
+    eco = not inc and not dec and bool(re.search(r"ECONOMIA|\bECO\b", f"{order} | {kind}"))
+    if cat and (inc or eco):
+        return "inc_cat"
+    if cat:
+        return "cat"
+    return "inc" if inc else None
+
+
 def read_table(path, sheet=None):
     """Retorna (colunas_originais, [dict com chaves normalizadas])."""
     path = Path(path)
@@ -444,6 +467,7 @@ def load_clients(path, col_ligacao=None, col_localidade=None, col_faturamento=No
 # ---------------------------------------------------------------- agregação
 def build(rows, places=None, only_front=None, since=None, until=None, powerbi=False):
     agg = defaultdict(Counter)
+    counts = defaultdict(Counter)
     pending = Counter()
     notes = Counter()
     coverage = Counter()
@@ -467,6 +491,9 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
         if (since and month < since) or (until and month > until):
             continue
         dates.append(when)
+        rtype = result_type(rec)
+        if rtype:
+            counts[month][rtype] += 1
         client = places.get(digits(rec.get("MATRICULASDIGITO"))) if places is not None else None
         if isinstance(client, str):  # só a cidade (testes e bases antigas)
             client = Client(client, None)
@@ -501,6 +528,7 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
     lines = [dict(month=m, city=c, factor=f, kind=k, dir=d, **{"from": o}, to=n,
                   qty=int(a["qty"]), cents=int(a["cents"]), rows=int(a["rows"]))
              for (m, c, f, k, d, o, n), a in sorted(agg.items())]
+    months = sorted({ln["month"] for ln in lines})
     out_pending = [dict(month=m, city=c, reason=r, count=n) for (m, c, r), n in sorted(pending.items())]
     feed = {
         "sample": False,
@@ -516,7 +544,9 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
         },
         "tariffsCents": POWERBI_TARIFFS_CENTS if powerbi else TARIFFS_CENTS,
         "doubleCities": sorted(DOUBLE_CITIES),
-        "months": sorted({ln["month"] for ln in lines}),
+        "months": months,
+        "counts": [dict(month=m, inc=counts[m]["inc"], incCat=counts[m]["inc_cat"], cat=counts[m]["cat"])
+                   for m in months],
         "lines": lines,
         "pending": out_pending,
     }
@@ -525,8 +555,9 @@ def build(rows, places=None, only_front=None, since=None, until=None, powerbi=Fa
 
 
 def report(feed, top, notes):
-    print(f"\n{'mês':8} {'novas':>6} {'retir.':>6} {'trocas↑':>8} {'trocas↓':>8} {'incremento':>12} {'decremento':>12} "
-          f"{'líquido s/2×':>13} {'líquido':>12}")
+    shown = {c["month"]: c for c in feed["counts"]}
+    print(f"\n{'mês':8} {'incr.':>6} {'categ.':>6} {'novas':>6} {'retir.':>6} {'trocas↑':>8} {'trocas↓':>8} "
+          f"{'incremento':>12} {'decremento':>12} {'líquido s/2×':>13} {'líquido':>12}")
     for month in feed["months"]:
         t = Counter()
         for ln in feed["lines"]:
@@ -539,9 +570,13 @@ def report(feed, top, notes):
                 t["up" if up else "down"] += ln["qty"]
             t["inc" if up else "dec"] += ln["cents"] * ln["factor"]
             t["base"] += ln["cents"]
-        print(f"{month:8} {t['novas']:6} {t['retir']:6} {t['up']:8} {t['down']:8} {t['inc'] / 100:12,.2f} "
-              f"{t['dec'] / 100:12,.2f} {t['base'] / 100:13,.2f} {(t['inc'] + t['dec']) / 100:12,.2f}")
-    print("\n'líquido s/2×' é o resultado sem a cobrança de água + esgoto: deve bater com o Power BI atual.")
+        c = shown[month]
+        print(f"{month:8} {c['inc'] + c['incCat']:6} {c['cat'] + c['incCat']:6} {t['novas']:6} {t['retir']:6} "
+              f"{t['up']:8} {t['down']:8} {t['inc'] / 100:12,.2f} {t['dec'] / 100:12,.2f} "
+              f"{t['base'] / 100:13,.2f} {(t['inc'] + t['dec']) / 100:12,.2f}")
+    print("\n'incr.' e 'categ.' são tratativas, como no painel Cadastro e Venda (incremento e categoria conta nas duas); "
+          "'novas' e 'trocas↑' são economias.")
+    print("'líquido s/2×' é o resultado sem a cobrança de água + esgoto: deve bater com o Power BI atual.")
     pend = Counter()
     for p in feed["pending"]:
         pend[p["reason"]] += p["count"]
